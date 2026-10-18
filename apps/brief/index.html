@@ -180,7 +180,7 @@ input[readonly] { color: var(--muted); }
 
   <!-- 3b. Selected project details -->
   <section class="screen" id="s-detail" hidden>
-    <button class="link" data-go="projects">← Choose another project</button>
+    <button class="link" data-go="projects" id="detailBack">← Choose another project</button>
     <div id="projectDetail"></div>
     <div class="decide">
       <h2 id="decideTitle">Are you interested?</h2>
@@ -264,22 +264,33 @@ input[readonly] { color: var(--muted); }
       <h1 id="doneTitle">Thank you</h1>
       <p class="muted" id="doneText"></p>
       <dl class="summary" id="doneSummary"></dl>
-      <p class="muted">Questions? Call <span class="contact">080 66469061</span></p>
+      <p class="muted">Questions? Call <span class="contact" id="donePhone">080 66469061</span></p>
       <p class="note">Demo: this request is not saved or sent yet.</p>
-      <button class="link" data-go="projects">← Back to projects</button>
     </div>
   </section>
 
-  <!-- 5. Not interested: RK Developers -->
+  <!-- 5. Not interested in BMI: RK Developers projects -->
   <section class="screen" id="s-rk" hidden>
     <h1>No problem. Explore RK Developers</h1>
-    <p class="muted">Other projects you may like. Full details coming soon.</p>
-    <div class="panel"><h2>RK Developers — Project 1</h2><p class="muted">Details to be added.</p></div>
-    <div class="panel"><h2>RK Developers — Project 2</h2><p class="muted">Details to be added.</p></div>
-    <button class="link" data-go="projects">← Back to BMI projects</button>
+    <p class="muted">Two more projects you may like. Choose one to see its details.</p>
+    <div class="pick" id="rkPickList"></div>
   </section>
 
-  <p class="foot">Photos and video are placeholders. Prices and details as provided by BMI Housing Society.</p>
+  <!-- 6. Not interested in RK either -->
+  <section class="screen" id="s-bye" hidden>
+    <div class="panel done">
+      <h1>Thank you for your time</h1>
+      <p class="muted">If you change your mind, we're happy to help.</p>
+      <dl class="summary">
+        <div><dt>BMI</dt><dd><span class="contact">080 66469061</span></dd></div>
+        <div><dt>RK Developers</dt><dd><span class="contact">+91 9663108999</span></dd></div>
+      </dl>
+      <button class="link" data-go="projects">See BMI projects again</button>
+      <button class="link" data-go="rk">See RK Developers projects again</button>
+    </div>
+  </section>
+
+  <p class="foot">Photos and video are placeholders. Prices and details as provided by each developer.</p>
 </div>
 
 <script>
@@ -304,15 +315,62 @@ const PROJECTS = [
     overviewTitle: "Overview", amenTitle: "Amenities",
     priceCap: "₹1,249/sqft · attached to STRR Highway, Airlines Dhaba Gate, Devanahalli",
     rows: [["30×40 (1200 sqft)","14,98,800","4,49,640","3,49,720"],["30×50 (1500 sqft)","18,73,500","5,62,050","4,37,150"],["40×60 (2400 sqft)","29,97,600","8,99,280","6,99,440"],["50×80 (4000 sqft)","49,96,000","14,98,800","11,65,774"]],
-    nearby: NEARBY_GC, video: false },
+    nearby: NEARBY_GC, video: false, dev: "bmi", phone: "080 66469061" },
   { id: "north-metro-city", name: "BMI North Metro City", hue: ["#e8740f","#f7c58e"],
     line: "Premium residential plots adjacent to Amity University — surrounded by ITIR Tech Park, Harrow International School & North Bengaluru’s top landmarks.",
     rate: "₹1,399/sqft", where: "Adjacent to Amity University", whereShort: "Near Amity Univ.",
     overviewTitle: "North Bengaluru’s Rising Star", amenTitle: "Every Comfort, Thoughtfully Planned",
     priceCap: "₹1,399/sqft · next to Amity University, Devanahalli Main Road",
     rows: [["30×40 (1200 sqft)","16,78,800","5,03,640","3,91,720"],["30×50 (1500 sqft)","20,98,500","6,29,550","4,89,650"],["40×60 (2400 sqft)","33,57,600","10,07,280","7,83,440"],["50×80 (4000 sqft)","55,96,000","16,78,800","13,05,734"]],
-    nearby: NEARBY_NMC, video: true },
+    nearby: NEARBY_NMC, video: true, dev: "bmi", phone: "080 66469061" },
 ];
+PROJECTS.forEach(p => (p.sizes = p.rows.map(r => ({ label: r[0], note: `Total ₹${r[1]} · Down payment ₹${r[2]}`, extra: [["Total", "₹" + r[1]], ["Down payment", "₹" + r[2]]] }))));
+
+const RK_ADDRESS = "RK Developers, 3rd Floor, 1st Cross, 15th Main, E Block, Beside Nandana Palace, Sahakarnagar, Bengaluru - 560092";
+const RK_PROJECTS = [
+  { id: "metro-greens", name: "Metro Greens", dev: "rk", hue: ["#3d6b3a","#b9d39a"], phone: "+91 9663108999",
+    rate: "₹999/sqft", where: "Near KIA Corridor, North Bengaluru",
+    eyebrow: "Nature's Grandeur. Your Private Retreat.",
+    line: "A monumental 200-acre ecological paradise offering premium farm plots — where luxury meets the serenity of the earth, near Bangalore's fastest-growing corridor.",
+    badges: ["200 Acres", "Phase 1 – 11.5 Acres", "₹999/sq.ft", "High-Appreciation Farm Plots", "Ready to Register"],
+    facts: [["Total", "200 Acres"], ["Launch", "Phase 1 – 11.5 Acres"], ["Price", "₹999/sq.ft"], ["Type", "Farm plots"], ["Status", "Ready to Register"]],
+    aboutTitle: "Live Where the Forest Begins",
+    about: ["Metro Greens is a monumental 200-acre ecological paradise designed for those who seek a life beyond the city's concrete walls. This isn't just a plot — it's an investment in a lifestyle that balances luxury with the serenity of the earth.",
+      "We are currently offering Phase 1, spanning 11.5 acres of premium, high-appreciation land near key development hubs. With a \"Forest-First\" approach, thousands of trees, organic gardens, and scenic walking trails define the Metro Greens horizon."],
+    stats: [["200", "Acre total project"], ["11.5", "Acres – Phase 1"], ["₹999", "Per sq.ft"], ["30+", "Amenities"]],
+    crops: { intro: "Every plot is planted with scientifically selected, high-demand species — your land works for you while you live in it.",
+      list: ["Teakwood", "Sandalwood", "Agarwood (Oud)", "Rosewood", "Passion Fruit", "Guava", "Grapes", "Pomegranate"],
+      feature: [["Sandalwood (Santalum album)", "₹1,000/kg · 10–12 years"], ["Market value", "Mature trees yield 100–150 kg each — demand and long-term value consistently high."], ["Climate fit", "22°C–34°C supports steady trunk growth and healthy heartwood density."], ["Benefits", "Long life cycle, strong resale, low maintenance, natural pest resistance, domestic & international buyers."], ["Future", "Legal supply limited — prices continue to appreciate year after year."]] },
+    amenTitle: "30+ Amenities · Urban Comfort in a Rural Setting",
+    amenities: ["Grand Clubhouse", "Swimming Pool", "Spa & Wellness", "Jogging Track", "Yoga Decks", "Multi-sport Courts", "Children's Play Area", "Open Activity Zones", "24/7 Security", "Drip Irrigation", "Organic Gardens", "Scenic Trails", "Solar Lighting", "High-Speed Wi-Fi", "Maintenance Team", "Ample Parking", "Resort & Clubhouse"],
+    amenMore: "14+ more: Amphitheatre · Bird sanctuary walks · Meditation grove · Farm-to-table dining · Stargazing deck & more",
+    plotsTitle: "Plot dimensions · Choose Your Canvas",
+    plots: [["Starter Estate", "5.5 Guntas (≈ 5,445 sq.ft)", "Ideal for a compact cottage or weekend farmhouse. Perfect entry-level investment.", "Starting at ₹999/sq.ft"],
+      ["Premium Estate ⭐", "6.0 – 6.5 Guntas (≈ 5,940 – 6,435 sq.ft)", "Most popular — space for a farmhouse, crop garden and personal orchard.", "Starting at ₹999/sq.ft · Most Popular"],
+      ["Grand Estate", "8.0 – 9.0 Guntas (≈ 7,920 – 8,910 sq.ft)", "Generous land for a sprawling farmhouse with private garden zones.", "Starting at ₹999/sq.ft"],
+      ["1-Acre Estate", "1.0+ Acre (≈ 43,560+ sq.ft)", "A full acre for a luxury villa, private orchard and landscaped grounds.", "Starting at ₹999/sq.ft · Ultra Premium"]],
+    locTitle: "In the Midst of Rapid Growth",
+    location: [["Kempegowda International Airport", "KIA Corridor – short drive away"], ["Upcoming Metro Extensions", "Near planned Metro connectivity"], ["Highway Connectivity", "Easily accessible via key highway connectors"], ["Schools & Hospitals", "Close to top educational & medical institutions"], ["Rising Land Values", "One of North Bengaluru's highest-appreciation zones"], ["Expanding Urban Development", "New residential & commercial hubs nearby"]],
+    cta: "Phase 1 plots are limited and selling fast. Book a free site visit to Metro Greens today." },
+  { id: "rk-avenue", name: "RK Avenue", dev: "rk", hue: ["#6b4a2f","#e2c49b"], phone: "+91 9663108999",
+    rate: "₹1,899/sqft", where: "Alkapura Village, Gauribidanur",
+    eyebrow: "Prime Land. Premium Living.",
+    line: "An exclusive gated community of just 36 high-value residential plots across 2.5 acres in Alkapura Village — where serene suburban living meets world-class infrastructure.",
+    badges: ["Ready for Registration & Construction", "2.5 Acre Layout", "36 Exclusive Plots", "₹1,899/sq.ft"],
+    facts: [["Size", "2.5 Acre Layout"], ["Plots", "36 Exclusive"], ["Price", "₹1,899/sq.ft"], ["Location", "Alkapura, Gauribidanur"], ["Status", "Ready to Register"]],
+    aboutTitle: "The Pinnacle of Residential Plot Living",
+    about: ["RK Avenue represents \"The High\" in modern residential planning. Spread across 2.5 acres of pristine land, this exclusive gated community offers just 36 premium residential plots — combining a nature-centric layout with the structural integrity of a world-class development.",
+      "Every plot is fully serviced, legally clear, and ready for immediate registration and construction — no waiting, no delays."],
+    stats: [["2.5", "Acre planned layout"], ["36", "High-value plots"], ["₹1,899", "Per sq.ft"], ["100%", "Ready to register"]],
+    amenTitle: "Infrastructure Designed for a Lifetime",
+    amenDetail: [["Wide Internal Roads", "30-feet wide roads with paved footpaths and tree-lined avenues."], ["Electricity Connection", "Ready-to-use connection for every plot."], ["Water Supply", "Dedicated connection for each plot, backed by storage."], ["Underground Drainage", "Modern underground drainage and sewage system."], ["24/7 Security Guards", "Fully gated, round-the-clock security at all entry and exit points."], ["CCTV Surveillance", "CCTV coverage across the entire layout."], ["Landscaped Park", "Greenery, seating areas and walking paths."], ["Children's Play Area", "Safe, modern play area for kids."], ["Street Lighting", "Full street lighting throughout the layout."], ["Eco-Friendly Landscaping", "Green landscaping woven throughout."]],
+    locTitle: "At the Heart of Growth",
+    locIntro: "At the strategic junction between Gauribidanur and Doddaballapura — the quiet of the suburbs without losing touch with the city.",
+    location: [["Someshwara Railway Station", "5 min away"], ["Gauribidanur – Doddaballapura Highway", "Direct access"], ["Gauribidanur DC Office", "1.5 km"], ["Gauribidanur Town", "Markets, schools & hospitals · 2 km"], ["Thondebhavi Village", "2 km"], ["Alkapura Village", "Project site"]],
+    cta: "With only 36 plots available, act now. Schedule a free site visit and speak with our team today." },
+];
+RK_PROJECTS[0].sizes = RK_PROJECTS[0].plots.map(p => ({ label: `${p[0].replace(" ⭐", "")} — ${p[1]}`, note: p[3], extra: [["Price", p[3]]] }));
+RK_PROJECTS[1].sizes = [{ label: "Residential plot (any available size)", note: "₹1,899/sq.ft · only 36 plots", extra: [["Price", "₹1,899/sq.ft"]] }];
 
 // Placeholder "photos": drawn plot layouts in each project's colours.
 function photo(seed, [a, b], label) {
@@ -352,20 +410,51 @@ function renderProject(p, i) {
     </div>
   </article>`;
 }
-document.getElementById("pickList").innerHTML = PROJECTS.map((p, i) => `
-  <button class="pick-card" data-project="${i}">
-    <div class="gallery mini">${photo(7 + i * 11, p.hue, p.name)}</div>
+function renderRk(p, i) {
+  const esc = s => s.replace(/&/g, "&amp;");
+  const li = arr => arr.map(x => `<li>${esc(x)}</li>`).join("");
+  return `<article class="project" id="${p.id}">
+    <div class="gallery">${photo(5 + i * 13, p.hue, "Photo placeholder")}${photo(9 + i * 3, p.hue, "Layout")}${photo(23 + i, p.hue, "Site")}</div>
+    <div class="pbody">
+      <div><h3>RK Developers · ${esc(p.eyebrow)}</h3><h2 style="font-size:1.7rem">${p.name}</h2><p class="lead">${esc(p.line)}</p></div>
+      <div class="badges">${p.badges.map((b, k) => `<span class="${b.includes("₹") ? "price" : ""}">${esc(b)}</span>`).join("")}</div>
+      <dl class="facts">${p.facts.map(([k, v]) => `<div><dt>${k}</dt><dd>${esc(v)}</dd></div>`).join("")}</dl>
+      <div><h3>About ${p.name}</h3><h2>${esc(p.aboutTitle)}</h2>${p.about.map(a => `<p>${esc(a)}</p>`).join("")}</div>
+      <dl class="facts">${p.stats.map(([k, v]) => `<div><dd style="font-size:1.4rem">${k}</dd><dt>${v}</dt></div>`).join("")}</dl>
+      ${p.crops ? `<div><h3>Our crops · High-value trees & fruit crops</h3><p>${esc(p.crops.intro)}</p>
+        <div class="badges">${p.crops.list.map(c => `<span>${c}</span>`).join("")}</div>
+        <div class="amen">${p.crops.feature.map(([k, v]) => `<div><b>${k}</b>${esc(v)}</div>`).join("")}</div></div>` : ""}
+      ${p.plots ? `<div><h3>${p.plotsTitle}</h3><div class="amen">${p.plots.map(([n, sz, d, pr]) => `<div><b>${n}</b><strong>${sz}</strong><br><span class="muted">${d}</span><br><small>${pr}</small></div>`).join("")}</div></div>` : ""}
+      <div><h3>${esc(p.amenTitle)}</h3>
+        ${p.amenDetail ? `<div class="amen">${p.amenDetail.map(([k, v]) => `<div><b>${k}</b>${v}</div>`).join("")}</div>` : `<ul class="cols">${li(p.amenities)}</ul><p class="cap">${esc(p.amenMore)}</p>`}</div>
+      <div><h3>Location · ${esc(p.locTitle)}</h3>${p.locIntro ? `<p>${esc(p.locIntro)}</p>` : ""}
+        <div class="amen">${p.location.map(([k, v]) => `<div><b>${esc(k)}</b>${esc(v)}</div>`).join("")}</div></div>
+      <div><h3>Free site visit</h3><p>${esc(p.cta)}</p></div>
+      <div><h3>Contact</h3><p>Call <span class="contact">${p.phone}</span> · <span class="contact">info@therkdevelopers.com</span></p><p class="cap">${RK_ADDRESS}</p></div>
+    </div>
+  </article>`;
+}
+function renderPicker(list, el) {
+  document.getElementById(el).innerHTML = list.map((p, i) => `
+  <button class="pick-card" data-list="${p.dev}" data-project="${i}">
+    <div class="gallery mini">${photo(7 + i * 11 + (p.dev === "rk" ? 4 : 0), p.hue, p.name)}</div>
     <span class="pick-body"><b>${p.name}</b><small>${p.rate} · ${p.where}</small><em>View details →</em></span>
   </button>`).join("");
+}
+renderPicker(PROJECTS, "pickList");
+renderPicker(RK_PROJECTS, "rkPickList");
 let current = null;
 document.querySelectorAll("[data-project]").forEach(b => b.addEventListener("click", () => {
-  current = PROJECTS[+b.dataset.project];
-  document.getElementById("projectDetail").innerHTML = renderProject(current, +b.dataset.project);
+  const i = +b.dataset.project;
+  current = (b.dataset.list === "rk" ? RK_PROJECTS : PROJECTS)[i];
+  document.getElementById("projectDetail").innerHTML = current.dev === "rk" ? renderRk(current, i) : renderProject(current, i);
+  document.getElementById("detailBack").textContent = current.dev === "rk" ? "← Choose another RK project" : "← Choose another project";
+  document.getElementById("detailBack").dataset.go = current.dev === "rk" ? "rk" : "projects";
   document.getElementById("decideTitle").textContent = `Are you interested in ${current.name}?`;
   go("detail");
 }));
 
-const screens = ["login", "otp", "projects", "detail", "intent", "book", "visit", "done", "rk"];
+const screens = ["login", "otp", "projects", "detail", "intent", "book", "visit", "done", "rk", "bye"];
 const trail = [];
 let here = "login";
 function go(name, isBack) {
@@ -376,7 +465,7 @@ function go(name, isBack) {
   window.scrollTo({ top: 0 });
 }
 document.getElementById("backTop").addEventListener("click", () => { if (trail.length) go(trail.pop(), true); });
-document.querySelectorAll("[data-go]").forEach(b => b.addEventListener("click", () => go(b.dataset.go)));
+document.querySelectorAll("[data-go]").forEach(b => b.addEventListener("click", () => go(b.dataset.go)));  // reads dataset at click time
 
 let user = { name: "", phone: "" };
 function normalise(v) {
@@ -407,7 +496,7 @@ document.getElementById("otpForm").addEventListener("submit", e => {
   go("projects");
 });
 document.getElementById("yesBtn").addEventListener("click", () => go("intent"));
-document.getElementById("noBtn").addEventListener("click", () => go("rk"));
+document.getElementById("noBtn").addEventListener("click", () => go(current.dev === "rk" ? "bye" : "rk"));
 const first = () => user.name.split(" ")[0];
 const mask = ph => "+91 •••••" + ph.slice(-5);
 document.querySelectorAll("[data-intent]").forEach(b => b.addEventListener("click", () => {
@@ -418,8 +507,8 @@ document.querySelectorAll("[data-intent]").forEach(b => b.addEventListener("clic
   document.getElementById(book ? "bookErr" : "visitErr").textContent = "";
   if (book) {
     document.getElementById("bookProject").textContent = current.name + " · " + current.rate;
-    document.getElementById("sizeOpts").innerHTML = current.rows.map((r, i) =>
-      `<label class="opt"><input type="radio" name="bSize" value="${i}"><span><b>${r[0]}</b><small>Total ₹${r[1]} · Down payment ₹${r[2]}</small></span></label>`).join("");
+    document.getElementById("sizeOpts").innerHTML = current.sizes.map((z, i) =>
+      `<label class="opt"><input type="radio" name="bSize" value="${i}"${current.sizes.length === 1 ? " checked" : ""}><span><b>${z.label}</b><small>${z.note}</small></span></label>`).join("");
   } else {
     document.getElementById("visitProject").textContent = current.name;
     const d = document.getElementById("vDate");
@@ -432,6 +521,7 @@ document.getElementById("vDate").addEventListener("input", e => {
   document.getElementById("vDay").value = v ? new Date(v + "T00:00:00").toLocaleDateString("en-IN", { weekday: "long" }) : "";
 });
 function showDone(title, text, rows) {
+  document.getElementById("donePhone").textContent = current.phone;
   document.getElementById("doneTitle").textContent = title;
   document.getElementById("doneText").textContent = text;
   document.getElementById("doneSummary").innerHTML = rows.map(([k, v]) => `<div><dt>${k}</dt><dd>${v.replace(/</g, "&lt;")}</dd></div>`).join("");
@@ -451,9 +541,9 @@ document.getElementById("bookForm").addEventListener("submit", e => {
   if (!size) return (err.textContent = "Please choose a plot size.");
   const c = checkContact("b", err); if (!c) return;
   err.textContent = "";
-  const r = current.rows[+size.value];
+  const z = current.sizes[+size.value];
   showDone("Booking request received", `Thank you, ${c.name.split(" ")[0]}. Our team will call you to complete your booking.`,
-    [["Project", current.name], ["Plot size", r[0]], ["Total", "₹" + r[1]], ["Down payment", "₹" + r[2]], ["Name", c.name], ["Mobile", mask(c.phone)]]);
+    [["Project", current.name], ["Plot size", z.label], ...z.extra, ["Name", c.name], ["Mobile", mask(c.phone)]]);
 });
 const MODES = { direct: "Coming directly to the site", employee: "BMI employee to accompany", cab: "Cab from the BMI office" };
 document.getElementById("visitForm").addEventListener("submit", e => {
