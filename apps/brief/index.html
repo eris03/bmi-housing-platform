@@ -99,6 +99,16 @@ ul.cols li { break-inside: avoid; margin-bottom: 4px; }
 .video .play { width: 56px; height: 56px; border-radius: 50%; border: 2px solid currentColor; display: grid; place-items: center; margin: 0 auto 6px; }
 .contact { font-family: var(--font-mono); font-size: 1.05rem; user-select: all; }
 
+.pick { display: grid; gap: 14px; }
+.pick-card { display: grid; padding: 0; overflow: hidden; text-align: left; background: var(--surface); color: var(--ink); border: 1.5px solid var(--line); border-radius: var(--r); transition: border-color .2s, transform .2s; }
+.pick-card:hover { border-color: var(--leaf); transform: translateY(-2px); }
+.gallery.mini { grid-template-columns: 1fr; grid-template-rows: 1fr; aspect-ratio: 16 / 6; }
+.gallery.mini div:first-child { grid-row: auto; }
+.gallery.mini span { display: none; }
+.pick-body { display: grid; gap: 2px; padding: 14px 16px; }
+.pick-body b { font-family: var(--font-display); font-size: 1.3rem; }
+.pick-body small { color: var(--muted); font-weight: 500; }
+.pick-body em { font-style: normal; color: var(--leaf); margin-top: 6px; }
 .decide { background: var(--surface); border: 2px solid var(--leaf); border-radius: var(--r); padding: 22px; display: grid; gap: 14px; text-align: center; }
 .choices { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .choice { display: grid; justify-items: center; gap: 8px; padding: 18px 10px; border-radius: 14px; }
@@ -141,17 +151,19 @@ ul.cols li { break-inside: avoid; margin-bottom: 4px; }
     </form>
   </section>
 
-  <!-- 3. Projects -->
+  <!-- 3. Choose a project -->
   <section class="screen" id="s-projects" hidden>
     <h1 id="hello">Our projects</h1>
-    <nav class="switch" aria-label="Jump to project">
-      <a href="#garden-city">BMI Garden City</a>
-      <a href="#north-metro-city">BMI North Metro City</a>
-    </nav>
-    <div id="projectList" style="display:grid;gap:18px"></div>
+    <p class="muted">Choose a project to see its details.</p>
+    <div class="pick" id="pickList"></div>
+  </section>
 
-    <div class="decide" id="decide">
-      <h2>Are you interested?</h2>
+  <!-- 3b. Selected project details -->
+  <section class="screen" id="s-detail" hidden>
+    <button class="link" data-go="projects">← Choose another project</button>
+    <div id="projectDetail"></div>
+    <div class="decide">
+      <h2 id="decideTitle">Are you interested?</h2>
       <div class="choices">
         <button class="choice" id="yesBtn">
           <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 20 L16 30 L34 10"/></svg>
@@ -179,7 +191,7 @@ ul.cols li { break-inside: avoid; margin-bottom: 4px; }
           Visit the site
         </button>
       </div>
-      <button class="link" data-go="projects">← Back to projects</button>
+      <button class="link" data-go="detail">← Back to project</button>
     </div>
   </section>
 
@@ -277,9 +289,20 @@ function renderProject(p, i) {
     </div>
   </article>`;
 }
-document.getElementById("projectList").innerHTML = PROJECTS.map(renderProject).join("");
+document.getElementById("pickList").innerHTML = PROJECTS.map((p, i) => `
+  <button class="pick-card" data-project="${i}">
+    <div class="gallery mini">${photo(7 + i * 11, p.hue, p.name)}</div>
+    <span class="pick-body"><b>${p.name}</b><small>${p.rate} · ${p.where}</small><em>View details →</em></span>
+  </button>`).join("");
+let current = null;
+document.querySelectorAll("[data-project]").forEach(b => b.addEventListener("click", () => {
+  current = PROJECTS[+b.dataset.project];
+  document.getElementById("projectDetail").innerHTML = renderProject(current, +b.dataset.project);
+  document.getElementById("decideTitle").textContent = `Are you interested in ${current.name}?`;
+  go("detail");
+}));
 
-const screens = ["login", "otp", "projects", "intent", "done", "rk"];
+const screens = ["login", "otp", "projects", "detail", "intent", "done", "rk"];
 function go(name) {
   screens.forEach(s => (document.getElementById("s-" + s).hidden = s !== name));
   window.scrollTo({ top: 0 });
@@ -319,7 +342,7 @@ document.getElementById("noBtn").addEventListener("click", () => go("rk"));
 document.querySelectorAll("[data-intent]").forEach(b => b.addEventListener("click", () => {
   const book = b.dataset.intent === "book";
   document.getElementById("doneTitle").textContent = book ? "Let's book your site" : "Let's plan your site visit";
-  document.getElementById("doneText").textContent = `Thank you, ${user.name.split(" ")[0]}. Our team will call you on +91 •••••${user.phone.slice(-5)} to ${book ? "help you book a site" : "fix a visit date"}.`;
+  document.getElementById("doneText").textContent = `Thank you, ${user.name.split(" ")[0]}. Our team will call you on +91 •••••${user.phone.slice(-5)} to ${book ? "help you book a site" : "fix a visit date"} at ${current.name}.`;
   go("done");
 }));
 </script>
