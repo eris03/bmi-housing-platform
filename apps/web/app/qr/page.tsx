@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import QRCode from "qrcode";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SAMPLE_PROJECTS } from "@/lib/projects";
-import { buildProjectUrl } from "@/lib/attribution";
+import { buildProjectUrl, buildScanUrl } from "@/lib/attribution";
 
 export default function QrPage() {
   const [slug, setSlug] = useState(SAMPLE_PROJECTS[0].slug);
@@ -20,7 +20,8 @@ export default function QrPage() {
     if (!process.env.NEXT_PUBLIC_SITE_URL) setOrigin(window.location.origin);
   }, []);
 
-  const url = buildProjectUrl(origin, slug, campaign);
+  const [target, setTarget] = useState<"scan" | "project">("scan");
+  const url = target === "scan" ? buildScanUrl(origin, campaign) : buildProjectUrl(origin, slug, campaign);
 
   useEffect(() => {
     QRCode.toString(url, { type: "svg", margin: 0, errorCorrectionLevel: "H", color: { dark: "#1f3b2d", light: "#0000" } })
@@ -28,7 +29,7 @@ export default function QrPage() {
   }, [url]);
 
   function download() {
-    const blob = new Blob([posterSvg(svg, project.name)], { type: "image/svg+xml" });
+    const blob = new Blob([posterSvg(svg, target === "scan" ? "BMI Projects" : project.name)], { type: "image/svg+xml" });
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
     a.download = `bmi-qr-${slug}${campaign ? "-" + campaign : ""}.svg`;
@@ -47,6 +48,13 @@ export default function QrPage() {
         </header>
         <div className="qr-layout">
           <form className="qr-form" onSubmit={(e) => e.preventDefault()}>
+            <label className="field">
+              <span className="field-label">QR opens</span>
+              <select value={target} onChange={(e) => setTarget(e.target.value as "scan" | "project")}>
+                <option value="scan">Sign-in → BMI projects (briefing flow)</option>
+                <option value="project">A single project page</option>
+              </select>
+            </label>
             <label className="field">
               <span className="field-label">Project</span>
               <select value={slug} onChange={(e) => setSlug(e.target.value)}>
@@ -70,7 +78,7 @@ export default function QrPage() {
           <figure className="qr-poster">
             <div className="qr-poster-inner">
               <p className="qr-poster-eyebrow">BMI Housing Society</p>
-              <h2>{project.name}</h2>
+              <h2>{target === "scan" ? "Metro Greens · North Metro Greens" : project.name}</h2>
               <div className="qr-frame">
                 <span className="corner tl" /><span className="corner tr" /><span className="corner bl" /><span className="corner br" />
                 <div className="qr-code" dangerouslySetInnerHTML={{ __html: svg }} />

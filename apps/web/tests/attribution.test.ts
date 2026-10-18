@@ -19,3 +19,8 @@ describe("attributionQuery", () => {
   it("carries QR attribution into registration", () =>
     expect(attributionQuery("greenfield", { source: "QR_CODE", campaignId: "gate-a" })).toBe("project=greenfield&src=qr&cmp=gate-a"));
 });
+
+import { buildScanUrl } from "@/lib/attribution";
+describe("buildScanUrl", () => {
+  it("links to the briefing flow", () => expect(buildScanUrl("https://bmi.example", "gate-a")).toBe("https://bmi.example/scan?src=qr&cmp=gate-a"));
+});

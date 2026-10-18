@@ -39,3 +39,11 @@ export function attributionQuery(slug: string, a: Attribution): string {
   if (a.campaignId) q.set("cmp", a.campaignId);
   return q.toString();
 }
+
+/** QR link into the sign-in → projects briefing flow. */
+export function buildScanUrl(siteUrl: string, campaign?: string): string {
+  const url = new URL("/scan", siteUrl);
+  url.searchParams.set("src", "qr");
+  if (campaign && CAMPAIGN_RE.test(campaign)) url.searchParams.set("cmp", campaign);
+  return url.toString();
+}
