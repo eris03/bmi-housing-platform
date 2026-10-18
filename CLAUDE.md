@@ -21,7 +21,8 @@ Monorepo for the BMI Housing Society platform: Flutter Android app (`apps/mobile
 - Every milestone report lists files changed, features, tests run with results, limitations, dependencies, run commands and the next step.
 
 ## Commands
-To be filled in when the scaffold lands (Milestone 02).
+Web (`apps/web`): `pnpm install`, `pnpm dev` (http://localhost:3000), `pnpm test`, `pnpm typecheck`, `pnpm build`.
+API and mobile commands: to be added in Milestone 02.
 
 ## Environment notes
 - The cloud dev container has Node 22, pnpm 10, Docker and psql 16. **Flutter is not installed**, so mobile changes cannot be built or tested there.
