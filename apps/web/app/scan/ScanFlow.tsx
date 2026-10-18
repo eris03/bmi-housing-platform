@@ -6,7 +6,6 @@
 
 import { useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { LogoMark } from "@/components/Logo";
 import { OtpStep, SuccessStamp } from "@/components/OtpFlow";
 import { authClient } from "@/lib/auth-client";
 import { isValidEmail, normaliseIndianMobile } from "@/lib/phone";
@@ -27,7 +26,8 @@ export function ScanFlow() {
   return (
     <div className="brief">
       <header className="brief-top">
-        <LogoMark size={34} />
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/bmi-logo.png" alt="BMI logo" width={44} height={44} />
         <span>BMI Housing Society</span>
       </header>
 
@@ -167,9 +167,10 @@ function InterestForm({ name, onDone, onBack }: { name: string; onDone: () => vo
         <span className="field-label">Preferred plot size <em>Optional</em></span>
         <select value={size} onChange={(e) => setSize(e.target.value)}>
           <option value="">Not sure yet</option>
-          <option>Small</option>
-          <option>Medium</option>
-          <option>Large</option>
+          <option>30 × 40 (1200 sq ft)</option>
+          <option>30 × 50 (1500 sq ft)</option>
+          <option>40 × 60 (2400 sq ft)</option>
+          <option>50 × 80 (4000 sq ft)</option>
         </select>
       </label>
       <label className="field">

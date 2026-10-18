@@ -17,7 +17,7 @@ export const BMI_PROJECTS: BriefProject[] = [
     name: "Metro Greens",
     tagline: "Details to be provided",
     location: "Location to be provided",
-    highlights: ["Plot sizes: TBD", "Amenities: TBD", "Pricing: on request"],
+    highlights: ["Plot sizes: 30×40, 30×50, 40×60, 50×80 ft", "Amenities: TBD", "Pricing: on request"],
     hue: "sage",
   },
   {
@@ -25,7 +25,7 @@ export const BMI_PROJECTS: BriefProject[] = [
     name: "North Metro Greens",
     tagline: "Details to be provided",
     location: "Location to be provided",
-    highlights: ["Plot sizes: TBD", "Amenities: TBD", "Pricing: on request"],
+    highlights: ["Plot sizes: 30×40, 30×50, 40×60, 50×80 ft", "Amenities: TBD", "Pricing: on request"],
     hue: "ochre",
   },
 ];
