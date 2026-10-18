@@ -128,9 +128,18 @@ input[readonly] { color: var(--muted); }
 .summary dt { color: var(--muted); font-size: 0.85rem; }
 .summary dd { margin: 0; font-weight: 600; }
 .back-top { justify-self: start; display: inline-flex; align-items: center; gap: 6px; margin: -8px 0 16px; padding: 8px 14px; border-radius: 999px; background: var(--surface); color: var(--leaf); border: 1.5px solid var(--leaf); font-size: 0.95rem; }
+.tag-ongoing { font-family: var(--font-body); font-size: 0.85rem; color: var(--leaf); font-weight: 600; }
+.done-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 200px), 1fr)); gap: 12px; }
+.done-card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; }
+.tag-done { justify-self: start; margin-top: 6px; font-size: 0.75rem; font-weight: 600; color: var(--muted); border: 1px solid var(--line); border-radius: 999px; padding: 2px 10px; }
 .decide { background: var(--surface); border: 2px solid var(--leaf); border-radius: var(--r); padding: 22px; display: grid; gap: 14px; text-align: center; }
 .choices { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .choice { display: grid; justify-items: center; gap: 8px; padding: 18px 10px; border-radius: 14px; }
+.decide .choices { grid-template-columns: auto auto; justify-content: center; gap: 10px; }
+.decide .choice { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; font-size: 0.92rem; border-radius: 999px; }
+.decide .choice svg { width: 18px; height: 18px; }
+.decide { padding: 16px; gap: 10px; }
+.decide h2 { font-size: 1.05rem; }
 .choice svg { width: 40px; height: 40px; }
 .choice.no { background: transparent; color: var(--muted); border-color: var(--line); }
 .done { text-align: center; justify-items: center; }
@@ -174,7 +183,7 @@ input[readonly] { color: var(--muted); }
   <!-- 3. Choose a project -->
   <section class="screen" id="s-projects" hidden>
     <h1 id="hello">Our projects</h1>
-    <p class="muted">Choose a project to see its details.</p>
+    <p class="muted">Tap the project to see its details.</p>
     <div class="pick" id="pickList"></div>
   </section>
 
@@ -204,7 +213,7 @@ input[readonly] { color: var(--muted); }
       <div class="choices">
         <button class="choice" data-intent="book">
           <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round" aria-hidden="true"><path d="M6 34 H34 V18 L20 6 L6 18 Z"/><path d="M16 34 V24 H24 V34"/></svg>
-          Book a site
+          Apply to purchase site
         </button>
         <button class="choice" data-intent="visit">
           <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round" aria-hidden="true"><path d="M20 36 C20 36 8 24 8 15 a12 12 0 0 1 24 0 c0 9 -12 21 -12 21Z"/><circle cx="20" cy="15" r="4"/></svg>
@@ -218,13 +227,13 @@ input[readonly] { color: var(--muted); }
   <!-- 4c. Book a site form -->
   <section class="screen" id="s-book" hidden>
     <form class="panel" id="bookForm" novalidate>
-      <h1>Book a site</h1>
+      <h1>Apply to purchase site</h1>
       <p class="muted" id="bookProject"></p>
       <fieldset><legend>Plot size you need *</legend><div class="opts" id="sizeOpts"></div></fieldset>
       <label for="bName">Full name *<input id="bName" autocomplete="name"></label>
       <label for="bPhone">Mobile number *<div class="phone"><span>+91</span><input id="bPhone" inputmode="tel" autocomplete="tel-national"></div></label>
       <p class="err" id="bookErr" role="alert"></p>
-      <button type="submit">Submit booking request</button>
+      <button type="submit">Submit application</button>
       <button type="button" class="link" data-go="intent">← Back</button>
     </form>
   </section>
@@ -264,7 +273,6 @@ input[readonly] { color: var(--muted); }
       <h1 id="doneTitle">Thank you</h1>
       <p class="muted" id="doneText"></p>
       <dl class="summary" id="doneSummary"></dl>
-      <p class="muted">Questions? Call <span class="contact" id="donePhone">080 66469061</span></p>
       <p class="note">Demo: this request is not saved or sent yet.</p>
     </div>
   </section>
@@ -272,19 +280,18 @@ input[readonly] { color: var(--muted); }
   <!-- 5. Not interested in BMI: RK Developers projects -->
   <section class="screen" id="s-rk" hidden>
     <h1>No problem. Explore RK Developers</h1>
-    <p class="muted">Two more projects you may like. Choose one to see its details.</p>
+    <p class="muted">Ongoing projects you can apply for. Choose one to see its details.</p>
     <div class="pick" id="rkPickList"></div>
+    <h2 style="margin-top:8px">Completed projects</h2>
+    <p class="muted">Delivered by RK Developers.</p>
+    <div class="done-grid" id="rkDoneList"></div>
   </section>
 
   <!-- 6. Not interested in RK either -->
   <section class="screen" id="s-bye" hidden>
     <div class="panel done">
       <h1>Thank you for your time</h1>
-      <p class="muted">If you change your mind, we're happy to help.</p>
-      <dl class="summary">
-        <div><dt>BMI</dt><dd><span class="contact">080 66469061</span></dd></div>
-        <div><dt>RK Developers</dt><dd><span class="contact">+91 9663108999</span></dd></div>
-      </dl>
+      <p class="muted">If you change your mind, you can look at the projects again anytime.</p>
       <button class="link" data-go="projects">See BMI projects again</button>
       <button class="link" data-go="rk">See RK Developers projects again</button>
     </div>
@@ -311,18 +318,11 @@ const NOTES = ["Corner sites are charged extra at allotment.","Registration char
 const PROJECTS = [
   { id: "garden-city", name: "BMI Garden City", hue: ["#2f7a4b","#9bd3a8"],
     line: "Premium residential plots in North Bengaluru’s fastest-growing zone — near Kempegowda Airport, ITIR Tech Park & top universities.",
-    rate: "₹1,249/sqft", where: "Off NH 648, Devanahalli", whereShort: "Off NH 648",
+    rate: "₹1,399/sqft", where: "Off NH 648, Devanahalli", whereShort: "Off NH 648",
     overviewTitle: "Overview", amenTitle: "Amenities",
-    priceCap: "₹1,249/sqft · attached to STRR Highway, Airlines Dhaba Gate, Devanahalli",
-    rows: [["30×40 (1200 sqft)","14,98,800","4,49,640","3,49,720"],["30×50 (1500 sqft)","18,73,500","5,62,050","4,37,150"],["40×60 (2400 sqft)","29,97,600","8,99,280","6,99,440"],["50×80 (4000 sqft)","49,96,000","14,98,800","11,65,774"]],
-    nearby: NEARBY_GC, video: false, dev: "bmi", phone: "080 66469061" },
-  { id: "north-metro-city", name: "BMI North Metro City", hue: ["#e8740f","#f7c58e"],
-    line: "Premium residential plots adjacent to Amity University — surrounded by ITIR Tech Park, Harrow International School & North Bengaluru’s top landmarks.",
-    rate: "₹1,399/sqft", where: "Adjacent to Amity University", whereShort: "Near Amity Univ.",
-    overviewTitle: "North Bengaluru’s Rising Star", amenTitle: "Every Comfort, Thoughtfully Planned",
-    priceCap: "₹1,399/sqft · next to Amity University, Devanahalli Main Road",
+    priceCap: "₹1,399/sqft · attached to STRR Highway, Airlines Dhaba Gate, Devanahalli",
     rows: [["30×40 (1200 sqft)","16,78,800","5,03,640","3,91,720"],["30×50 (1500 sqft)","20,98,500","6,29,550","4,89,650"],["40×60 (2400 sqft)","33,57,600","10,07,280","7,83,440"],["50×80 (4000 sqft)","55,96,000","16,78,800","13,05,734"]],
-    nearby: NEARBY_NMC, video: true, dev: "bmi", phone: "080 66469061" },
+    nearby: NEARBY_GC, video: false, dev: "bmi", phone: "080 66469061" },
 ];
 PROJECTS.forEach(p => (p.sizes = p.rows.map(r => ({ label: r[0], note: `Total ₹${r[1]} · Down payment ₹${r[2]}`, extra: [["Total", "₹" + r[1]], ["Down payment", "₹" + r[2]]] }))));
 
@@ -353,15 +353,15 @@ const RK_PROJECTS = [
     location: [["Kempegowda International Airport", "KIA Corridor – short drive away"], ["Upcoming Metro Extensions", "Near planned Metro connectivity"], ["Highway Connectivity", "Easily accessible via key highway connectors"], ["Schools & Hospitals", "Close to top educational & medical institutions"], ["Rising Land Values", "One of North Bengaluru's highest-appreciation zones"], ["Expanding Urban Development", "New residential & commercial hubs nearby"]],
     cta: "Phase 1 plots are limited and selling fast. Book a free site visit to Metro Greens today." },
   { id: "rk-avenue", name: "RK Avenue", dev: "rk", hue: ["#6b4a2f","#e2c49b"], phone: "+91 9663108999",
-    rate: "₹1,899/sqft", where: "Alkapura Village, Gauribidanur",
+    rate: "₹3,499/sqft", where: "Alkapura Village, Gauribidanur",
     eyebrow: "Prime Land. Premium Living.",
     line: "An exclusive gated community of just 36 high-value residential plots across 2.5 acres in Alkapura Village — where serene suburban living meets world-class infrastructure.",
-    badges: ["Ready for Registration & Construction", "2.5 Acre Layout", "36 Exclusive Plots", "₹1,899/sq.ft"],
-    facts: [["Size", "2.5 Acre Layout"], ["Plots", "36 Exclusive"], ["Price", "₹1,899/sq.ft"], ["Location", "Alkapura, Gauribidanur"], ["Status", "Ready to Register"]],
+    badges: ["Ready for Registration & Construction", "2.5 Acre Layout", "36 Exclusive Plots", "₹3,499/sq.ft"],
+    facts: [["Size", "2.5 Acre Layout"], ["Plots", "36 Exclusive"], ["Price", "₹3,499/sq.ft"], ["Location", "Alkapura, Gauribidanur"], ["Status", "Ready to Register"]],
     aboutTitle: "The Pinnacle of Residential Plot Living",
     about: ["RK Avenue represents \"The High\" in modern residential planning. Spread across 2.5 acres of pristine land, this exclusive gated community offers just 36 premium residential plots — combining a nature-centric layout with the structural integrity of a world-class development.",
       "Every plot is fully serviced, legally clear, and ready for immediate registration and construction — no waiting, no delays."],
-    stats: [["2.5", "Acre planned layout"], ["36", "High-value plots"], ["₹1,899", "Per sq.ft"], ["100%", "Ready to register"]],
+    stats: [["2.5", "Acre planned layout"], ["36", "High-value plots"], ["₹3,499", "Per sq.ft"], ["100%", "Ready to register"]],
     amenTitle: "Infrastructure Designed for a Lifetime",
     amenDetail: [["Wide Internal Roads", "30-feet wide roads with paved footpaths and tree-lined avenues."], ["Electricity Connection", "Ready-to-use connection for every plot."], ["Water Supply", "Dedicated connection for each plot, backed by storage."], ["Underground Drainage", "Modern underground drainage and sewage system."], ["24/7 Security Guards", "Fully gated, round-the-clock security at all entry and exit points."], ["CCTV Surveillance", "CCTV coverage across the entire layout."], ["Landscaped Park", "Greenery, seating areas and walking paths."], ["Children's Play Area", "Safe, modern play area for kids."], ["Street Lighting", "Full street lighting throughout the layout."], ["Eco-Friendly Landscaping", "Green landscaping woven throughout."]],
     locTitle: "At the Heart of Growth",
@@ -370,7 +370,7 @@ const RK_PROJECTS = [
     cta: "With only 36 plots available, act now. Schedule a free site visit and speak with our team today." },
 ];
 RK_PROJECTS[0].sizes = RK_PROJECTS[0].plots.map(p => ({ label: `${p[0].replace(" ⭐", "")} — ${p[1]}`, note: p[3], extra: [["Price", p[3]]] }));
-RK_PROJECTS[1].sizes = [{ label: "Residential plot (any available size)", note: "₹1,899/sq.ft · only 36 plots", extra: [["Price", "₹1,899/sq.ft"]] }];
+RK_PROJECTS[1].sizes = [{ label: "Residential plot (any available size)", note: "₹3,499/sq.ft · only 36 plots", extra: [["Price", "₹3,499/sq.ft"]] }];
 
 // Placeholder "photos": drawn plot layouts in each project's colours.
 function photo(seed, [a, b], label) {
@@ -406,7 +406,6 @@ function renderProject(p, i) {
       <div><h3>Documents required</h3><ul class="cols">${DOCS.map(d => `<li>${d}</li>`).join("")}</ul>
         <p class="cap">Payment mode: Cheque, DD, NEFT, RTGS or IMPS, in favour of <b>BENGALURU METRO CITY INFRASTRUCTURE HOUSING CO-OPERATIVE SOCIETY</b>.</p></div>
       <div><h3>Notes</h3><ul class="cols">${NOTES.map(n => `<li>${n}</li>`).join("")}</ul></div>
-      <div><h3>Contact</h3><p>Call <span class="contact">080 66469061</span></p></div>
     </div>
   </article>`;
 }
@@ -430,7 +429,6 @@ function renderRk(p, i) {
       <div><h3>Location · ${esc(p.locTitle)}</h3>${p.locIntro ? `<p>${esc(p.locIntro)}</p>` : ""}
         <div class="amen">${p.location.map(([k, v]) => `<div><b>${esc(k)}</b>${esc(v)}</div>`).join("")}</div></div>
       <div><h3>Free site visit</h3><p>${esc(p.cta)}</p></div>
-      <div><h3>Contact</h3><p>Call <span class="contact">${p.phone}</span> · <span class="contact">info@therkdevelopers.com</span></p><p class="cap">${RK_ADDRESS}</p></div>
     </div>
   </article>`;
 }
@@ -438,11 +436,26 @@ function renderPicker(list, el) {
   document.getElementById(el).innerHTML = list.map((p, i) => `
   <button class="pick-card" data-list="${p.dev}" data-project="${i}">
     <div class="gallery mini">${photo(7 + i * 11 + (p.dev === "rk" ? 4 : 0), p.hue, p.name)}</div>
-    <span class="pick-body"><b>${p.name}</b><small>${p.rate} · ${p.where}</small><em>View details →</em></span>
+    <span class="pick-body"><b>${p.name}${p.dev === "rk" ? ' <span class="tag-ongoing">(Ongoing)</span>' : ""}</b><small>${p.rate} · ${p.where}</small><em>View details →</em></span>
   </button>`).join("");
 }
 renderPicker(PROJECTS, "pickList");
 renderPicker(RK_PROJECTS, "rkPickList");
+const RK_COMPLETED = [
+  ["2.5 Acres Residential Layout", "Basavanahalli, Nelamangala–Doddaballapura Road"],
+  ["6.5 Acres Residential Project", "Near Thindlu Circle, IVC Road"],
+  ["2 Acres Residential Layout", "Kukkanahalli Village, Hesaraghatta"],
+  ["3.5 Acres Residential Layout", "Behind REVA University"],
+  ["4 Acres Residential Project", "Bagalur"],
+  ["2 Acres Layout", "Near REVA University, Yelahanka Taluk"],
+  ["3.5 Acres Project", "Near Padukone Dravid Sports Excellence, attached to Prestige Marigold"],
+  ["30 Acres Township Project", "Near Devanahalli DC Office"],
+  ["25 Acres Township Project", "Boodihala Village, Devanahalli"],
+];
+const DONE_HUES = [["#4a6b8a","#b8cde0"],["#6b4a2f","#e2c49b"],["#3d6b3a","#b9d39a"],["#7a5a8a","#d6c3e0"],["#2f6b6b","#a8d8d3"]];
+document.getElementById("rkDoneList").innerHTML = RK_COMPLETED.map(([n, l], i) => `
+  <div class="done-card"><div class="gallery mini">${photo(31 + i * 7, DONE_HUES[i % DONE_HUES.length], n)}</div>
+  <div class="pick-body"><b style="font-size:1.05rem">${n}</b><small>⌖ ${l}</small><span class="tag-done">Completed</span></div></div>`).join("");
 let current = null;
 document.querySelectorAll("[data-project]").forEach(b => b.addEventListener("click", () => {
   const i = +b.dataset.project;
@@ -521,7 +534,6 @@ document.getElementById("vDate").addEventListener("input", e => {
   document.getElementById("vDay").value = v ? new Date(v + "T00:00:00").toLocaleDateString("en-IN", { weekday: "long" }) : "";
 });
 function showDone(title, text, rows) {
-  document.getElementById("donePhone").textContent = current.phone;
   document.getElementById("doneTitle").textContent = title;
   document.getElementById("doneText").textContent = text;
   document.getElementById("doneSummary").innerHTML = rows.map(([k, v]) => `<div><dt>${k}</dt><dd>${v.replace(/</g, "&lt;")}</dd></div>`).join("");
@@ -542,7 +554,7 @@ document.getElementById("bookForm").addEventListener("submit", e => {
   const c = checkContact("b", err); if (!c) return;
   err.textContent = "";
   const z = current.sizes[+size.value];
-  showDone("Booking request received", `Thank you, ${c.name.split(" ")[0]}. Our team will call you to complete your booking.`,
+  showDone("Application received", `Thank you, ${c.name.split(" ")[0]}. Our team will call you about your site purchase application.`,
     [["Project", current.name], ["Plot size", z.label], ...z.extra, ["Name", c.name], ["Mobile", mask(c.phone)]]);
 });
 const MODES = { direct: "Coming directly to the site", employee: "BMI employee to accompany", cab: "Cab from the BMI office" };
