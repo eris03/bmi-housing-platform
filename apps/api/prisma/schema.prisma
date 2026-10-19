@@ -1,0 +1,416 @@
+// BMI Housing Platform — initial schema (Milestone 02).
+// Mirrors docs/database-schema.md. No payment tables in the MVP.
+// Enums must match packages/contracts/src/index.ts (checked by test/contracts-sync.spec.ts).
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  CUSTOMER
+  SALES
+  PROJECT_MANAGER
+  ADMIN
+  SUPER_ADMIN
+}
+
+enum UserStatus {
+  ACTIVE
+  DISABLED
+  PENDING_DELETION
+}
+
+enum ProjectStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum MediaType {
+  IMAGE
+  DOCUMENT
+  VIDEO_LINK
+}
+
+enum PlotStatus {
+  AVAILABLE
+  ON_HOLD
+  RESERVED
+  SOLD
+  INACTIVE
+}
+
+enum LeadSource {
+  ANDROID_APP
+  QR_CODE
+  META_AD
+  WEBSITE
+  PHONE
+  STAFF_CREATED
+  OTHER
+}
+
+enum InterestStatus {
+  INTERESTED
+  NOT_INTERESTED
+  MAYBE_LATER
+}
+
+enum VisitStatus {
+  REQUESTED
+  CONFIRMED
+  COMPLETED
+  CANCELLED
+  NO_SHOW
+}
+
+enum BookingRequestStatus {
+  SUBMITTED
+  UNDER_REVIEW
+  APPROVED
+  REJECTED
+  CANCELLED
+}
+
+enum SyncStatus {
+  PENDING
+  SYNCED
+  RETRY
+  FAILED
+}
+
+enum ConsentStatus {
+  GRANTED
+  WITHDRAWN
+}
+
+enum NotificationChannel {
+  PUSH
+  EMAIL
+  SMS
+  WHATSAPP
+}
+
+enum NotificationStatus {
+  PENDING
+  SENT
+  FAILED
+  CANCELLED
+}
+
+enum IntegrationDirection {
+  OUTBOUND
+  INBOUND
+}
+
+model User {
+  id              String     @id @default(uuid()) @db.Uuid
+  identitySubject String?    @unique @map("identity_subject")
+  name            String
+  email           String?    @unique
+  phoneE164       String?    @unique @map("phone_e164")
+  role            UserRole   @default(CUSTOMER)
+  status          UserStatus @default(ACTIVE)
+  createdAt       DateTime   @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt       DateTime   @updatedAt @map("updated_at") @db.Timestamptz
+
+  projectScopes   StaffProjectScope[]
+  leads           Lead[]              @relation("LeadCustomer")
+  assignedLeads   Lead[]              @relation("LeadAssignee")
+  activities      LeadActivity[]
+  visits          SiteVisit[]         @relation("VisitCustomer")
+  assignedVisits  SiteVisit[]         @relation("VisitAssignee")
+  bookings        BookingRequest[]    @relation("BookingCustomer")
+  reviewedBooking BookingRequest[]    @relation("BookingReviewer")
+  consents        ConsentRecord[]
+  deviceTokens    DeviceToken[]
+  notifications   NotificationJob[]
+  auditLogs       AuditLog[]
+
+  @@index([role, status])
+  @@map("users")
+}
+
+model StaffProjectScope {
+  userId    String  @map("user_id") @db.Uuid
+  projectId String  @map("project_id") @db.Uuid
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@id([userId, projectId])
+  @@map("staff_project_scopes")
+}
+
+model Project {
+  id           String        @id @default(uuid()) @db.Uuid
+  slug         String        @unique
+  name         String
+  description  String?
+  locationText String?       @map("location_text")
+  latitude     Decimal?      @db.Decimal(9, 6)
+  longitude    Decimal?      @db.Decimal(9, 6)
+  mapUrl       String?       @map("map_url")
+  amenities    Json          @default("[]")
+  status       ProjectStatus @default(DRAFT)
+  publishedAt  DateTime?     @map("published_at") @db.Timestamptz
+  createdAt    DateTime      @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt    DateTime      @updatedAt @map("updated_at") @db.Timestamptz
+
+  media      ProjectMedia[]
+  plots      Plot[]
+  leads      Lead[]
+  visits     SiteVisit[]
+  staffScope StaffProjectScope[]
+
+  @@index([status])
+  @@map("projects")
+}
+
+model ProjectMedia {
+  id         String    @id @default(uuid()) @db.Uuid
+  projectId  String    @map("project_id") @db.Uuid
+  storageKey String    @unique @map("storage_key")
+  mediaType  MediaType @map("media_type")
+  mimeType   String    @map("mime_type")
+  sizeBytes  Int       @map("size_bytes")
+  caption    String?
+  sortOrder  Int       @default(0) @map("sort_order")
+  isPublic   Boolean   @default(false) @map("is_public")
+  createdAt  DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  project    Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId, sortOrder])
+  @@map("project_media")
+}
+
+model Plot {
+  id                String     @id @default(uuid()) @db.Uuid
+  projectId         String     @map("project_id") @db.Uuid
+  plotNumber        String     @map("plot_number")
+  areaSqft          Decimal    @map("area_sqft") @db.Decimal(12, 2)
+  dimensions        String?
+  facing            String?
+  pricePerSqftMinor BigInt?    @map("price_per_sqft_minor")
+  currency          String     @default("INR") @db.Char(3)
+  priceIsPublic     Boolean    @default(false) @map("price_is_public")
+  status            PlotStatus @default(AVAILABLE)
+  holdExpiresAt     DateTime?  @map("hold_expires_at") @db.Timestamptz
+  version           Int        @default(0)
+  createdAt         DateTime   @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt         DateTime   @updatedAt @map("updated_at") @db.Timestamptz
+  project           Project    @relation(fields: [projectId], references: [id], onDelete: Restrict)
+  bookings          BookingRequest[]
+
+  @@unique([projectId, plotNumber])
+  @@index([projectId, status])
+  @@map("plots")
+}
+
+model Lead {
+  id              String         @id @default(uuid()) @db.Uuid
+  customerId      String?        @map("customer_id") @db.Uuid
+  projectId       String         @map("project_id") @db.Uuid
+  name            String
+  phoneE164       String         @map("phone_e164")
+  email           String?
+  source          LeadSource
+  campaignId      String?        @map("campaign_id")
+  interestStatus  InterestStatus @default(INTERESTED) @map("interest_status")
+  assignedStaffId String?        @map("assigned_staff_id") @db.Uuid
+  syncStatus      SyncStatus     @default(PENDING) @map("sync_status")
+  dedupKey        String         @unique @map("dedup_key")
+  createdAt       DateTime       @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt       DateTime       @updatedAt @map("updated_at") @db.Timestamptz
+
+  customer      User?            @relation("LeadCustomer", fields: [customerId], references: [id], onDelete: SetNull)
+  assignedStaff User?            @relation("LeadAssignee", fields: [assignedStaffId], references: [id], onDelete: SetNull)
+  project       Project          @relation(fields: [projectId], references: [id], onDelete: Restrict)
+  enquiries     Enquiry[]
+  activities    LeadActivity[]
+  visits        SiteVisit[]
+  bookings      BookingRequest[]
+
+  @@index([phoneE164])
+  @@index([projectId, createdAt])
+  @@index([source])
+  @@index([assignedStaffId])
+  @@index([syncStatus])
+  @@map("leads")
+}
+
+model Enquiry {
+  id             String     @id @default(uuid()) @db.Uuid
+  leadId         String     @map("lead_id") @db.Uuid
+  customerId     String?    @map("customer_id") @db.Uuid
+  idempotencyKey String     @unique @map("idempotency_key")
+  message        String?
+  utm            Json       @default("{}")
+  submittedVia   LeadSource @map("submitted_via")
+  createdAt      DateTime   @default(now()) @map("created_at") @db.Timestamptz
+  lead           Lead       @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+  @@map("enquiries")
+}
+
+model LeadActivity {
+  id         String   @id @default(uuid()) @db.Uuid
+  leadId     String   @map("lead_id") @db.Uuid
+  actorId    String   @map("actor_id") @db.Uuid
+  type       String
+  body       String?
+  occurredAt DateTime @default(now()) @map("occurred_at") @db.Timestamptz
+  lead       Lead     @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  actor      User     @relation(fields: [actorId], references: [id], onDelete: Restrict)
+
+  @@index([leadId, occurredAt])
+  @@map("lead_activities")
+}
+
+model CrmMapping {
+  id           String     @id @default(uuid()) @db.Uuid
+  system       String
+  entityType   String     @map("entity_type")
+  externalId   String     @map("external_id")
+  localId      String     @map("local_id") @db.Uuid
+  syncStatus   SyncStatus @default(PENDING) @map("sync_status")
+  lastSyncedAt DateTime?  @map("last_synced_at") @db.Timestamptz
+  createdAt    DateTime   @default(now()) @map("created_at") @db.Timestamptz
+
+  @@unique([system, entityType, externalId])
+  @@unique([system, entityType, localId])
+  @@map("crm_mappings")
+}
+
+model SiteVisit {
+  id              String      @id @default(uuid()) @db.Uuid
+  leadId          String      @map("lead_id") @db.Uuid
+  customerId      String?     @map("customer_id") @db.Uuid
+  projectId       String      @map("project_id") @db.Uuid
+  requestedFor    DateTime    @map("requested_for") @db.Timestamptz
+  scheduledAt     DateTime?   @map("scheduled_at") @db.Timestamptz
+  assignedStaffId String?     @map("assigned_staff_id") @db.Uuid
+  status          VisitStatus @default(REQUESTED)
+  outcomeNotes    String?     @map("outcome_notes")
+  createdAt       DateTime    @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt       DateTime    @updatedAt @map("updated_at") @db.Timestamptz
+
+  lead          Lead    @relation(fields: [leadId], references: [id], onDelete: Restrict)
+  customer      User?   @relation("VisitCustomer", fields: [customerId], references: [id], onDelete: SetNull)
+  project       Project @relation(fields: [projectId], references: [id], onDelete: Restrict)
+  assignedStaff User?   @relation("VisitAssignee", fields: [assignedStaffId], references: [id], onDelete: SetNull)
+
+  @@index([scheduledAt])
+  @@index([assignedStaffId, scheduledAt])
+  @@index([status])
+  @@map("site_visits")
+}
+
+model BookingRequest {
+  id             String               @id @default(uuid()) @db.Uuid
+  reference      String               @unique
+  leadId         String               @map("lead_id") @db.Uuid
+  customerId     String               @map("customer_id") @db.Uuid
+  plotId         String               @map("plot_id") @db.Uuid
+  status         BookingRequestStatus @default(SUBMITTED)
+  termsVersion   String               @map("terms_version")
+  customerNote   String?              @map("customer_note")
+  reviewedById   String?              @map("reviewed_by") @db.Uuid
+  reviewedAt     DateTime?            @map("reviewed_at") @db.Timestamptz
+  decisionReason String?              @map("decision_reason")
+  createdAt      DateTime             @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt      DateTime             @updatedAt @map("updated_at") @db.Timestamptz
+
+  lead       Lead  @relation(fields: [leadId], references: [id], onDelete: Restrict)
+  customer   User  @relation("BookingCustomer", fields: [customerId], references: [id], onDelete: Restrict)
+  plot       Plot  @relation(fields: [plotId], references: [id], onDelete: Restrict)
+  reviewedBy User? @relation("BookingReviewer", fields: [reviewedById], references: [id], onDelete: SetNull)
+
+  @@index([status, createdAt])
+  @@index([plotId, status])
+  @@map("booking_requests")
+}
+
+model ConsentRecord {
+  id         String              @id @default(uuid()) @db.Uuid
+  customerId String?             @map("customer_id") @db.Uuid
+  leadId     String?             @map("lead_id") @db.Uuid
+  phoneE164  String              @map("phone_e164")
+  purpose    String
+  channel    NotificationChannel
+  status     ConsentStatus
+  source     String
+  recordedAt DateTime            @default(now()) @map("recorded_at") @db.Timestamptz
+  customer   User?               @relation(fields: [customerId], references: [id], onDelete: SetNull)
+
+  @@index([phoneE164, purpose, recordedAt(sort: Desc)])
+  @@map("consent_records")
+}
+
+model DeviceToken {
+  id         String   @id @default(uuid()) @db.Uuid
+  userId     String   @map("user_id") @db.Uuid
+  fcmToken   String   @unique @map("fcm_token")
+  platform   String
+  lastSeenAt DateTime @default(now()) @map("last_seen_at") @db.Timestamptz
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("device_tokens")
+}
+
+model NotificationJob {
+  id          String              @id @default(uuid()) @db.Uuid
+  recipientId String              @map("recipient_id") @db.Uuid
+  channel     NotificationChannel
+  template    String
+  payload     Json                @default("{}")
+  status      NotificationStatus  @default(PENDING)
+  attempts    Int                 @default(0)
+  scheduledAt DateTime            @default(now()) @map("scheduled_at") @db.Timestamptz
+  sentAt      DateTime?           @map("sent_at") @db.Timestamptz
+  lastError   String?             @map("last_error")
+  recipient   User                @relation(fields: [recipientId], references: [id], onDelete: Cascade)
+
+  @@index([status, scheduledAt])
+  @@map("notification_jobs")
+}
+
+model IntegrationEvent {
+  id             String               @id @default(uuid()) @db.Uuid
+  provider       String
+  direction      IntegrationDirection
+  eventType      String               @map("event_type")
+  idempotencyKey String               @map("idempotency_key")
+  payload        Json                 @default("{}")
+  status         SyncStatus           @default(PENDING)
+  attempts       Int                  @default(0)
+  nextAttemptAt  DateTime?            @map("next_attempt_at") @db.Timestamptz
+  lastError      String?              @map("last_error")
+  createdAt      DateTime             @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt      DateTime             @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@unique([provider, idempotencyKey])
+  @@index([status, nextAttemptAt])
+  @@map("integration_events")
+}
+
+model AuditLog {
+  id            String   @id @default(uuid()) @db.Uuid
+  actorId       String?  @map("actor_id") @db.Uuid
+  action        String
+  entityType    String   @map("entity_type")
+  entityId      String   @map("entity_id") @db.Uuid
+  before        Json?
+  after         Json?
+  ip            String?  @db.Inet
+  correlationId String?  @map("correlation_id")
+  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz
+  actor         User?    @relation(fields: [actorId], references: [id], onDelete: SetNull)
+
+  @@index([entityType, entityId, createdAt])
+  @@map("audit_logs")
+}

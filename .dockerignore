@@ -1,0 +1,9 @@
+**/node_modules
+**/.next
+**/dist
+**/coverage
+apps/mobile
+apps/brief
+docs
+.env
+.git

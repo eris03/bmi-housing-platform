@@ -36,12 +36,26 @@ export default function LoginPage() {
               <span className="field-label">Mobile number</span>
               <div className="phone-input">
                 <span className="prefix">+91</span>
-                <input value={phone} onChange={(e) => setPhone(e.target.value)} inputMode="tel" autoComplete="tel-national" placeholder="98765 43210" />
+                <input
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  inputMode="tel"
+                  autoComplete="tel-national"
+                  placeholder="98765 43210"
+                />
               </div>
-              {error && <span className="field-error" role="alert">{error}</span>}
+              {error && (
+                <span className="field-error" role="alert">
+                  {error}
+                </span>
+              )}
             </label>
-            <button className="btn btn-lg btn-block" disabled={busy}>{busy ? "Sending code…" : "Send code"}</button>
-            <p className="switch">New here? <Link href="/register">Create an account</Link></p>
+            <button className="btn btn-lg btn-block" disabled={busy}>
+              {busy ? "Sending code…" : "Send code"}
+            </button>
+            <p className="switch">
+              New here? <Link href="/register">Create an account</Link>
+            </p>
           </form>
         )}
         {step === "otp" && e164 && (
@@ -53,7 +67,9 @@ export default function LoginPage() {
         {step === "done" && (
           <SuccessStamp title="You're signed in">
             {authClient.isDemo && <p className="demo-note">Demo mode: no session was created.</p>}
-            <Link className="btn btn-lg" href="/projects">Go to projects</Link>
+            <Link className="btn btn-lg" href="/projects">
+              Go to projects
+            </Link>
           </SuccessStamp>
         )}
       </div>

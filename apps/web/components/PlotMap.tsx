@@ -78,7 +78,9 @@ export function PlotMap({ project, enquireHref }: { project: Project; enquireHre
           <g transform={`translate(${W - 26} 40)`} className="map-compass">
             <circle r="13" />
             <path d="M0 -10 L4 0 L0 10 L-4 0Z" />
-            <text y="-16" textAnchor="middle">N</text>
+            <text y="-16" textAnchor="middle">
+              N
+            </text>
           </g>
         </svg>
       </div>
@@ -91,10 +93,22 @@ export function PlotMap({ project, enquireHref }: { project: Project; enquireHre
               <h3>Plot {selected.number}</h3>
             </div>
             <dl>
-              <div><dt>Area</dt><dd>{selected.areaSqft.toLocaleString("en-IN")} sq ft</dd></div>
-              <div><dt>Dimensions</dt><dd>{selected.dimensions}</dd></div>
-              <div><dt>Facing</dt><dd>{selected.facing}</dd></div>
-              <div><dt>Price</dt><dd>{project.pricePublic ? project.pricePerSqftLabel : "On request"}</dd></div>
+              <div>
+                <dt>Area</dt>
+                <dd>{selected.areaSqft.toLocaleString("en-IN")} sq ft</dd>
+              </div>
+              <div>
+                <dt>Dimensions</dt>
+                <dd>{selected.dimensions}</dd>
+              </div>
+              <div>
+                <dt>Facing</dt>
+                <dd>{selected.facing}</dd>
+              </div>
+              <div>
+                <dt>Price</dt>
+                <dd>{project.pricePublic ? project.pricePerSqftLabel : "On request"}</dd>
+              </div>
             </dl>
             {selected.status === "AVAILABLE" ? (
               <Link className="btn" href={`${enquireHref}&plot=${encodeURIComponent(selected.number)}`}>

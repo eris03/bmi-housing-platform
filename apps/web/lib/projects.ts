@@ -65,7 +65,14 @@ export const SAMPLE_PROJECTS: Project[] = [
     location: "Sample location, Phase I",
     description:
       "A gated plotted layout with wide internal roads, a central park and space to build the home you imagine. This is placeholder copy for design review.",
-    amenities: ["Gated entry", "Central park", "30 ft roads", "Underground drainage", "Street lighting", "Children's play area"],
+    amenities: [
+      "Gated entry",
+      "Central park",
+      "30 ft roads",
+      "Underground drainage",
+      "Street lighting",
+      "Children's play area",
+    ],
     hue: "sage",
     pricePublic: true,
     pricePerSqftLabel: "₹ — / sq ft (sample)",

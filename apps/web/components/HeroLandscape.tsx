@@ -13,7 +13,12 @@ const HOUSES = [
 
 export function HeroLandscape() {
   return (
-    <svg className="hero-landscape" viewBox="0 0 440 400" role="img" aria-label="Illustration of land being surveyed into plots with homes rising">
+    <svg
+      className="hero-landscape"
+      viewBox="0 0 440 400"
+      role="img"
+      aria-label="Illustration of land being surveyed into plots with homes rising"
+    >
       <defs>
         <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0" stopColor="var(--sky-top)" />
@@ -57,13 +62,31 @@ export function HeroLandscape() {
           <path d="M170 214 L160 340 M250 214 L250 340 M330 214 L340 340" />
         </g>
         {/* survey pegs */}
-        {[[90, 214], [350, 214], [380, 340], [60, 340]].map(([x, y], i) => (
+        {[
+          [90, 214],
+          [350, 214],
+          [380, 340],
+          [60, 340],
+        ].map(([x, y], i) => (
           <circle key={i} className="peg" cx={x} cy={y} r="4" style={{ animationDelay: `${1.2 + i * 0.1}s` }} />
         ))}
         {/* homes rising */}
         {HOUSES.map((h, i) => (
-          <g key={i} className="house" style={{ animationDelay: `${1.6 + h.d}s`, transformOrigin: `${h.x}px ${h.y + 22}px` }}>
-            <rect x={h.x - 16} y={h.y} width="32" height="22" rx="2" fill="var(--cream)" stroke="var(--forest)" strokeWidth="1.5" />
+          <g
+            key={i}
+            className="house"
+            style={{ animationDelay: `${1.6 + h.d}s`, transformOrigin: `${h.x}px ${h.y + 22}px` }}
+          >
+            <rect
+              x={h.x - 16}
+              y={h.y}
+              width="32"
+              height="22"
+              rx="2"
+              fill="var(--cream)"
+              stroke="var(--forest)"
+              strokeWidth="1.5"
+            />
             <path d={`M${h.x - 20} ${h.y + 2} L${h.x} ${h.y - 14} L${h.x + 20} ${h.y + 2}Z`} fill="var(--terracotta)" />
             <rect x={h.x - 4} y={h.y + 10} width="8" height="12" fill="var(--forest)" />
           </g>

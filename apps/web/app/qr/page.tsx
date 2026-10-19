@@ -24,12 +24,18 @@ export default function QrPage() {
   const url = target === "scan" ? buildScanUrl(origin, campaign) : buildProjectUrl(origin, slug, campaign);
 
   useEffect(() => {
-    QRCode.toString(url, { type: "svg", margin: 0, errorCorrectionLevel: "H", color: { dark: "#1f3b2d", light: "#0000" } })
-      .then(setSvg);
+    QRCode.toString(url, {
+      type: "svg",
+      margin: 0,
+      errorCorrectionLevel: "H",
+      color: { dark: "#1f3b2d", light: "#0000" },
+    }).then(setSvg);
   }, [url]);
 
   function download() {
-    const blob = new Blob([posterSvg(svg, target === "scan" ? "BMI Projects" : project.name)], { type: "image/svg+xml" });
+    const blob = new Blob([posterSvg(svg, target === "scan" ? "BMI Projects" : project.name)], {
+      type: "image/svg+xml",
+    });
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
     a.download = `bmi-qr-${slug}${campaign ? "-" + campaign : ""}.svg`;
@@ -42,7 +48,9 @@ export default function QrPage() {
       <SiteHeader />
       <main className="page qr-page">
         <header className="page-head">
-          <p className="eyebrow"><span className="peg-dot" /> Staff tool · preview</p>
+          <p className="eyebrow">
+            <span className="peg-dot" /> Staff tool · preview
+          </p>
           <h1>QR codes for site boards</h1>
           <p className="lede">Each code opens the project page and tags enquiries as coming from that QR placement.</p>
         </header>
@@ -58,20 +66,33 @@ export default function QrPage() {
             <label className="field">
               <span className="field-label">Project</span>
               <select value={slug} onChange={(e) => setSlug(e.target.value)}>
-                {SAMPLE_PROJECTS.map((p) => <option key={p.slug} value={p.slug}>{p.name}</option>)}
+                {SAMPLE_PROJECTS.map((p) => (
+                  <option key={p.slug} value={p.slug}>
+                    {p.name}
+                  </option>
+                ))}
               </select>
             </label>
             <label className="field">
-              <span className="field-label">Placement / campaign tag <em>letters, numbers, - or _</em></span>
-              <input value={campaign} onChange={(e) => setCampaign(e.target.value.replace(/[^a-z0-9_-]/gi, "").slice(0, 64))} />
+              <span className="field-label">
+                Placement / campaign tag <em>letters, numbers, - or _</em>
+              </span>
+              <input
+                value={campaign}
+                onChange={(e) => setCampaign(e.target.value.replace(/[^a-z0-9_-]/gi, "").slice(0, 64))}
+              />
             </label>
             <label className="field">
               <span className="field-label">Link</span>
               <input value={url} readOnly onFocus={(e) => e.target.select()} />
             </label>
             <div className="qr-actions">
-              <button type="button" className="btn" onClick={download} disabled={!svg}>Download poster (SVG)</button>
-              <a className="btn btn-ghost" href={url} target="_blank" rel="noreferrer">Open link</a>
+              <button type="button" className="btn" onClick={download} disabled={!svg}>
+                Download poster (SVG)
+              </button>
+              <a className="btn btn-ghost" href={url} target="_blank" rel="noreferrer">
+                Open link
+              </a>
             </div>
           </form>
 
@@ -80,7 +101,10 @@ export default function QrPage() {
               <p className="qr-poster-eyebrow">BMI Housing Society</p>
               <h2>{target === "scan" ? "Metro Greens · North Metro Greens" : project.name}</h2>
               <div className="qr-frame">
-                <span className="corner tl" /><span className="corner tr" /><span className="corner bl" /><span className="corner br" />
+                <span className="corner tl" />
+                <span className="corner tr" />
+                <span className="corner bl" />
+                <span className="corner br" />
                 <div className="qr-code" dangerouslySetInnerHTML={{ __html: svg }} />
               </div>
               <p className="qr-poster-cta">Scan to view plots &amp; enquire</p>

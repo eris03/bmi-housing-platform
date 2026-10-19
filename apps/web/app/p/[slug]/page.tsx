@@ -44,9 +44,18 @@ export default async function ProjectPage({ params, searchParams }: Props) {
             <p className="location">⌖ {project.location}</p>
           </div>
           <div className="project-stats">
-            <div><b>{a.available}</b><span>plots open</span></div>
-            <div><b>{a.total}</b><span>total plots</span></div>
-            <div><b>{project.pricePublic ? "Listed" : "On request"}</b><span>pricing</span></div>
+            <div>
+              <b>{a.available}</b>
+              <span>plots open</span>
+            </div>
+            <div>
+              <b>{a.total}</b>
+              <span>total plots</span>
+            </div>
+            <div>
+              <b>{project.pricePublic ? "Listed" : "On request"}</b>
+              <span>pricing</span>
+            </div>
           </div>
         </header>
 
@@ -56,7 +65,9 @@ export default async function ProjectPage({ params, searchParams }: Props) {
             <p>{project.description}</p>
             <h3 className="mini-title">Amenities</h3>
             <ul className="amenities">
-              {project.amenities.map((x) => <li key={x}>{x}</li>)}
+              {project.amenities.map((x) => (
+                <li key={x}>{x}</li>
+              ))}
             </ul>
           </div>
           <div className="project-map">
@@ -71,7 +82,9 @@ export default async function ProjectPage({ params, searchParams }: Props) {
           <strong>Interested in {project.name}?</strong>
           <span>Leave your number and our team will call you.</span>
         </div>
-        <Link className="btn" href={enquireHref}>Enquire now</Link>
+        <Link className="btn" href={enquireHref}>
+          Enquire now
+        </Link>
       </div>
       <SiteFooter />
     </>

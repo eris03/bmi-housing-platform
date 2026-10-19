@@ -13,3 +13,7 @@ apps/mobile/build/
 apps/mobile/.dart_tool/
 next-env.d.ts
 *.tsbuildinfo
+# Flutter / Android
+apps/mobile/.flutter-plugins*
+apps/mobile/android/.gradle/
+apps/mobile/android/local.properties

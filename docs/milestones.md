@@ -6,8 +6,8 @@
   - [ ] CRM integration method confirmed in writing
   - Accept: stakeholders sign off the design docs; CRM field and status mapping filled in.
 
-- [ ] **02 Foundation**
-  - pnpm + Turborepo workspace; NestJS API with Prisma, migrations, health checks, OpenAPI, logging and correlation IDs; Next.js web shell; Flutter app shell; Docker Compose with Postgres and MinIO; CI running lint, typecheck and tests.
+- [x] **02 Foundation** (done 2026-10-19)
+  - pnpm workspace (Turborepo not needed yet); NestJS API with Prisma, migrations, health checks, OpenAPI, logging and correlation IDs; Next.js web shell; Flutter app shell; Docker Compose with Postgres (MinIO optional, untested); CI running lint, typecheck and tests.
   - Accept: `docker compose up` plus `pnpm dev` start the API and web; `pnpm test` passes; migrations apply to a clean database; `/health/ready` returns 200.
 
 - [ ] **03 Catalogue and QR enquiry**

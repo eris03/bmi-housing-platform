@@ -6,7 +6,7 @@ Status: **Blocked on discovery.** No real CRM endpoints are implemented or assum
 
 ```ts
 interface CrmAdapter {
-  readonly name: string;            // e.g. "sandbox", "<vendor>"
+  readonly name: string; // e.g. "sandbox", "<vendor>"
   createLead(input: CreateCrmLeadInput): Promise<CrmLeadResult>;
   getLead(externalId: string): Promise<CrmLeadResult | null>;
   updateLead(externalId: string, input: UpdateCrmLeadInput): Promise<CrmLeadResult>;
@@ -18,6 +18,7 @@ interface CrmAdapter {
 Errors are classified as `TransientCrmError` (retry) or `PermanentCrmError` (fail and surface in admin).
 
 ## Delivery model: transactional outbox
+
 - The enquiry and its `integration_events` row are written in the same transaction.
 - A worker claims events with `SELECT … FOR UPDATE SKIP LOCKED`.
 - The idempotency key is `enquiry:<uuid>` and is sent to the CRM if it supports one. Otherwise a `getLead`/search runs before any re-create.
@@ -26,25 +27,28 @@ Errors are classified as `TransientCrmError` (retry) or `PermanentCrmError` (fai
 - Inbound webhooks: verify the signature, store the payload in `integration_events` keyed by the provider event ID (unique), then process it idempotently.
 
 ## Field mapping (to fill in during discovery)
-| Platform field | CRM field | Owner | Direction |
-|---|---|---|---|
-| name | ? | CRM after create | → |
-| phone (E.164) | ? | CRM | → |
-| email | ? | CRM | → |
-| project | ? | Platform | → |
-| source / campaign | ? | Platform | → |
-| interest status | ? | ? | ↔ |
-| assigned staff | ? | CRM | ← |
-| lead status | ? | CRM | ← |
+
+| Platform field    | CRM field | Owner            | Direction |
+| ----------------- | --------- | ---------------- | --------- |
+| name              | ?         | CRM after create | →         |
+| phone (E.164)     | ?         | CRM              | →         |
+| email             | ?         | CRM              | →         |
+| project           | ?         | Platform         | →         |
+| source / campaign | ?         | Platform         | →         |
+| interest status   | ?         | ?                | ↔        |
+| assigned staff    | ?         | CRM              | ←         |
+| lead status       | ?         | CRM              | ←         |
 
 ## Status mapping (to fill in)
+
 | Platform `InterestStatus` | CRM status |
-|---|---|
-| INTERESTED | ? |
-| NOT_INTERESTED | ? |
-| MAYBE_LATER | ? |
+| ------------------------- | ---------- |
+| INTERESTED                | ?          |
+| NOT_INTERESTED            | ?          |
+| MAYBE_LATER               | ?          |
 
 ## Unresolved requirements (needed from the business or CRM vendor)
+
 - [ ] CRM product name, version and hosting (SaaS or self-hosted)
 - [ ] API documentation or another confirmed integration method
 - [ ] Auth method (API key, OAuth2 client credentials, …) and required scopes
@@ -58,6 +62,7 @@ Errors are classified as `TransientCrmError` (retry) or `PermanentCrmError` (fai
 - [ ] Whether plot inventory exists in the CRM
 
 ## Rules
+
 - Never connect directly to the CRM's production database.
 - Never log tokens, or full phone or email values (log masked values).
 - Never report "synced" before the CRM confirms it.

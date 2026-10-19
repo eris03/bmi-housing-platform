@@ -2,7 +2,15 @@
 // Client-side parsing only shapes the value; the API must validate campaign IDs
 // against its own records before trusting them.
 
-export const LEAD_SOURCES = ["ANDROID_APP", "QR_CODE", "META_AD", "WEBSITE", "PHONE", "STAFF_CREATED", "OTHER"] as const;
+export const LEAD_SOURCES = [
+  "ANDROID_APP",
+  "QR_CODE",
+  "META_AD",
+  "WEBSITE",
+  "PHONE",
+  "STAFF_CREATED",
+  "OTHER",
+] as const;
 export type LeadSource = (typeof LEAD_SOURCES)[number];
 
 const SHORT_SOURCES: Record<string, LeadSource> = {

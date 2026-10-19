@@ -12,7 +12,9 @@ export default function Projects() {
       <SiteHeader />
       <main className="page">
         <header className="page-head">
-          <p className="eyebrow"><span className="peg-dot" /> Browse freely</p>
+          <p className="eyebrow">
+            <span className="peg-dot" /> Browse freely
+          </p>
           <h1>Projects</h1>
           <p className="lede">Every layout, every plot. Registration is only needed when you want us to contact you.</p>
         </header>
@@ -26,8 +28,12 @@ export default function Projects() {
                   <span className="sample-tag">Sample</span>
                   <h3>{p.name}</h3>
                   <p>{p.tagline}</p>
-                  <div className="meter"><span style={{ width: `${(a.available / a.total) * 100}%` }} /></div>
-                  <small>{a.available} of {a.total} plots open · {p.location}</small>
+                  <div className="meter">
+                    <span style={{ width: `${(a.available / a.total) * 100}%` }} />
+                  </div>
+                  <small>
+                    {a.available} of {a.total} plots open · {p.location}
+                  </small>
                 </div>
               </Link>
             );

@@ -52,17 +52,34 @@ export function ScanFlow() {
             <p className="lede">Sign in with your mobile number to see our projects.</p>
             <label className="field">
               <span className="field-label">Full name</span>
-              <input value={name} onChange={(e) => setName(e.target.value)} autoComplete="name" placeholder="Your name" />
+              <input
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                autoComplete="name"
+                placeholder="Your name"
+              />
             </label>
             <label className="field">
               <span className="field-label">Mobile number</span>
               <div className="phone-input">
                 <span className="prefix">+91</span>
-                <input value={phone} onChange={(e) => setPhone(e.target.value)} inputMode="tel" autoComplete="tel-national" placeholder="98765 43210" />
+                <input
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  inputMode="tel"
+                  autoComplete="tel-national"
+                  placeholder="98765 43210"
+                />
               </div>
             </label>
-            {error && <p className="field-error" role="alert">{error}</p>}
-            <button className="btn btn-lg btn-block" disabled={busy}>{busy ? "Sending code…" : "Get OTP"}</button>
+            {error && (
+              <p className="field-error" role="alert">
+                {error}
+              </p>
+            )}
+            <button className="btn btn-lg btn-block" disabled={busy}>
+              {busy ? "Sending code…" : "Get OTP"}
+            </button>
           </form>
         )}
 
@@ -80,14 +97,20 @@ export function ScanFlow() {
             <div className="brief-card brief-ask">
               <h2>Are you interested?</h2>
               <div className="brief-choice">
-                <button className="btn btn-lg" onClick={() => setStep("form")}>Yes, I'm interested</button>
-                <button className="btn btn-ghost btn-lg" onClick={() => setStep("ik")}>Not interested</button>
+                <button className="btn btn-lg" onClick={() => setStep("form")}>
+                  Yes, I'm interested
+                </button>
+                <button className="btn btn-ghost btn-lg" onClick={() => setStep("ik")}>
+                  Not interested
+                </button>
               </div>
             </div>
           </>
         )}
 
-        {step === "form" && <InterestForm name={name} onDone={() => setStep("thanks")} onBack={() => setStep("projects")} />}
+        {step === "form" && (
+          <InterestForm name={name} onDone={() => setStep("thanks")} onBack={() => setStep("projects")} />
+        )}
 
         {step === "thanks" && (
           <div className="brief-card">
@@ -102,7 +125,9 @@ export function ScanFlow() {
           <>
             <h1 className="brief-h">No problem. Explore projects by IK Developers</h1>
             <ProjectList projects={IK_PROJECTS} />
-            <button className="link-btn" onClick={() => setStep("projects")}>← Back to BMI projects</button>
+            <button className="link-btn" onClick={() => setStep("projects")}>
+              ← Back to BMI projects
+            </button>
           </>
         )}
       </main>
@@ -125,7 +150,11 @@ function ProjectList({ projects }: { projects: BriefProject[] }) {
             <h2>{p.name}</h2>
             <p className="tagline">{p.tagline}</p>
             <p className="muted">⌖ {p.location}</p>
-            <ul>{p.highlights.map((h) => <li key={h}>{h}</li>)}</ul>
+            <ul>
+              {p.highlights.map((h) => (
+                <li key={h}>{h}</li>
+              ))}
+            </ul>
           </div>
         </article>
       ))}
@@ -156,15 +185,23 @@ function InterestForm({ name, onDone, onBack }: { name: string; onDone: () => vo
       <label className="field">
         <span className="field-label">Project</span>
         <select value={project} onChange={(e) => setProject(e.target.value)}>
-          {BMI_PROJECTS.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
+          {BMI_PROJECTS.map((p) => (
+            <option key={p.id} value={p.id}>
+              {p.name}
+            </option>
+          ))}
         </select>
       </label>
       <label className="field">
-        <span className="field-label">Email <em>Optional</em></span>
+        <span className="field-label">
+          Email <em>Optional</em>
+        </span>
         <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" />
       </label>
       <label className="field">
-        <span className="field-label">Preferred plot size <em>Optional</em></span>
+        <span className="field-label">
+          Preferred plot size <em>Optional</em>
+        </span>
         <select value={size} onChange={(e) => setSize(e.target.value)}>
           <option value="">Not sure yet</option>
           <option>30 × 40 (1200 sq ft)</option>
@@ -174,16 +211,28 @@ function InterestForm({ name, onDone, onBack }: { name: string; onDone: () => vo
         </select>
       </label>
       <label className="field">
-        <span className="field-label">Preferred site-visit date <em>Optional</em></span>
+        <span className="field-label">
+          Preferred site-visit date <em>Optional</em>
+        </span>
         <input type="date" value={visit} onChange={(e) => setVisit(e.target.value)} />
       </label>
       <label className="field">
-        <span className="field-label">Message <em>Optional</em></span>
+        <span className="field-label">
+          Message <em>Optional</em>
+        </span>
         <input value={note} onChange={(e) => setNote(e.target.value)} placeholder="Anything we should know?" />
       </label>
-      {error && <p className="field-error" role="alert">{error}</p>}
+      {error && (
+        <p className="field-error" role="alert">
+          {error}
+        </p>
+      )}
       <button className="btn btn-lg btn-block">Submit</button>
-      <p className="switch"><button type="button" className="link-btn" onClick={onBack}>← Back</button></p>
+      <p className="switch">
+        <button type="button" className="link-btn" onClick={onBack}>
+          ← Back
+        </button>
+      </p>
     </form>
   );
 }

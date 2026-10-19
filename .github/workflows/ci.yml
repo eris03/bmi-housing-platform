@@ -1,0 +1,43 @@
+name: CI
+on:
+  push:
+    branches: [main, "claude/**"]
+  pull_request:
+
+jobs:
+  typescript:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env: { POSTGRES_USER: bmi, POSTGRES_PASSWORD: bmi, POSTGRES_DB: bmi_platform }
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U bmi" --health-interval 3s --health-timeout 3s --health-retries 20
+    env:
+      DATABASE_URL: postgresql://bmi:bmi@localhost:5432/bmi_platform?schema=public
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @bmi/contracts build
+      - run: pnpm format:check
+      - run: pnpm lint
+      - run: pnpm typecheck
+      - run: pnpm db:migrate
+      - run: pnpm test
+      - run: pnpm build
+
+  mobile:
+    runs-on: ubuntu-latest
+    defaults: { run: { working-directory: apps/mobile } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with: { channel: stable }
+      - run: flutter pub get
+      - run: flutter analyze
+      - run: dart format --output=none --set-exit-if-changed lib test
+      - run: flutter test

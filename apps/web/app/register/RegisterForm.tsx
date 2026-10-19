@@ -60,7 +60,12 @@ export function RegisterForm() {
           <p className="lede">Three quick details. We'll verify your mobile with a one-time code.</p>
 
           <Field label="Full name" error={touched ? errors.name : null}>
-            <input value={name} onChange={(e) => setName(e.target.value)} autoComplete="name" placeholder="e.g. Asha Verma" />
+            <input
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              autoComplete="name"
+              placeholder="e.g. Asha Verma"
+            />
           </Field>
           <Field label="Mobile number" error={touched ? errors.phone : null}>
             <div className="phone-input">
@@ -75,12 +80,21 @@ export function RegisterForm() {
             </div>
           </Field>
           <Field label="Email" hint="Optional" error={touched ? errors.email : null}>
-            <input value={email} onChange={(e) => setEmail(e.target.value)} type="email" autoComplete="email" placeholder="you@example.com" />
+            <input
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              type="email"
+              autoComplete="email"
+              placeholder="you@example.com"
+            />
           </Field>
 
           <label className="check">
             <input type="checkbox" checked={consent} onChange={(e) => setConsent(e.target.checked)} />
-            <span>BMI Housing Society may contact me about my enquiry by call or SMS. (Optional — final wording pending approval.)</span>
+            <span>
+              BMI Housing Society may contact me about my enquiry by call or SMS. (Optional — final wording pending
+              approval.)
+            </span>
           </label>
 
           <button className="btn btn-lg btn-block" disabled={busy}>
@@ -107,7 +121,9 @@ export function RegisterForm() {
               : "Your account is ready. Explore projects at your own pace."}
           </p>
           {authClient.isDemo && (
-            <p className="demo-note">Demo mode: nothing was saved and no enquiry was sent. This step goes live with the API.</p>
+            <p className="demo-note">
+              Demo mode: nothing was saved and no enquiry was sent. This step goes live with the API.
+            </p>
           )}
           <Link className="btn btn-lg" href={project ? `/p/${project.slug}` : "/projects"}>
             {project ? "Back to project" : "Explore projects"}
@@ -118,14 +134,28 @@ export function RegisterForm() {
   );
 }
 
-function Field({ label, hint, error, children }: { label: string; hint?: string; error?: string | null; children: React.ReactNode }) {
+function Field({
+  label,
+  hint,
+  error,
+  children,
+}: {
+  label: string;
+  hint?: string;
+  error?: string | null;
+  children: React.ReactNode;
+}) {
   return (
     <label className={`field ${error ? "has-error" : ""}`}>
       <span className="field-label">
         {label} {hint && <em>{hint}</em>}
       </span>
       {children}
-      {error && <span className="field-error" role="alert">{error}</span>}
+      {error && (
+        <span className="field-error" role="alert">
+          {error}
+        </span>
+      )}
     </label>
   );
 }

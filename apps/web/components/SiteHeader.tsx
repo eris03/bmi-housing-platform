@@ -9,8 +9,12 @@ export function SiteHeader() {
       </Link>
       <nav>
         <Link href="/projects">Projects</Link>
-        <Link href="/login" className="nav-ghost">Sign in</Link>
-        <Link href="/register" className="btn btn-small">Register</Link>
+        <Link href="/login" className="nav-ghost">
+          Sign in
+        </Link>
+        <Link href="/register" className="btn btn-small">
+          Register
+        </Link>
       </nav>
     </header>
   );

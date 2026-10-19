@@ -5,7 +5,15 @@ import { authClient } from "@/lib/auth-client";
 import { maskPhone } from "@/lib/phone";
 
 /** Six-box OTP entry with resend timer. Calls onVerified on success. */
-export function OtpStep({ phoneE164, onVerified, onBack }: { phoneE164: string; onVerified: () => void; onBack: () => void }) {
+export function OtpStep({
+  phoneE164,
+  onVerified,
+  onBack,
+}: {
+  phoneE164: string;
+  onVerified: () => void;
+  onBack: () => void;
+}) {
   const [digits, setDigits] = useState<string[]>(Array(6).fill(""));
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -83,9 +91,15 @@ export function OtpStep({ phoneE164, onVerified, onBack }: { phoneE164: string; 
           />
         ))}
       </div>
-      {error && <p className="field-error" role="alert">{error}</p>}
+      {error && (
+        <p className="field-error" role="alert">
+          {error}
+        </p>
+      )}
       <div className="otp-actions">
-        <button type="button" className="link-btn" onClick={onBack}>Change number</button>
+        <button type="button" className="link-btn" onClick={onBack}>
+          Change number
+        </button>
         <button
           type="button"
           className="link-btn"
