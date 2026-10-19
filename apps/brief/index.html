@@ -310,9 +310,6 @@ h3 { color: var(--saffron); letter-spacing: .18em; }
 }
 
 /* login */
-#s-login .panel { padding: 28px 24px; }
-#s-login h1 { background: linear-gradient(100deg, #2d6e52 15%, #7a68c9 40%, #e9785a 60%, #2d6e52 85%); background-size: 260% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; }
-#s-login h1::after { content: "Own a piece of North Bengaluru."; display: block; font-size: .42em; font-weight: 600; letter-spacing: 0; margin-top: 10px; -webkit-text-fill-color: var(--muted); }
 .note { background: var(--butter); color: #6b5310; border: 1px solid #f3dc8a; }
 .note code { color: #3d2f05; background: rgba(255,255,255,.7); }
 
@@ -434,6 +431,48 @@ tbody tr:hover { background: var(--mint); }
 @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } }
 @keyframes splashOut { to { opacity: 0; visibility: hidden; } }
 
+
+/* ---------- Sign-in screen ---------- */
+#s-login { gap: 0; }
+.login-hero { position: relative; border-radius: 28px; box-shadow: 0 24px 50px -30px rgba(90,80,140,.45); border: 1.5px solid #fff; }
+.login-scene { display: block; width: 100%; height: auto; max-width: 100%; border-radius: 26px; }
+.ls-sun { animation: sunGlow 4s ease-in-out infinite; transform-origin: 290px 52px; }
+@keyframes sunGlow { 50% { transform: scale(1.12); } }
+.ls-cloud { animation: cloud 14s ease-in-out infinite alternate; }
+@keyframes cloud { to { transform: translateX(46px); } }
+.ls-plots path { stroke-dashoffset: 120; animation: plotDraw 1.4s ease forwards; }
+@keyframes plotDraw { to { stroke-dashoffset: 0; } }
+.ls-house, .ls-tree { transform-box: fill-box; transform-origin: 50% 100%; animation: grow .7s cubic-bezier(.3,1.5,.5,1) both; animation-delay: calc(.6s + var(--d)); }
+@keyframes grow { from { transform: scaleY(0); opacity: 0; } }
+.login-logo { position: absolute; left: 50%; bottom: -34px; width: 76px; height: 76px; margin-left: -38px; border-radius: 50%; background: #fff; padding: 4px; box-shadow: 0 0 0 5px #fff, 0 0 0 8px var(--mint), 0 14px 26px -10px rgba(90,80,140,.5); animation: logoDrop .8s .2s cubic-bezier(.3,1.5,.5,1) both; }
+@keyframes logoDrop { from { transform: translateY(-30px) scale(.6); opacity: 0; } }
+
+.login-intro { text-align: center; padding: 48px 6px 18px; display: grid; gap: 10px; justify-items: center; }
+.login-kicker { margin: 0; font-size: .85rem; font-weight: 600; color: #8a6a12; background: var(--butter); padding: 5px 12px; border-radius: 999px; }
+.login-title, #s-login h1.login-title { background: none; animation: none; -webkit-text-fill-color: currentColor; color: var(--ink); }
+.login-title { margin: 0; font-size: clamp(1.6rem, 6.6vw, 2.3rem); color: var(--ink); text-wrap: balance; }
+.login-title span { -webkit-text-fill-color: transparent; background: linear-gradient(90deg, #3f8f6a, #7a68c9 55%, #e9785a); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.login-chips { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
+.login-chips li { font-size: .8rem; font-weight: 700; padding: 5px 11px; border-radius: 999px; background: var(--mint); color: #24563f; }
+.login-chips li:nth-child(2) { background: var(--lavender); color: #4b3f8f; }
+.login-chips li:nth-child(3) { background: var(--blush); color: #8a3a22; }
+.login-chips li::before { content: "✓ "; }
+
+.login-card { padding: 24px 22px; gap: 14px; }
+.login-card h2 { font-size: 1.25rem; margin-bottom: 2px; }
+.login-card button[type=submit] { width: 100%; padding-block: 15px; font-size: 1.05rem; }
+.login-safe { margin: 0; text-align: center; font-size: .8rem; color: var(--muted); }
+
+@media (min-width: 720px) {
+  #s-login { grid-template-columns: 1.1fr 1fr; column-gap: 28px; align-items: center; }
+  .login-hero { grid-column: 1; grid-row: 1 / span 2; }
+  .login-intro { grid-column: 2; padding-top: 0; text-align: left; justify-items: start; }
+  .login-chips { justify-content: flex-start; }
+  .login-card { grid-column: 2; }
+  .login-logo { left: 24px; bottom: 24px; margin-left: 0; }
+  .wrap { max-width: 980px; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   #splash { display: none; }
   .ticker-track { animation: none; flex-wrap: wrap; width: auto; }
@@ -456,14 +495,46 @@ tbody tr:hover { background: var(--mint); }
 
   <!-- 1. Login -->
   <section class="screen" id="s-login">
-    <form class="panel" id="loginForm" novalidate>
-      <p class="note" id="qrNote">You scanned a BMI QR code.</p>
-      <h1>Welcome</h1>
-      <p class="muted">Sign in with your mobile number to view our projects.</p>
-      <label for="name">Full name<input id="name" autocomplete="name" placeholder="Your name"></label>
+    <div class="login-hero">
+      <svg class="login-scene" viewBox="0 0 360 200" aria-hidden="true">
+        <defs>
+          <linearGradient id="lsSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe3dc"/><stop offset="1" stop-color="#fdf6f1"/></linearGradient>
+        </defs>
+        <rect width="360" height="200" fill="url(#lsSky)"/>
+        <circle class="ls-sun" cx="290" cy="52" r="22" fill="#ffe28c"/>
+        <g class="ls-cloud"><ellipse cx="70" cy="44" rx="26" ry="9" fill="#fff"/><ellipse cx="88" cy="38" rx="16" ry="10" fill="#fff"/></g>
+        <path d="M0 120 C 70 96 130 112 190 104 S 310 92 360 108 V200 H0Z" fill="#d8f3e6"/>
+        <path d="M0 140 C 90 124 170 138 250 128 S 330 126 360 132 V200 H0Z" fill="#c9eedc"/>
+        <g class="ls-plots" stroke="#9fdcc0" stroke-width="1.5" stroke-dasharray="4 4" fill="none">
+          <path d="M30 186 L80 150 H170 L150 186Z"/><path d="M150 186 L170 150 H260 L290 186Z"/><path d="M80 150 L100 136 H180 L170 150"/><path d="M170 150 L180 136 H250 L260 150"/>
+        </g>
+        <g class="ls-house" style="--d:.2s"><rect x="92" y="150" width="34" height="22" rx="3" fill="#fff"/><path d="M88 152 L109 136 L130 152Z" fill="#ffbfae"/><rect x="104" y="160" width="9" height="12" rx="1.5" fill="#c9b9f6"/></g>
+        <g class="ls-house" style="--d:.45s"><rect x="196" y="152" width="40" height="24" rx="3" fill="#fff"/><path d="M191 154 L216 136 L241 154Z" fill="#c9b9f6"/><rect x="211" y="163" width="10" height="13" rx="1.5" fill="#9fdcc0"/></g>
+        <g class="ls-house" style="--d:.7s"><rect x="140" y="128" width="26" height="16" rx="2" fill="#fff"/><path d="M137 130 L153 118 L169 130Z" fill="#ffe28c"/></g>
+        <g class="ls-tree" style="--d:.1s"><rect x="47" y="138" width="3" height="12" fill="#7fbf9f"/><circle cx="48.5" cy="134" r="9" fill="#9fdcc0"/></g>
+        <g class="ls-tree" style="--d:.6s"><rect x="309" y="134" width="3" height="12" fill="#7fbf9f"/><circle cx="310.5" cy="130" r="10" fill="#b8e3c9"/></g>
+      </svg>
+      <img class="login-logo" id="loginLogo" alt="BMI Housing Society logo">
+    </div>
+
+    <div class="login-intro">
+      <p class="login-kicker" id="qrNote">📍 You scanned a BMI QR code</p>
+      <h1 class="login-title">Find your plot in <span>North Bengaluru</span></h1>
+      <ul class="login-chips">
+        <li>BIAAPA approved</li><li>A Khata</li><li>Easy 4-EMI plan</li>
+      </ul>
+    </div>
+
+    <form class="panel login-card" id="loginForm" novalidate>
+      <div>
+        <h2>Sign in to continue</h2>
+        <p class="muted">We'll send a one-time code to your mobile.</p>
+      </div>
+      <label for="name">Full name<input id="name" autocomplete="name" placeholder="e.g. Asha Verma"></label>
       <label for="mobile">Mobile number<div class="phone"><span>+91</span><input id="mobile" inputmode="tel" autocomplete="tel-national" placeholder="98765 43210"></div></label>
       <p class="err" id="loginErr" role="alert"></p>
-      <button type="submit">Get OTP</button>
+      <button type="submit">Get OTP →</button>
+      <p class="login-safe">🔒 Your number is only used to contact you about BMI projects.</p>
     </form>
   </section>
 
@@ -899,6 +970,7 @@ function confetti() {
   const el = document.getElementById("splash");
   if (!el) return;
   document.getElementById("splashLogo").src = LOGOS.bmi;
+  document.getElementById("loginLogo").src = LOGOS.bmi;
   setTimeout(() => el.remove(), reduceMotion ? 0 : 2500);
 })();
 
