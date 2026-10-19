@@ -1,7 +1,7 @@
 <title>BMI Plot Enquiry</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Hind:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Manrope:wght@400;500;600;700&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Hind:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
 <style>
 /* Layout: one narrow phone-first column; each step is a screen, projects stack as two dossiers with a shared decision bar below. */
 :root {
@@ -271,11 +271,169 @@ tbody tr:hover { background: var(--leaf-soft); }
   .aurora { display: none; }
   #s-login h1 { color: var(--ink); background: none; }
 }
+
+/* =====================================================================
+   "Dusk over the layout" — premium night theme.
+   Deep emerald night, gold survey light, saffron from the BMI map.
+   Committed single (dark) look by design; every colour set explicitly.
+   ===================================================================== */
+:root:root:root {
+  --bg: #07140e; --surface: rgba(16, 38, 27, .72); --ink: #f3efe2; --muted: #a9b8ac; --line: rgba(233, 180, 76, .18);
+  --leaf: #e9b44c; --leaf-soft: rgba(233, 180, 76, .12); --saffron: #ff8a3d; --saffron-soft: rgba(255, 138, 61, .14);
+  --on-leaf: #1a1206; --emerald: #1f6b45; --glass-hi: rgba(255,255,255,.06);
+  --font-display: "Syne", "Segoe UI", system-ui, sans-serif; --font-body: "Manrope", "Segoe UI", system-ui, sans-serif;
+  --r: 22px; color-scheme: dark;
+}
+body { background: radial-gradient(120% 80% at 50% -10%, #12402a 0%, #07140e 55%, #040b08 100%) fixed var(--bg); color: var(--ink); }
+.aurora { display: none; }
+#land { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+.wrap { max-width: 760px; }
+h1 { font-family: var(--font-display); font-weight: 700; letter-spacing: -.03em; font-size: clamp(1.7rem, 6.4vw, 2.6rem); line-height: 1.06; }
+h2 { font-family: var(--font-display); letter-spacing: -.01em; }
+h3 { color: var(--leaf); letter-spacing: .18em; }
+.muted, .lead, .cap { color: var(--muted); }
+
+/* header */
+.top { border-bottom-color: var(--line); position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: linear-gradient(var(--bg), rgba(7,20,14,.75)); backdrop-filter: blur(12px); margin-inline: calc(-1 * max(16px, env(safe-area-inset-left, 0px))); padding-inline: max(16px, env(safe-area-inset-left, 0px)); }
+.top b { font-family: var(--font-display); letter-spacing: .02em; }
+.top small { color: var(--muted); }
+.top img { background: #fff; box-shadow: 0 0 0 2px rgba(233,180,76,.5), 0 0 24px rgba(233,180,76,.35); }
+
+/* glass surfaces with a gold hairline that catches light */
+.panel, .project, .pick-card, .done-card, .decide {
+  background: linear-gradient(160deg, rgba(31,107,69,.28), rgba(10,26,18,.78) 60%) padding-box,
+              linear-gradient(150deg, rgba(233,180,76,.55), rgba(233,180,76,.05) 40%, rgba(255,138,61,.35)) border-box;
+  border: 1px solid transparent; border-radius: var(--r); backdrop-filter: blur(14px) saturate(1.2);
+  box-shadow: 0 30px 60px -30px rgba(0,0,0,.8), inset 0 1px 0 var(--glass-hi);
+}
+
+/* login: big statement */
+#s-login .panel { padding: 28px 24px; }
+#s-login h1 { background: linear-gradient(100deg, #fff6dd 20%, #e9b44c 45%, #ff8a3d 55%, #fff6dd 80%); background-size: 260% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; }
+#s-login h1::after { content: "Own a piece of North Bengaluru."; display: block; font-size: .42em; font-weight: 600; letter-spacing: 0; margin-top: 10px; -webkit-text-fill-color: var(--muted); }
+.note { background: var(--saffron-soft); color: #ffd2b0; border: 1px solid rgba(255,138,61,.3); }
+.note code { color: #fff; }
+
+/* fields */
+input, select { background: rgba(4, 12, 8, .55); color: var(--ink); border: 1px solid rgba(233,180,76,.22); border-radius: 14px; }
+input::placeholder { color: #6f8274; }
+input:focus, select:focus { border-color: var(--leaf); box-shadow: 0 0 0 4px rgba(233,180,76,.15), 0 0 30px -6px rgba(233,180,76,.5); }
+.phone span { background: rgba(233,180,76,.12); color: var(--leaf); border-color: rgba(233,180,76,.22); }
+label { color: #e8e2cf; }
+.err { color: #ffb38a; }
+
+/* primary buttons: molten gold */
+button:not(.link):not(.choice):not(.back-top):not(.pick-card) {
+  background: linear-gradient(135deg, #f6d27a, #e9b44c 45%, #ff8a3d) ; color: #1a1206; font-weight: 700; letter-spacing: .02em;
+  border-radius: 999px; box-shadow: 0 14px 34px -14px rgba(233,180,76,.8), inset 0 1px 0 rgba(255,255,255,.5);
+}
+button.link { color: var(--leaf); }
+.back-top { background: rgba(233,180,76,.08); color: var(--leaf); border-color: rgba(233,180,76,.4); }
+.back-top:hover { background: rgba(233,180,76,.16); }
+
+/* project picker: tall cinematic cards with 3D tilt */
+.pick { perspective: 1200px; gap: 18px; }
+.pick-card { transform-style: preserve-3d; transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateZ(0); transition: transform .25s ease-out, box-shadow .3s; color: var(--ink); }
+.pick-card:hover { transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateY(-6px); box-shadow: 0 40px 70px -30px rgba(0,0,0,.9), 0 0 0 1px rgba(233,180,76,.4), 0 0 60px -20px rgba(233,180,76,.45); }
+.pick-card::after { content: ""; position: absolute; inset: 0; pointer-events: none; border-radius: inherit; background: radial-gradient(400px circle at var(--mx, 50%) var(--my, 0%), rgba(233,180,76,.22), transparent 45%); opacity: 0; transition: opacity .3s; }
+.pick-card:hover::after { opacity: 1; }
+.logo-band { height: 170px; background: radial-gradient(circle at 50% 120%, rgba(233,180,76,.35), transparent 60%), linear-gradient(#fff, #f3efe2); border-bottom: 1px solid var(--line); transform: translateZ(30px); }
+.logo-band img { height: 130px; filter: drop-shadow(0 12px 18px rgba(0,0,0,.25)); }
+.pick-body { padding: 18px 20px 20px; transform: translateZ(40px); }
+.pick-body b { font-family: var(--font-display); font-size: 1.4rem; font-weight: 700; letter-spacing: -.03em; }
+.pick-body small { color: var(--muted); font-size: .95rem; }
+.pick-body em { color: var(--leaf); font-weight: 700; }
+.tag-ongoing { color: #8fe0a8; }
+.tag-ongoing::before { background: #8fe0a8; }
+
+/* completed projects: compact gallery */
+.done-grid { grid-template-columns: repeat(auto-fill, minmax(min(100%, 210px), 1fr)); }
+.done-card .gallery.mini { aspect-ratio: 16 / 7; filter: saturate(.8) brightness(.85); }
+.tag-done { color: var(--muted); border-color: var(--line); }
+
+/* project detail */
+.project { overflow: hidden; background: linear-gradient(180deg, rgba(12,34,24,.96), rgba(7,20,14,.97)) padding-box, linear-gradient(150deg, rgba(233,180,76,.55), rgba(233,180,76,.05) 40%, rgba(255,138,61,.35)) border-box; }
+.gallery { aspect-ratio: 16 / 9; position: relative; }
+.gallery::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 40%, rgba(7,20,14,.95)); pointer-events: none; }
+.pbody { margin-top: -70px; position: relative; z-index: 1; padding: 22px; }
+.pbody h2[style] { font-size: clamp(1.7rem, 6.2vw, 2.4rem) !important; font-weight: 700; letter-spacing: -.03em; line-height: 1; background: linear-gradient(90deg, #fff6dd, #e9b44c); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.plogo { background: #fff; border-color: rgba(233,180,76,.5); box-shadow: 0 10px 30px -10px rgba(0,0,0,.7); }
+.badges span { background: rgba(233,180,76,.1); color: #f3dca3; border: 1px solid rgba(233,180,76,.25); }
+.badges span.price { background: linear-gradient(135deg, #f6d27a, #ff8a3d); color: #1a1206; border: 0; font-weight: 800; }
+.facts { background: transparent; border: 0; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); }
+.facts div { background: rgba(4,12,8,.5); border: 1px solid var(--line); border-radius: 16px; padding: 14px; }
+.facts dt { color: var(--muted); }
+.facts dd { font-family: var(--font-display); font-size: 1.15rem; color: #fff6dd; }
+.tablebox { border-color: var(--line); background: rgba(4,12,8,.4); }
+thead th { background: rgba(233,180,76,.12); color: var(--leaf); }
+th, td { border-bottom-color: var(--line); }
+td.total { color: #f6d27a; }
+tbody tr:hover { background: rgba(233,180,76,.07); }
+.amen > div { background: rgba(4,12,8,.45); border-color: var(--line); }
+.amen > div:hover { background: rgba(233,180,76,.1); border-color: rgba(233,180,76,.5); }
+.amen b { color: var(--leaf); }
+.video { background: radial-gradient(circle at 50% 40%, #1f6b45, #07140e); color: var(--ink); border: 1px solid var(--line); }
+.video .play { border-color: var(--leaf); color: var(--leaf); box-shadow: 0 0 0 0 rgba(233,180,76,.6); animation: ping 1.8s ease-out infinite; }
+
+/* marquee of nearby landmarks */
+.ticker { overflow: hidden; border-block: 1px solid var(--line); padding-block: 10px; margin-inline: -22px; mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent); }
+.ticker-track { display: flex; gap: 28px; width: max-content; animation: tick 40s linear infinite; }
+.ticker span { white-space: nowrap; color: #f3dca3; font-weight: 600; font-size: .92rem; }
+.ticker span::before { content: "◆"; color: var(--saffron); margin-right: 10px; font-size: .7em; vertical-align: .15em; }
+@keyframes tick { to { transform: translateX(-50%); } }
+.ticker:hover .ticker-track { animation-play-state: paused; }
+
+/* floating decision dock */
+.decide { position: sticky; bottom: calc(12px + env(safe-area-inset-bottom, 0px)); z-index: 6; padding: 12px 14px; display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; text-align: left; background: linear-gradient(135deg, rgba(20,60,40,.92), rgba(7,20,14,.95)) padding-box, linear-gradient(90deg, #e9b44c, #ff8a3d) border-box; box-shadow: 0 20px 50px -10px rgba(0,0,0,.9), 0 0 40px -15px rgba(233,180,76,.6); }
+.decide h2 { font-size: .95rem !important; letter-spacing: -.01em; font-weight: 700; margin: 0; flex: 1 1 160px; }
+.decide .choices { display: flex; gap: 8px; }
+.decide .choice { background: linear-gradient(135deg, #f6d27a, #e9b44c 45%, #ff8a3d); color: #1a1206; border: 0; font-weight: 800; padding: 9px 16px; }
+.decide .choice.no { background: transparent; color: var(--ink); border: 1px solid rgba(243,239,226,.35); font-weight: 600; }
+
+/* intent choices */
+#s-intent .choice { background: rgba(4,12,8,.5); color: var(--ink); border: 1px solid var(--line); padding: 24px 12px; border-radius: 20px; transition: transform .25s, border-color .25s, box-shadow .25s; }
+#s-intent .choice svg { color: var(--leaf); width: 46px; height: 46px; }
+#s-intent .choice:hover { transform: translateY(-4px); border-color: var(--leaf); box-shadow: 0 0 40px -12px rgba(233,180,76,.6); }
+
+/* options in forms */
+.opt { border-color: var(--line); background: rgba(4,12,8,.35); }
+.opt:has(input:checked) { border-color: var(--leaf); background: rgba(233,180,76,.1); box-shadow: 0 0 30px -14px rgba(233,180,76,.7); }
+.opt input { accent-color: #e9b44c; }
+.opt small { color: var(--muted); }
+
+/* success */
+.summary { background: var(--line); border-color: var(--line); }
+.summary div { background: rgba(7,20,14,.9); }
+.summary dd { color: #fff6dd; }
+.done svg circle { stroke: #e9b44c; }
+.done svg path { stroke: #ff8a3d; }
+.done h1 { background: linear-gradient(90deg, #fff6dd, #e9b44c); -webkit-background-clip: text; background-clip: text; color: transparent; }
+
+.foot { color: #6f8274; }
+
+/* intro splash: logo reveal with expanding survey rings */
+#splash { position: fixed; inset: 0; z-index: 100; pointer-events: none; display: grid; place-items: center; background: radial-gradient(circle, #12402a, #040b08 70%); animation: splashOut .7s 1.7s ease forwards; }
+#splash img { width: 120px; height: 120px; border-radius: 50%; background: #fff; box-shadow: 0 0 0 3px #e9b44c, 0 0 80px rgba(233,180,76,.6); animation: logoIn 1s cubic-bezier(.2,1.4,.4,1) both; }
+#splash i { position: absolute; width: 140px; height: 140px; border-radius: 50%; border: 1px dashed rgba(233,180,76,.6); animation: ringOut 1.8s ease-out infinite; }
+#splash i:nth-of-type(2) { animation-delay: .45s; } #splash i:nth-of-type(3) { animation-delay: .9s; }
+#splash p { position: absolute; top: calc(50% + 90px); font-family: var(--font-display); letter-spacing: .4em; font-size: .78rem; color: #e9b44c; text-transform: uppercase; animation: fadeUp .8s .5s both; }
+@keyframes logoIn { from { transform: scale(.3) rotate(-30deg); opacity: 0; } }
+@keyframes ringOut { from { transform: scale(.8); opacity: 1; } to { transform: scale(3.2); opacity: 0; } }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } }
+@keyframes splashOut { to { opacity: 0; visibility: hidden; } }
+
+@media (prefers-reduced-motion: reduce) {
+  #splash { display: none; }
+  .ticker-track { animation: none; flex-wrap: wrap; width: auto; }
+  #land { display: none; }
+}
 </style>
 
 <div class="aurora" aria-hidden="true"><span></span><span></span>
   <svg viewBox="0 0 400 800" preserveAspectRatio="none"><path d="M-20 120 C 80 90 160 160 260 120 S 420 140 440 110"/><path d="M-20 260 C 100 230 180 300 280 250 S 420 280 440 240"/><path d="M-20 420 C 90 390 200 460 300 410 S 420 430 440 400"/><path d="M-20 600 C 110 570 190 640 290 590 S 420 620 440 580"/></svg>
 </div>
+<canvas id="land" aria-hidden="true"></canvas>
+<div id="splash" aria-hidden="true"><i></i><i></i><i></i><img id="splashLogo" alt=""><p>BMI Housing Society</p></div>
 <canvas id="confetti" hidden></canvas>
 <div class="wrap">
   <header class="top">
@@ -601,6 +759,7 @@ document.querySelectorAll("[data-project]").forEach(b => b.addEventListener("cli
   document.getElementById("decideTitle").textContent = `Are you interested in ${current.name}?`;
   go("detail");
   countUp(document.getElementById("projectDetail"));
+  addTicker(document.getElementById("projectDetail"), current);
 }));
 
 
@@ -656,6 +815,106 @@ function confetti() {
     }
     if (t - t0 < 2200) requestAnimationFrame(frame); else { ctx.clearRect(0, 0, c.width, c.height); c.hidden = true; }
   })(t0);
+}
+
+// ----- Dusk landscape: perspective plot grid that lights up, plus fireflies -----
+(function land() {
+  const c = document.getElementById("land");
+  if (!c || reduceMotion) return;
+  const ctx = c.getContext("2d");
+  let W, H, dpr, lit = [], flies = [];
+  function size() {
+    dpr = Math.min(2, devicePixelRatio || 1);
+    W = c.width = innerWidth * dpr; H = c.height = innerHeight * dpr;
+    c.style.width = innerWidth + "px"; c.style.height = innerHeight + "px";
+    flies = Array.from({ length: Math.round(innerWidth / 18) }, () => ({ x: Math.random() * W, y: Math.random() * H, r: (Math.random() * 1.6 + .6) * dpr, p: Math.random() * 6.28, s: Math.random() * .4 + .1 }));
+  }
+  size(); addEventListener("resize", size);
+  const COLS = 14, ROWS = 12;
+  function project(gx, gy, t) {
+    // ground plane in perspective, scrolling slowly toward the viewer
+    const horizon = H * .52, depth = (gy + (t * .00012 % 1)) / ROWS;
+    const z = 1 / (1.15 - depth);
+    const y = horizon + (H - horizon) * (z - .87) / 7.5;
+    const x = W / 2 + (gx - COLS / 2) * (W / COLS) * z * .55;
+    return [x, y, z];
+  }
+  function frame(t) {
+    ctx.clearRect(0, 0, W, H);
+    // horizon glow
+    const g = ctx.createRadialGradient(W / 2, H * .52, 0, W / 2, H * .52, W * .7);
+    g.addColorStop(0, "rgba(233,180,76,.16)"); g.addColorStop(1, "rgba(233,180,76,0)");
+    ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+    // light a random plot now and then
+    if (Math.random() < .06) lit.push({ gx: Math.floor(Math.random() * COLS), gy: Math.floor(Math.random() * (ROWS - 1)), t0: t });
+    lit = lit.filter(l => t - l.t0 < 2600);
+    for (const l of lit) {
+      const k = (t - l.t0) / 2600, a = Math.sin(k * Math.PI) * .45;
+      const [x1, y1] = project(l.gx, l.gy, t), [x2, y2] = project(l.gx + 1, l.gy + 1, t);
+      ctx.fillStyle = `rgba(233,180,76,${a})`;
+      ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(project(l.gx + 1, l.gy, t)[0], y1); ctx.lineTo(x2, y2); ctx.lineTo(project(l.gx, l.gy + 1, t)[0], y2); ctx.fill();
+    }
+    // grid lines
+    ctx.lineWidth = dpr;
+    for (let gy = 0; gy <= ROWS; gy++) {
+      const [xa, ya, z] = project(0, gy, t), [xb] = project(COLS, gy, t);
+      if (ya < H * .52) continue;
+      ctx.strokeStyle = `rgba(233,180,76,${Math.min(.28, .05 * z)})`;
+      ctx.beginPath(); ctx.moveTo(xa, ya); ctx.lineTo(xb, ya); ctx.stroke();
+    }
+    for (let gx = 0; gx <= COLS; gx++) {
+      const [xa, ya] = project(gx, 0, 0), [xb, yb] = project(gx, ROWS, 0);
+      ctx.strokeStyle = "rgba(233,180,76,.12)";
+      ctx.beginPath(); ctx.moveTo(xa, Math.max(ya, H * .52)); ctx.lineTo(xb, yb); ctx.stroke();
+    }
+    // fireflies
+    for (const f of flies) {
+      f.p += .02; f.y -= f.s * dpr; f.x += Math.sin(f.p) * .4 * dpr;
+      if (f.y < 0) { f.y = H; f.x = Math.random() * W; }
+      const a = .35 + Math.sin(f.p * 2) * .3;
+      ctx.fillStyle = `rgba(255,214,130,${a})`; ctx.shadowColor = "rgba(255,190,90,.9)"; ctx.shadowBlur = 8 * dpr;
+      ctx.beginPath(); ctx.arc(f.x, f.y, f.r, 0, 6.28); ctx.fill();
+    }
+    ctx.shadowBlur = 0;
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+})();
+
+// Splash logo, then remove the overlay.
+(function splash() {
+  const el = document.getElementById("splash");
+  if (!el) return;
+  document.getElementById("splashLogo").src = LOGOS.bmi;
+  setTimeout(() => el.remove(), reduceMotion ? 0 : 2500);
+})();
+
+// 3D tilt + spotlight on project cards.
+document.addEventListener("pointermove", e => {
+  const card = e.target.closest(".pick-card");
+  if (!card || reduceMotion || e.pointerType === "touch") return;
+  const r = card.getBoundingClientRect(), px = (e.clientX - r.left) / r.width, py = (e.clientY - r.top) / r.height;
+  card.style.setProperty("--ry", `${(px - .5) * 10}deg`);
+  card.style.setProperty("--rx", `${(.5 - py) * 8}deg`);
+  card.style.setProperty("--mx", `${px * 100}%`);
+  card.style.setProperty("--my", `${py * 100}%`);
+});
+document.addEventListener("pointerout", e => {
+  const card = e.target.closest?.(".pick-card");
+  if (card && !card.contains(e.relatedTarget)) { card.style.setProperty("--rx", "0deg"); card.style.setProperty("--ry", "0deg"); }
+});
+
+// Scrolling ticker of nearby landmarks on the project page.
+function addTicker(root, p) {
+  const items = p.nearby || (p.location ? p.location.map(l => l[0]) : []);
+  if (!items.length) return;
+  const esc = s => s.replace(/&/g, "&amp;").replace(/</g, "&lt;");
+  const row = items.map(n => `<span>${esc(n)}</span>`).join("");
+  const t = document.createElement("div");
+  t.className = "ticker"; t.setAttribute("aria-label", "Nearby: " + items.join(", "));
+  t.innerHTML = `<div class="ticker-track" aria-hidden="true">${row}${row}</div>`;
+  const badges = root.querySelector(".badges");
+  badges?.after(t);
 }
 
 const screens = ["login", "otp", "projects", "detail", "intent", "book", "visit", "done", "rk", "bye"];
