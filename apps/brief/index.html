@@ -1,7 +1,7 @@
 <title>BMI Plot Enquiry</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Manrope:wght@400;500;600;700&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Hind:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Source+Sans+3:wght@400;500;600;700&family=Syne:wght@600;700;800&family=Manrope:wght@400;500;600;700&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Hind:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
 <style>
 /* Layout: one narrow phone-first column; each step is a screen, projects stack as two dossiers with a shared decision bar below. */
 :root {
@@ -473,6 +473,94 @@ tbody tr:hover { background: var(--mint); }
   .wrap { max-width: 980px; }
 }
 
+/* =====================================================================
+   Mature refinement: classic serif headings, readable sans body,
+   muted sage / sand / stone palette with a bronze accent. No bounce.
+   ===================================================================== */
+:root:root:root:root {
+  --bg: #f6f5f1; --ink: #1f2a24; --muted: #5f6b64; --line: #e1ded5;
+  --leaf: #2f5d4a; --leaf-soft: #e6ede7; --saffron: #a8774f; --saffron-soft: #f3ebe1;
+  --mint: #e3ebe4; --blush: #f1e7df; --lavender: #e8e8ee; --butter: #f2ecdc; --sky: #e4eaee;
+  --font-display: "Playfair Display", Georgia, "Times New Roman", serif;
+  --font-body: "Source Sans 3", "Segoe UI", system-ui, sans-serif;
+  --r: 16px;
+}
+body { background: linear-gradient(180deg, #f8f7f3, #f1f0ea) fixed var(--bg); font-size: 17px; }
+h1, h2, .pick-body b, .pbody h2[style], .top b, .done h1 { font-family: var(--font-display); letter-spacing: -.005em; font-weight: 600; }
+h1 { font-size: clamp(1.8rem, 6vw, 2.6rem); line-height: 1.12; }
+h3 { font-family: var(--font-body); color: var(--saffron); letter-spacing: .14em; font-weight: 600; }
+.top b { font-size: 1.15rem; }
+
+/* surfaces: quiet white cards, hairline border, soft shadow */
+.panel, .project, .pick-card, .done-card, .decide {
+  background: #fff padding-box, linear-gradient(#e1ded5, #e1ded5) border-box;
+  border: 1px solid transparent; border-radius: var(--r); backdrop-filter: none;
+  box-shadow: 0 1px 2px rgba(31,42,36,.04), 0 12px 32px -20px rgba(31,42,36,.25);
+}
+.project { background: #fff; border: 1px solid var(--line); }
+
+/* buttons: solid deep green, no gradients */
+button:not(.link):not(.choice):not(.back-top):not(.pick-card) { background: var(--leaf); color: #fff; border-radius: 10px; letter-spacing: .02em; box-shadow: 0 8px 20px -12px rgba(47,93,74,.7); }
+button:not(.link):not(.choice):not(.back-top):not(.pick-card):hover { background: #264d3d; }
+.back-top { border-radius: 10px; border-color: var(--line); color: var(--leaf); background: #fff; }
+.decide .choice { background: var(--leaf); border-radius: 10px; }
+.decide .choice.no { background: #fff; color: var(--ink); border: 1px solid var(--line); }
+.decide { background: #fff padding-box, linear-gradient(var(--line), var(--line)) border-box; border-width: 1px; }
+#s-intent .choice, #s-intent .choice:nth-child(1), #s-intent .choice:nth-child(2) { background: #fff; border-radius: 14px; }
+
+/* fields */
+input, select { border-radius: 10px; border: 1px solid #d6d2c7; font-size: 1rem; }
+input:focus, select:focus { border-color: var(--leaf); box-shadow: 0 0 0 3px rgba(47,93,74,.12); }
+.phone span { background: var(--leaf-soft); color: var(--leaf); }
+
+/* badges, chips, facts in muted tones */
+.badges span, .badges span:nth-child(3n+2), .badges span:nth-child(3n) { background: #f2f1ec; color: #3c4a42; border: 1px solid var(--line); }
+.badges span.price { background: var(--leaf); color: #fff; border: 0; }
+.facts div, .facts div:nth-child(5n+2), .facts div:nth-child(5n+3), .facts div:nth-child(5n+4), .facts div:nth-child(5n) { background: #f7f6f2; border: 1px solid var(--line); }
+.facts dd { font-family: var(--font-display); font-weight: 600; }
+thead th { background: #f2f1ec; color: var(--leaf); }
+tbody tr:nth-child(even) { background: #fbfaf7; }
+tbody tr:hover { background: var(--leaf-soft); }
+td.total { color: var(--leaf); }
+.ticker { background: #f2f1ec; border-block: 1px solid var(--line); }
+.ticker span::before { content: "·"; color: var(--saffron); font-size: 1.2em; }
+.pbody h2[style], .done h1 { background: none; -webkit-text-fill-color: currentColor; color: var(--ink); }
+.logo-band, #rkPickList .pick-card:nth-child(2) .logo-band { background: linear-gradient(180deg, #faf9f6, #f1efe8); }
+.pick-body em { color: var(--leaf); }
+.tag-done { background: #f2f1ec; color: var(--muted); }
+.note { background: var(--butter); color: #5d4a22; border-color: #e5dbc3; }
+
+/* sign-in screen */
+.login-hero { border: 1px solid var(--line); box-shadow: 0 12px 32px -20px rgba(31,42,36,.3); border-radius: 18px; }
+.login-scene { border-radius: 17px; }
+.lp-plots path { stroke-dasharray: 600; stroke-dashoffset: 600; animation: plotDraw 2.2s ease .3s forwards; }
+.lp-road path { stroke-dasharray: 500; stroke-dashoffset: 500; animation: plotDraw 1.6s ease forwards; }
+.lp-road + .lp-road path { stroke-dasharray: 5 6; stroke-dashoffset: 0; animation: march 30s linear infinite; }
+.lp-fill rect { opacity: 0; animation: fillIn 1s ease forwards; }
+.lp-fill rect:nth-child(1) { animation-delay: 1.6s; } .lp-fill rect:nth-child(2) { animation-delay: 2s; } .lp-fill rect:nth-child(3) { animation-delay: 2.4s; }
+@keyframes fillIn { to { opacity: .16; } }
+.login-logo { box-shadow: 0 0 0 4px #fff, 0 0 0 5px var(--line), 0 10px 22px -12px rgba(31,42,36,.4); animation: fadeIn .8s .2s ease both; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } }
+.login-kicker { background: transparent; color: var(--saffron); font-weight: 600; letter-spacing: .12em; text-transform: uppercase; font-size: .74rem; padding: 0; }
+.login-title { font-size: clamp(1.8rem, 6.4vw, 2.5rem); font-weight: 600; }
+.login-title span { -webkit-text-fill-color: currentColor; background: none; color: var(--leaf); font-style: italic; }
+.login-chips li, .login-chips li:nth-child(2), .login-chips li:nth-child(3) { background: transparent; color: #3c4a42; border: 1px solid var(--line); font-weight: 600; border-radius: 6px; }
+.login-chips li::before { content: "✓ "; color: var(--leaf); }
+.login-card h2 { font-size: 1.45rem; }
+
+/* calmer motion */
+.badges span, .opt:has(input:checked) { animation: none; }
+.decide #yesBtn { animation: none; }
+.pick-card:hover { transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateY(-3px); box-shadow: 0 18px 40px -22px rgba(31,42,36,.4); }
+.pick-card::after { background: radial-gradient(380px circle at var(--mx, 50%) var(--my, 0%), rgba(47,93,74,.06), transparent 45%); mix-blend-mode: normal; }
+#splash { background: #f6f5f1; }
+.decide { background: #fff !important; border: 1px solid var(--line) !important; z-index: 20; isolation: isolate; box-shadow: 0 -2px 0 #fff, 0 16px 36px -16px rgba(31,42,36,.45); }
+.decide h2 { font-family: var(--font-display); }
+#splash img { box-shadow: 0 0 0 4px #fff, 0 0 0 5px var(--line), 0 18px 40px -18px rgba(31,42,36,.4); animation: fadeIn .9s ease both; }
+#splash i { border: 1px solid #cfc8b8; }
+#splash i:nth-of-type(2), #splash i:nth-of-type(3) { border-color: #cfc8b8; }
+#splash p { font-family: var(--font-display); letter-spacing: .3em; color: var(--leaf); }
+
 @media (prefers-reduced-motion: reduce) {
   #splash { display: none; }
   .ticker-track { animation: none; flex-wrap: wrap; width: auto; }
@@ -497,44 +585,50 @@ tbody tr:hover { background: var(--mint); }
   <section class="screen" id="s-login">
     <div class="login-hero">
       <svg class="login-scene" viewBox="0 0 360 200" aria-hidden="true">
-        <defs>
-          <linearGradient id="lsSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe3dc"/><stop offset="1" stop-color="#fdf6f1"/></linearGradient>
-        </defs>
-        <rect width="360" height="200" fill="url(#lsSky)"/>
-        <circle class="ls-sun" cx="290" cy="52" r="22" fill="#ffe28c"/>
-        <g class="ls-cloud"><ellipse cx="70" cy="44" rx="26" ry="9" fill="#fff"/><ellipse cx="88" cy="38" rx="16" ry="10" fill="#fff"/></g>
-        <path d="M0 120 C 70 96 130 112 190 104 S 310 92 360 108 V200 H0Z" fill="#d8f3e6"/>
-        <path d="M0 140 C 90 124 170 138 250 128 S 330 126 360 132 V200 H0Z" fill="#c9eedc"/>
-        <g class="ls-plots" stroke="#9fdcc0" stroke-width="1.5" stroke-dasharray="4 4" fill="none">
-          <path d="M30 186 L80 150 H170 L150 186Z"/><path d="M150 186 L170 150 H260 L290 186Z"/><path d="M80 150 L100 136 H180 L170 150"/><path d="M170 150 L180 136 H250 L260 150"/>
+        <rect width="360" height="200" fill="#eef1ec"/>
+        <g class="lp-grid" stroke="#d9dfd7" stroke-width=".6">
+          <path d="M0 40 H360 M0 80 H360 M0 120 H360 M0 160 H360 M60 0 V200 M120 0 V200 M180 0 V200 M240 0 V200 M300 0 V200"/>
         </g>
-        <g class="ls-house" style="--d:.2s"><rect x="92" y="150" width="34" height="22" rx="3" fill="#fff"/><path d="M88 152 L109 136 L130 152Z" fill="#ffbfae"/><rect x="104" y="160" width="9" height="12" rx="1.5" fill="#c9b9f6"/></g>
-        <g class="ls-house" style="--d:.45s"><rect x="196" y="152" width="40" height="24" rx="3" fill="#fff"/><path d="M191 154 L216 136 L241 154Z" fill="#c9b9f6"/><rect x="211" y="163" width="10" height="13" rx="1.5" fill="#9fdcc0"/></g>
-        <g class="ls-house" style="--d:.7s"><rect x="140" y="128" width="26" height="16" rx="2" fill="#fff"/><path d="M137 130 L153 118 L169 130Z" fill="#ffe28c"/></g>
-        <g class="ls-tree" style="--d:.1s"><rect x="47" y="138" width="3" height="12" fill="#7fbf9f"/><circle cx="48.5" cy="134" r="9" fill="#9fdcc0"/></g>
-        <g class="ls-tree" style="--d:.6s"><rect x="309" y="134" width="3" height="12" fill="#7fbf9f"/><circle cx="310.5" cy="130" r="10" fill="#b8e3c9"/></g>
+        <g class="lp-road" fill="none" stroke="#c9b48f" stroke-width="7" stroke-linecap="round">
+          <path d="M-10 128 C 80 128 120 92 200 92 S 330 70 370 70"/>
+        </g>
+        <g class="lp-road" fill="none" stroke="#fff" stroke-width="1" stroke-dasharray="5 6">
+          <path d="M-10 128 C 80 128 120 92 200 92 S 330 70 370 70"/>
+        </g>
+        <g class="lp-plots" fill="none" stroke="#2f5d4a" stroke-width="1.1">
+          <path d="M24 146 h36 v30 h-36z M62 146 h36 v30 h-36z M100 140 h36 v36 h-36z M138 132 h36 v44 h-36z"/>
+          <path d="M150 34 h34 v40 h-34z M186 34 h34 v38 h-34z M222 30 h34 v38 h-34z M258 26 h34 v34 h-34z M294 22 h34 v32 h-34z"/>
+          <path d="M210 112 h40 v34 h-40z M252 108 h40 v38 h-40z M294 100 h40 v46 h-40z"/>
+        </g>
+        <g class="lp-fill">
+          <rect x="100" y="140" width="36" height="36" fill="#2f5d4a" opacity=".14"/>
+          <rect x="222" y="30" width="34" height="38" fill="#a8774f" opacity=".16"/>
+          <rect x="252" y="108" width="40" height="38" fill="#2f5d4a" opacity=".14"/>
+        </g>
+        <g class="lp-park"><circle cx="70" cy="60" r="26" fill="#dbe6dc" stroke="#9db5a2" stroke-width=".8"/><circle cx="62" cy="56" r="4" fill="#9db5a2"/><circle cx="76" cy="66" r="5" fill="#9db5a2"/><circle cx="80" cy="52" r="3.5" fill="#9db5a2"/></g>
+        <g class="lp-compass" transform="translate(330 176)"><circle r="12" fill="#fff" stroke="#c9b48f" stroke-width=".8"/><path d="M0 -9 L3 0 L0 9 L-3 0Z" fill="#2f5d4a"/><text y="-15" text-anchor="middle" font-size="7" fill="#7a6a52" font-family="Source Sans 3, sans-serif">N</text></g>
       </svg>
       <img class="login-logo" id="loginLogo" alt="BMI Housing Society logo">
     </div>
 
     <div class="login-intro">
-      <p class="login-kicker" id="qrNote">📍 You scanned a BMI QR code</p>
-      <h1 class="login-title">Find your plot in <span>North Bengaluru</span></h1>
+      <p class="login-kicker" id="qrNote">Welcome — you scanned a BMI QR code</p>
+      <h1 class="login-title">Invest in land in <span>North Bengaluru</span></h1>
       <ul class="login-chips">
-        <li>BIAAPA approved</li><li>A Khata</li><li>Easy 4-EMI plan</li>
+        <li>BIAAPA approved</li><li>A Khata plots</li><li>4-instalment payment plan</li>
       </ul>
     </div>
 
     <form class="panel login-card" id="loginForm" novalidate>
       <div>
-        <h2>Sign in to continue</h2>
+        <h2>Sign in</h2>
         <p class="muted">We'll send a one-time code to your mobile.</p>
       </div>
       <label for="name">Full name<input id="name" autocomplete="name" placeholder="e.g. Asha Verma"></label>
       <label for="mobile">Mobile number<div class="phone"><span>+91</span><input id="mobile" inputmode="tel" autocomplete="tel-national" placeholder="98765 43210"></div></label>
       <p class="err" id="loginErr" role="alert"></p>
-      <button type="submit">Get OTP →</button>
-      <p class="login-safe">🔒 Your number is only used to contact you about BMI projects.</p>
+      <button type="submit">Continue</button>
+      <p class="login-safe">Your number is used only to contact you about BMI projects.</p>
     </form>
   </section>
 
@@ -689,7 +783,7 @@ const DOCS = ["Four passport-size photographs","Address proof","Government ID pr
 const NOTES = ["Corner sites are charged extra at allotment.","Registration charges are borne by members.","Allotment is on a first come, first served basis."];
 
 const PROJECTS = [
-  { id: "garden-city", name: "BMI Garden City", hue: ["#9fdcc0","#e2dafb"],
+  { id: "garden-city", name: "BMI Garden City", hue: ["#c9d6cc","#eef1ec"],
     line: "Premium residential plots in North Bengaluru’s fastest-growing zone — near Kempegowda Airport, ITIR Tech Park & top universities.",
     rate: "₹1,399/sqft", where: "Off NH 648, Devanahalli", whereShort: "Off NH 648",
     overviewTitle: "Overview", amenTitle: "Amenities",
@@ -701,7 +795,7 @@ PROJECTS.forEach(p => (p.sizes = p.rows.map(r => ({ label: r[0], note: `Total �
 
 const RK_ADDRESS = "RK Developers, 3rd Floor, 1st Cross, 15th Main, E Block, Beside Nandana Palace, Sahakarnagar, Bengaluru - 560092";
 const RK_PROJECTS = [
-  { id: "metro-greens", name: "Metro Greens", dev: "rk", logo: "mg", hue: ["#b8e3c9","#fff1bf"], phone: "+91 9663108999",
+  { id: "metro-greens", name: "Metro Greens", dev: "rk", logo: "mg", hue: ["#ccd8c6","#f2efe6"], phone: "+91 9663108999",
     rate: "₹999/sqft", where: "Near KIA Corridor, North Bengaluru",
     eyebrow: "Nature's Grandeur. Your Private Retreat.",
     line: "A monumental 200-acre ecological paradise offering premium farm plots — where luxury meets the serenity of the earth, near Bangalore's fastest-growing corridor.",
@@ -725,7 +819,7 @@ const RK_PROJECTS = [
     locTitle: "In the Midst of Rapid Growth",
     location: [["Kempegowda International Airport", "KIA Corridor – short drive away"], ["Upcoming Metro Extensions", "Near planned Metro connectivity"], ["Highway Connectivity", "Easily accessible via key highway connectors"], ["Schools & Hospitals", "Close to top educational & medical institutions"], ["Rising Land Values", "One of North Bengaluru's highest-appreciation zones"], ["Expanding Urban Development", "New residential & commercial hubs nearby"]],
     cta: "Phase 1 plots are limited and selling fast. Book a free site visit to Metro Greens today." },
-  { id: "rk-avenue", name: "RK Avenue", dev: "rk", logo: "rk", hue: ["#ffcbbd","#e2dafb"], phone: "+91 9663108999",
+  { id: "rk-avenue", name: "RK Avenue", dev: "rk", logo: "rk", hue: ["#dccdbd","#f3efe8"], phone: "+91 9663108999",
     rate: "₹3,499/sqft", where: "Alkapura Village, Gauribidanur",
     eyebrow: "Prime Land. Premium Living.",
     line: "An exclusive gated community of just 36 high-value residential plots across 2.5 acres in Alkapura Village — where serene suburban living meets world-class infrastructure.",
@@ -828,7 +922,7 @@ const RK_COMPLETED = [
   ["30 Acres Township Project", "Near Devanahalli DC Office"],
   ["25 Acres Township Project", "Boodihala Village, Devanahalli"],
 ];
-const DONE_HUES = [["#a8d2f0","#fff1bf"],["#ffcbbd","#fff4ee"],["#9fdcc0","#eefaf3"],["#c9b9f6","#f4f0ff"],["#ffe28c","#fffaf0"]];
+const DONE_HUES = [["#cfd8dc","#f2f3f1"],["#dccdbd","#f5f1ea"],["#c9d6cc","#f1f4f0"],["#d6d3c8","#f5f4ef"],["#d3d9cf","#f4f5f1"]];
 document.getElementById("rkDoneList").innerHTML = RK_COMPLETED.map(([n, l], i) => `
   <div class="done-card"><div class="gallery mini">${photo(31 + i * 7, DONE_HUES[i % DONE_HUES.length], n)}</div>
   <div class="pick-body"><b style="font-size:1.05rem">${n}</b><small>⌖ ${l}</small><span class="tag-done">Completed</span></div></div>`).join("");
@@ -884,8 +978,8 @@ function confetti() {
   if (reduceMotion) return;
   const c = document.getElementById("confetti"), ctx = c.getContext("2d");
   c.hidden = false; c.width = innerWidth; c.height = innerHeight;
-  const colors = ["#9fdcc0", "#c9b9f6", "#ffbfae", "#ffe28c", "#a8d2f0", "#3f8f6a"];
-  const parts = Array.from({ length: 120 }, () => ({
+  const colors = ["#2f5d4a", "#a8774f", "#c9b48f", "#7f9a88"];
+  const parts = Array.from({ length: 40 }, () => ({
     x: innerWidth / 2, y: innerHeight * 0.35, vx: (Math.random() - .5) * 12, vy: Math.random() * -12 - 4,
     r: Math.random() * 6 + 3, c: colors[Math.floor(Math.random() * colors.length)], a: Math.random() * 6, va: (Math.random() - .5) * .3,
   }));
@@ -910,11 +1004,11 @@ function confetti() {
     dpr = Math.min(2, devicePixelRatio || 1);
     W = c.width = innerWidth * dpr; H = c.height = innerHeight * dpr;
     c.style.width = innerWidth + "px"; c.style.height = innerHeight + "px";
-    flies = Array.from({ length: Math.round(innerWidth / 18) }, () => ({ x: Math.random() * W, y: Math.random() * H, r: (Math.random() * 1.6 + .6) * dpr, p: Math.random() * 6.28, s: Math.random() * .4 + .1 }));
+    flies = Array.from({ length: Math.round(innerWidth / 60) }, () => ({ x: Math.random() * W, y: Math.random() * H, r: (Math.random() * 1.6 + .6) * dpr, p: Math.random() * 6.28, s: Math.random() * .4 + .1 }));
   }
   size(); addEventListener("resize", size);
   const COLS = 14, ROWS = 12;
-  const PASTELS = ["rgba(159,220,192,A)", "rgba(201,185,246,A)", "rgba(255,191,174,A)", "rgba(255,226,140,A)", "rgba(168,210,240,A)"];
+  const PASTELS = ["rgba(47,93,74,A)", "rgba(168,119,79,A)", "rgba(120,140,128,A)"];
   function project(gx, gy, t) {
     // ground plane in perspective, scrolling slowly toward the viewer
     const horizon = H * .52, depth = (gy + (t * .00012 % 1)) / ROWS;
@@ -927,7 +1021,7 @@ function confetti() {
     ctx.clearRect(0, 0, W, H);
     // horizon glow
     const g = ctx.createRadialGradient(W / 2, H * .52, 0, W / 2, H * .52, W * .7);
-    g.addColorStop(0, "rgba(255,214,200,.55)"); g.addColorStop(1, "rgba(255,214,200,0)");
+    g.addColorStop(0, "rgba(201,180,143,.18)"); g.addColorStop(1, "rgba(201,180,143,0)");
     ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
     // light a random plot now and then
     if (Math.random() < .06) lit.push({ gx: Math.floor(Math.random() * COLS), gy: Math.floor(Math.random() * (ROWS - 1)), t0: t });
@@ -935,7 +1029,7 @@ function confetti() {
     for (const l of lit) {
       const k = (t - l.t0) / 2600, a = Math.sin(k * Math.PI) * .45;
       const [x1, y1] = project(l.gx, l.gy, t), [x2, y2] = project(l.gx + 1, l.gy + 1, t);
-      ctx.fillStyle = PASTELS[(l.gx + l.gy) % PASTELS.length].replace("A", a * 1.6);
+      ctx.fillStyle = PASTELS[(l.gx + l.gy) % PASTELS.length].replace("A", a * .25);
       ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(project(l.gx + 1, l.gy, t)[0], y1); ctx.lineTo(x2, y2); ctx.lineTo(project(l.gx, l.gy + 1, t)[0], y2); ctx.fill();
     }
     // grid lines
@@ -943,12 +1037,12 @@ function confetti() {
     for (let gy = 0; gy <= ROWS; gy++) {
       const [xa, ya, z] = project(0, gy, t), [xb] = project(COLS, gy, t);
       if (ya < H * .52) continue;
-      ctx.strokeStyle = `rgba(122,104,201,${Math.min(.22, .04 * z)})`;
+      ctx.strokeStyle = `rgba(47,93,74,${Math.min(.12, .025 * z)})`;
       ctx.beginPath(); ctx.moveTo(xa, ya); ctx.lineTo(xb, ya); ctx.stroke();
     }
     for (let gx = 0; gx <= COLS; gx++) {
       const [xa, ya] = project(gx, 0, 0), [xb, yb] = project(gx, ROWS, 0);
-      ctx.strokeStyle = "rgba(122,104,201,.1)";
+      ctx.strokeStyle = "rgba(47,93,74,.06)";
       ctx.beginPath(); ctx.moveTo(xa, Math.max(ya, H * .52)); ctx.lineTo(xb, yb); ctx.stroke();
     }
     // fireflies
@@ -956,8 +1050,8 @@ function confetti() {
       f.p += .02; f.y -= f.s * dpr; f.x += Math.sin(f.p) * .4 * dpr;
       if (f.y < 0) { f.y = H; f.x = Math.random() * W; }
       const a = .35 + Math.sin(f.p * 2) * .3;
-      ctx.fillStyle = PASTELS[Math.floor(f.p * 10) % PASTELS.length === -1 ? 0 : (f.c ??= Math.floor(Math.random() * PASTELS.length))].replace("A", a * .9);
-      ctx.beginPath(); ctx.arc(f.x, f.y, f.r * 2.4, 0, 6.28); ctx.fill();
+      ctx.fillStyle = PASTELS[Math.floor(f.p * 10) % PASTELS.length === -1 ? 0 : (f.c ??= Math.floor(Math.random() * PASTELS.length))].replace("A", a * .25);
+      ctx.beginPath(); ctx.arc(f.x, f.y, f.r * 1.4, 0, 6.28); ctx.fill();
     }
     ctx.shadowBlur = 0;
     requestAnimationFrame(frame);
