@@ -584,6 +584,53 @@ td.total { color: var(--leaf); }
 .login-intro { padding-top: 22px; }
 @media (min-width: 720px) { .login-hero { min-height: 380px; padding: 30px; } .lh-price span { font-size: 2.6rem; } .login-intro { padding-top: 0; } }
 
+/* ---------- Application for purchase of site ---------- */
+.app-form { gap: 20px; }
+.app-head h1 { font-size: clamp(1.6rem, 5.6vw, 2.2rem); }
+.app-kicker { margin: 0 0 6px; font-size: .74rem; letter-spacing: .12em; text-transform: uppercase; color: var(--saffron); font-weight: 600; }
+.app-letter { background: #faf8f3; border: 1px solid var(--line); border-left: 3px solid var(--leaf); border-radius: 10px; padding: 16px 18px; font-family: var(--font-display); font-size: 1.05rem; line-height: 1.7; }
+.app-letter p { margin: 0 0 8px; }
+.app-sentence { margin: 0 !important; }
+.app-sentence select { display: inline-block; width: auto; min-width: 0; padding: 6px 10px; margin: 2px 4px; font-family: var(--font-body); font-size: .98rem; font-weight: 600; color: var(--leaf); border: 0; border-bottom: 2px solid var(--leaf); border-radius: 6px 6px 0 0; background: #fff; }
+.app-sec, .app-form fieldset { min-width: 0; }
+.app-sec { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 14px; border-top: 1px solid var(--line); padding-top: 16px; }
+.app-sec > * { min-width: 0; }
+.app-sec .full { grid-column: 1 / -1; }
+@media (max-width: 560px) { .app-sec { grid-template-columns: 1fr; } }
+.app-sec legend { grid-column: 1 / -1; display: flex; align-items: center; gap: 10px; font-family: var(--font-display); font-size: 1.2rem; font-weight: 600; margin-bottom: 4px; color: var(--ink); }
+.app-sec legend span { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--leaf); color: #fff; font-family: var(--font-body); font-size: .85rem; }
+.app-sec legend em { font-style: normal; font-family: var(--font-body); font-size: .78rem; color: var(--muted); font-weight: 500; border: 1px solid var(--line); border-radius: 6px; padding: 2px 8px; }
+.app-sec label small { display: block; font-weight: 400; color: var(--muted); font-size: .8rem; margin-top: -2px; }
+textarea { font: 500 1rem var(--font-body); color: var(--ink); background: #fff; border: 1px solid #d6d2c7; border-radius: 10px; padding: 12px 14px; width: 100%; box-sizing: border-box; resize: vertical; }
+textarea:focus { outline: none; border-color: var(--leaf); box-shadow: 0 0 0 3px rgba(47,93,74,.12); }
+.caps { text-transform: uppercase; letter-spacing: .03em; }
+.locked { background: #f2f1ec !important; color: var(--muted); cursor: not-allowed; }
+.radio-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 18px; }
+.rr-label { font-weight: 600; font-size: .92rem; width: 100%; }
+.rr { display: inline-flex; align-items: center; gap: 8px; font-weight: 500; cursor: pointer; }
+.rr input { width: 18px; height: 18px; accent-color: var(--leaf); margin: 0; }
+.tick { font-size: .95rem; }
+.bad input, .bad select, .bad textarea { border-color: #c4513a !important; box-shadow: 0 0 0 3px rgba(196,81,58,.12) !important; }
+.fam-wrap { position: relative; overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; }
+.fam { width: 100%; min-width: 520px; border-collapse: collapse; }
+.fam th { text-align: left; font-size: .8rem; background: #f2f1ec; color: var(--leaf); padding: 8px 10px; }
+.fam td { padding: 6px; border-top: 1px solid var(--line); }
+.fam td input { padding: 9px 10px; font-size: .95rem; }
+.fam td:last-child { width: 36px; text-align: center; }
+.fam-del { color: #c4513a !important; text-decoration: none !important; font-size: 1rem; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+.sig { display: grid; gap: 10px; }
+.sig-tabs { display: flex; gap: 6px; }
+.sig-tab { padding: 8px 14px !important; border: 1px solid var(--line) !important; border-radius: 8px; text-decoration: none !important; color: var(--muted) !important; }
+.sig-tab.on { background: var(--leaf-soft); color: var(--leaf) !important; border-color: #b9cfc2 !important; font-weight: 700; }
+#sigPad { display: block; width: 100%; height: 160px; background: #fff repeating-linear-gradient(transparent 0 118px, #d6d2c7 118px 119px, transparent 119px 160px); border: 1px dashed #c9c3b4; border-radius: 10px; touch-action: none; cursor: crosshair; }
+#sigDraw { display: grid; gap: 4px; justify-items: end; }
+#sigPreview { max-height: 120px; margin-top: 8px; border: 1px solid var(--line); border-radius: 8px; background: #fff; }
+.link.inline { display: inline; padding: 0; font: inherit; font-weight: 600; }
+.terms-dialog { position: fixed; inset: 0; z-index: 60; display: grid; place-items: center; padding: 16px; background: rgba(31,42,36,.45); }
+.terms-dialog .panel { max-width: 520px; width: 100%; max-height: 80vh; overflow: auto; }
+#s-book button[type=submit] { width: 100%; padding-block: 15px; font-size: 1.02rem; }
+
 @media (prefers-reduced-motion: reduce) {
   #splash { display: none; }
   .ticker-track { animation: none; flex-wrap: wrap; width: auto; }
@@ -708,18 +755,108 @@ td.total { color: var(--leaf); }
     </div>
   </section>
 
-  <!-- 4c. Book a site form -->
+  <!-- 4c. Application for purchase of site -->
   <section class="screen" id="s-book" hidden>
-    <form class="panel" id="bookForm" novalidate>
-      <h1>Apply to purchase site</h1>
-      <p class="muted" id="bookProject"></p>
-      <fieldset><legend>Plot size you need *</legend><div class="opts" id="sizeOpts"></div></fieldset>
-      <label for="bName">Full name *<input id="bName" autocomplete="name"></label>
-      <label for="bPhone">Mobile number *<div class="phone"><span>+91</span><input id="bPhone" inputmode="tel" autocomplete="tel-national"></div></label>
+    <form class="panel app-form" id="bookForm" novalidate>
+      <div class="app-head">
+        <p class="app-kicker">Bengaluru Metro City Infrastructure Housing Co-operative Society Ltd.</p>
+        <h1>Application for Purchase of Site</h1>
+        <p class="muted">Fields marked * are required.</p>
+      </div>
+
+      <div class="app-letter">
+        <p>To,<br>The President / Secretary,<br>BMI Housing Co-operative Society Ltd.</p>
+        <p class="app-sentence">I wish to purchase a site measuring
+          <select id="aSize" aria-label="Site size *" required><option value="">Select size</option></select>
+          in
+          <select id="aLayout" aria-label="Layout *" required><option value="">Select layout</option></select>
+          layout.
+        </p>
+      </div>
+
+      <fieldset class="app-sec"><legend><span>1</span> Applicant details</legend>
+        <label for="bName" class="full">Full name of applicant * <small>In capital letters, as per Aadhaar card</small><input id="bName" autocomplete="name" class="caps" placeholder="ASHA VERMA"></label>
+        <label for="aGuardian" class="full">Father's / husband's name *<input id="aGuardian"></label>
+        <label for="aDob">Date of birth *<input id="aDob" type="date"></label>
+        <label for="aAge">Age *<input id="aAge" type="number" min="18" max="120" inputmode="numeric"></label>
+        <label for="aPob">Place of birth<input id="aPob"></label>
+        <label for="aGender">Gender *<select id="aGender"><option value="">Select</option><option>Male</option><option>Female</option><option>Other</option></select></label>
+        <label for="aLandline">Phone (residential landline)<input id="aLandline" inputmode="tel" placeholder="080 1234 5678"></label>
+        <label for="bPhone">Mobile number *<div class="phone"><span>+91</span><input id="bPhone" inputmode="tel" autocomplete="tel-national"></div></label>
+        <label for="aEmail" class="full">Email address *<input id="aEmail" type="email" autocomplete="email" placeholder="you@example.com"></label>
+        <div class="full radio-row" role="radiogroup" aria-label="Belongs to SC / ST category?">
+          <span class="rr-label">Belongs to SC / ST category?</span>
+          <label class="rr"><input type="radio" name="aScst" value="Yes (certificate enclosed)"> Yes, enclosing certificate</label>
+          <label class="rr"><input type="radio" name="aScst" value="No" checked> No</label>
+        </div>
+      </fieldset>
+
+      <fieldset class="app-sec"><legend><span>2</span> Address for correspondence</legend>
+        <label for="aAddr1" class="full">Address line 1 *<input id="aAddr1" autocomplete="address-line1"></label>
+        <label for="aAddr2" class="full">Address line 2<input id="aAddr2" autocomplete="address-line2"></label>
+        <label for="aCity">City *<input id="aCity" autocomplete="address-level2"></label>
+        <label for="aDistrict">District<input id="aDistrict"></label>
+        <label for="aState">State *<input id="aState" value="Karnataka" autocomplete="address-level1"></label>
+        <label for="aPin">PIN code<input id="aPin" inputmode="numeric" maxlength="6" autocomplete="postal-code"></label>
+        <label for="aCountry">Country<input id="aCountry" value="India" readonly class="locked"></label>
+      </fieldset>
+
+      <fieldset class="app-sec"><legend><span>3</span> Employment particulars <em>Optional</em></legend>
+        <label for="aEmployer" class="full">Employer / organisation name<input id="aEmployer"></label>
+        <label for="aWorkAddr" class="full">Place of employment and full address<textarea id="aWorkAddr" rows="2"></textarea></label>
+        <label for="aDesig">Designation / occupation<input id="aDesig"></label>
+        <label for="aIncome">Monthly income (approx.)<div class="phone"><span>₹</span><input id="aIncome" inputmode="numeric"></div></label>
+        <label for="aResidency" class="full">Residency status<select id="aResidency"><option value="">Select</option><option>Ordinary resident of Karnataka</option><option>Native of Karnataka</option><option>Neither</option></select></label>
+      </fieldset>
+
+      <fieldset class="app-sec"><legend><span>4</span> Nominee particulars</legend>
+        <label for="nName" class="full">Nominee name *<input id="nName"></label>
+        <label for="nAge">Age<input id="nAge" type="number" min="0" max="120" inputmode="numeric"></label>
+        <label for="nDob">Date of birth<input id="nDob" type="date"></label>
+        <label for="nRel">Relationship with applicant *<select id="nRel"><option value="">Select</option><option>Spouse</option><option>Son</option><option>Daughter</option><option>Father</option><option>Mother</option><option>Brother</option><option>Sister</option><option>Other</option></select></label>
+        <label for="nPhone">Nominee phone / mobile<input id="nPhone" inputmode="tel"></label>
+        <label class="full rr tick"><input type="checkbox" id="nSame"> Same as correspondence address</label>
+        <label for="nAddr" class="full">Nominee address<textarea id="nAddr" rows="2"></textarea></label>
+      </fieldset>
+
+      <fieldset class="app-sec"><legend><span>5</span> Family members staying with the applicant</legend>
+        <div class="full fam-wrap">
+          <table class="fam"><thead><tr><th>Full name</th><th>Relation</th><th>Age</th><th>Occupation</th><th><span class="sr">Remove</span></th></tr></thead><tbody id="famRows"></tbody></table>
+        </div>
+        <button type="button" class="link full" id="famAdd">+ Add family member</button>
+      </fieldset>
+
+      <fieldset class="app-sec"><legend><span>6</span> Signature and submit</legend>
+        <div class="full sig">
+          <div class="sig-tabs" role="tablist">
+            <button type="button" class="link sig-tab on" data-sig="draw" role="tab">Draw signature</button>
+            <button type="button" class="link sig-tab" data-sig="upload" role="tab">Upload image</button>
+          </div>
+          <div id="sigDraw"><canvas id="sigPad" aria-label="Signature pad: draw your signature"></canvas>
+            <button type="button" class="link" id="sigClear">Clear</button></div>
+          <div id="sigUpload" hidden><input type="file" id="sigFile" accept="image/png,image/jpeg"><img id="sigPreview" alt="Uploaded signature preview" hidden></div>
+        </div>
+        <label class="full rr tick"><input type="checkbox" id="aTerms"> I have read and agree to the <button type="button" class="link inline" id="termsOpen">Terms &amp; Conditions</button> *</label>
+      </fieldset>
+
       <p class="err" id="bookErr" role="alert"></p>
-      <button type="submit">Submit application</button>
-      <button type="button" class="link" data-go="intent">← Back</button>
+      <button type="submit">Submit Application for Purchase of Site</button>
     </form>
+
+    <div class="terms-dialog" id="termsBox" hidden role="dialog" aria-modal="true" aria-labelledby="termsTitle">
+      <div class="panel">
+        <h2 id="termsTitle">Terms &amp; Conditions</h2>
+        <ul class="cols" style="columns:1">
+          <li>Corner sites are charged extra at allotment.</li>
+          <li>Registration charges are borne by members.</li>
+          <li>Allotment is on a first come, first served basis.</li>
+          <li>Payments by Cheque, DD, NEFT, RTGS or IMPS in favour of Bengaluru Metro City Infrastructure Housing Co-operative Society.</li>
+          <li>Required documents: four passport-size photographs, address proof, Government ID proof, and nominee ID proof with one photograph.</li>
+        </ul>
+        <p class="cap">Full terms will be provided by the Society. This summary is based on the project information shared so far.</p>
+        <button type="button" id="termsClose">Close</button>
+      </div>
+    </div>
   </section>
 
   <!-- 4d. Visit the site form -->
@@ -1167,9 +1304,14 @@ document.querySelectorAll("[data-intent]").forEach(b => b.addEventListener("clic
   document.getElementById(pre + "Phone").value = user.phone;
   document.getElementById(book ? "bookErr" : "visitErr").textContent = "";
   if (book) {
-    document.getElementById("bookProject").textContent = current.name + " · " + current.rate;
-    document.getElementById("sizeOpts").innerHTML = current.sizes.map((z, i) =>
-      `<label class="opt"><input type="radio" name="bSize" value="${i}"${current.sizes.length === 1 ? " checked" : ""}><span><b>${z.label}</b><small>${z.note}</small></span></label>`).join("");
+    const sizes = current.dev === "bmi" ? ["30×40", "30×50", "40×60", "50×80"] : current.sizes.map(z => z.label);
+    const layouts = current.dev === "bmi" ? ["Garden City", "North Metro City"] : [current.name];
+    const fill = (id, list) => (document.getElementById(id).innerHTML = `<option value="">Select ${id === "aSize" ? "size" : "layout"}</option>` + list.map(v => `<option>${v}</option>`).join(""));
+    fill("aSize", sizes); fill("aLayout", layouts);
+    document.getElementById("aLayout").value = current.dev === "bmi" ? "Garden City" : current.name;
+    document.getElementById("bName").value = user.name.toUpperCase();
+    if (!document.querySelector("#famRows tr")) addFamRow();
+    setTimeout(sizePad, 0);
   } else {
     document.getElementById("visitProject").textContent = current.name;
     const d = document.getElementById("vDate");
@@ -1195,16 +1337,98 @@ function checkContact(pre, err) {
   if (!phone) { err.textContent = "A valid 10-digit mobile number is required."; return null; }
   return { name, phone };
 }
+// ----- Application for purchase of site -----
+const $ = id => document.getElementById(id);
+$("bName").addEventListener("input", e => { const p = e.target.selectionStart; e.target.value = e.target.value.toUpperCase(); e.target.setSelectionRange(p, p); });
+function ageFrom(v) {
+  if (!v) return "";
+  const d = new Date(v + "T00:00:00"), n = new Date();
+  let a = n.getFullYear() - d.getFullYear();
+  if (n < new Date(n.getFullYear(), d.getMonth(), d.getDate())) a--;
+  return a >= 0 ? a : "";
+}
+$("aDob").addEventListener("input", e => ($("aAge").value = ageFrom(e.target.value)));
+$("nDob").addEventListener("input", e => ($("nAge").value = ageFrom(e.target.value)));
+const corrAddress = () => [$("aAddr1").value, $("aAddr2").value, $("aCity").value, $("aDistrict").value, $("aState").value, $("aPin").value, "India"].map(v => v.trim()).filter(Boolean).join(", ");
+$("nSame").addEventListener("change", e => { $("nAddr").readOnly = e.target.checked; $("nAddr").classList.toggle("locked", e.target.checked); if (e.target.checked) $("nAddr").value = corrAddress(); });
+["aAddr1", "aAddr2", "aCity", "aDistrict", "aState", "aPin"].forEach(id => $(id).addEventListener("input", () => { if ($("nSame").checked) $("nAddr").value = corrAddress(); }));
+
+let famSeq = 0;
+function addFamRow() {
+  const i = ++famSeq, tr = document.createElement("tr");
+  tr.innerHTML = `<td><input id="fName${i}" aria-label="Family member full name"></td><td><input id="fRel${i}" aria-label="Relation"></td><td><input id="fAge${i}" type="number" min="0" max="120" inputmode="numeric" aria-label="Age"></td><td><input id="fOcc${i}" aria-label="Occupation"></td><td><button type="button" class="link fam-del" aria-label="Remove row">✕</button></td>`;
+  tr.querySelector(".fam-del").addEventListener("click", () => tr.remove());
+  $("famRows").appendChild(tr);
+}
+$("famAdd").addEventListener("click", addFamRow);
+
+// signature: draw or upload
+const pad = $("sigPad"), pctx = pad.getContext("2d");
+let drawing = false, signed = false, sigUpload = null;
+function sizePad() {
+  const r = pad.getBoundingClientRect();
+  if (!r.width) return;
+  const keep = signed ? pad.toDataURL() : null;
+  pad.width = r.width * devicePixelRatio; pad.height = r.height * devicePixelRatio;
+  pctx.scale(devicePixelRatio, devicePixelRatio);
+  pctx.lineWidth = 2.2; pctx.lineCap = "round"; pctx.lineJoin = "round"; pctx.strokeStyle = "#1f2a24";
+  if (keep) { const im = new Image(); im.onload = () => pctx.drawImage(im, 0, 0, r.width, r.height); im.src = keep; }
+}
+addEventListener("resize", sizePad);
+const pt = e => { const r = pad.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
+pad.addEventListener("pointerdown", e => { drawing = true; pad.setPointerCapture(e.pointerId); pctx.beginPath(); pctx.moveTo(...pt(e)); e.preventDefault(); });
+pad.addEventListener("pointermove", e => { if (!drawing) return; pctx.lineTo(...pt(e)); pctx.stroke(); signed = true; });
+["pointerup", "pointercancel"].forEach(t => pad.addEventListener(t, () => (drawing = false)));
+$("sigClear").addEventListener("click", () => { pctx.clearRect(0, 0, pad.width, pad.height); signed = false; });
+document.querySelectorAll(".sig-tab").forEach(t => t.addEventListener("click", () => {
+  document.querySelectorAll(".sig-tab").forEach(x => x.classList.toggle("on", x === t));
+  $("sigDraw").hidden = t.dataset.sig !== "draw"; $("sigUpload").hidden = t.dataset.sig !== "upload";
+  if (t.dataset.sig === "draw") setTimeout(sizePad, 0);
+}));
+$("sigFile").addEventListener("change", e => {
+  const f = e.target.files[0]; sigUpload = null; $("sigPreview").hidden = true;
+  if (!f) return;
+  if (!/^image\/(png|jpeg)$/.test(f.type) || f.size > 2 * 1024 * 1024) { $("bookErr").textContent = "Signature image must be a PNG or JPG under 2 MB."; e.target.value = ""; return; }
+  const rd = new FileReader();
+  rd.onload = () => { sigUpload = rd.result; $("sigPreview").src = rd.result; $("sigPreview").hidden = false; };
+  rd.readAsDataURL(f);
+});
+$("termsOpen").addEventListener("click", () => { $("termsBox").hidden = false; $("termsClose").focus(); });
+$("termsClose").addEventListener("click", () => ($("termsBox").hidden = true));
+$("termsBox").addEventListener("click", e => { if (e.target === $("termsBox")) $("termsBox").hidden = true; });
+
 document.getElementById("bookForm").addEventListener("submit", e => {
   e.preventDefault();
-  const err = document.getElementById("bookErr");
-  const size = document.querySelector('input[name="bSize"]:checked');
-  if (!size) return (err.textContent = "Please choose a plot size.");
-  const c = checkContact("b", err); if (!c) return;
+  const err = $("bookErr");
+  const v = id => $(id).value.trim();
+  const fail = (id, msg) => { err.textContent = msg; const el = $(id); el?.focus(); el?.closest("label")?.classList.add("bad"); return false; };
+  document.querySelectorAll("#bookForm .bad").forEach(x => x.classList.remove("bad"));
+  const age = parseInt(v("aAge"), 10), mobile = normalise(v("bPhone"));
+  const sigMode = document.querySelector(".sig-tab.on").dataset.sig;
+  const ok =
+    (v("aSize") || fail("aSize", "Please choose the site size.")) &&
+    (v("aLayout") || fail("aLayout", "Please choose the layout.")) &&
+    (v("bName").length >= 3 || fail("bName", "Please enter the applicant's full name as per Aadhaar.")) &&
+    (v("aGuardian").length >= 2 || fail("aGuardian", "Please enter father's / husband's name.")) &&
+    (v("aDob") || fail("aDob", "Please enter date of birth.")) &&
+    ((age >= 18 && age <= 120) || fail("aAge", "Applicant must be 18 or older. Please check date of birth / age.")) &&
+    (v("aGender") || fail("aGender", "Please select gender.")) &&
+    (mobile || fail("bPhone", "Please enter a valid 10-digit mobile number.")) &&
+    (/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v("aEmail")) || fail("aEmail", "Please enter a valid email address.")) &&
+    (v("aAddr1") || fail("aAddr1", "Please enter address line 1.")) &&
+    (v("aCity") || fail("aCity", "Please enter city.")) &&
+    (v("aState") || fail("aState", "Please enter state.")) &&
+    (!v("aPin") || /^[1-9]\d{5}$/.test(v("aPin")) || fail("aPin", "PIN code must be 6 digits.")) &&
+    (v("nName") || fail("nName", "Please enter nominee name.")) &&
+    (v("nRel") || fail("nRel", "Please select nominee's relationship with you.")) &&
+    ((sigMode === "draw" ? signed : !!sigUpload) || fail(sigMode === "draw" ? "sigPad" : "sigFile", "Please add your signature (draw it or upload an image).")) &&
+    ($("aTerms").checked || fail("aTerms", "Please accept the Terms & Conditions."));
+  if (!ok) return;
   err.textContent = "";
-  const z = current.sizes[+size.value];
-  showDone("Application received", `Thank you, ${c.name.split(" ")[0]}. Our team will call you about your site purchase application.`,
-    [["Project", current.name], ["Plot size", z.label], ...z.extra, ["Name", c.name], ["Mobile", mask(c.phone)]]);
+  const family = [...document.querySelectorAll("#famRows tr")].filter(tr => tr.querySelector("input").value.trim()).length;
+  showDone("Application submitted", `Thank you. Your application for a ${v("aSize")} site in ${v("aLayout")} has been recorded on this device. Our team will contact you to complete the process.`,
+    [["Site", `${v("aSize")} · ${v("aLayout")}`], ["Applicant", v("bName")], ["Mobile", mask(mobile)], ["Email", v("aEmail").replace(/^(.).*(@.*)$/, "$1•••$2")],
+     ["Nominee", `${v("nName")} (${v("nRel")})`], ["Family members", String(family)], ["Signature", sigMode === "draw" ? "Drawn on screen" : "Image uploaded"]]);
 });
 const MODES = { direct: "Coming directly to the site", employee: "BMI employee to accompany", cab: "Cab from the BMI office" };
 document.getElementById("visitForm").addEventListener("submit", e => {
