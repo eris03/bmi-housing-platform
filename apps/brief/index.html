@@ -561,6 +561,29 @@ td.total { color: var(--leaf); }
 #splash i:nth-of-type(2), #splash i:nth-of-type(3) { border-color: #cfc8b8; }
 #splash p { font-family: var(--font-display); letter-spacing: .3em; color: var(--leaf); }
 
+/* ---------- Sign-in brand panel (replaces the site-plan picture) ---------- */
+.login-hero { position: relative; overflow: hidden; border-radius: 18px; border: 0; padding: 22px 22px 24px; min-height: 240px; display: flex; flex-direction: column; justify-content: space-between; gap: 22px;
+  background: radial-gradient(120% 90% at 85% 100%, #3d6f58 0%, transparent 60%), linear-gradient(160deg, #234537, #1b3a2d 60%, #142c22); color: #f3eee2; box-shadow: 0 20px 44px -24px rgba(20,44,34,.7); }
+.login-scene { display: none; }
+.login-contours { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.login-contours g { animation: contourDrift 18s ease-in-out infinite alternate; }
+@keyframes contourDrift { to { transform: translate(-18px, 6px); } }
+.lh-top, .lh-body { position: relative; }
+.lh-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.login-hero .login-logo { position: static; margin: 0; width: 58px; height: 58px; padding: 3px; border-radius: 50%; background: #fff; box-shadow: 0 0 0 1px rgba(233,222,196,.5), 0 8px 18px -8px rgba(0,0,0,.6); animation: fadeIn .8s ease both; }
+.lh-tag { font-size: .72rem; letter-spacing: .16em; text-transform: uppercase; color: #d9c79f; border: 1px solid rgba(217,199,159,.45); padding: 5px 10px; border-radius: 6px; }
+.lh-body { display: grid; gap: 4px; }
+.lh-body p { margin: 0; }
+.lh-name { font-family: var(--font-display); font-size: clamp(1.6rem, 6vw, 2.1rem); font-weight: 600; line-height: 1.1; color: #fbf7ec; }
+.lh-loc { color: #c9d4cc; font-size: .95rem; }
+.lh-price { margin-top: 10px !important; color: #c9d4cc; font-size: .95rem; }
+.lh-price span { font-family: var(--font-display); font-size: 2rem; font-weight: 600; color: #e8d6a8; margin-right: 2px; }
+.lh-near { margin-top: 8px !important; padding-top: 10px; border-top: 1px solid rgba(233,222,196,.2); color: #b9c6bd; font-size: .85rem; }
+.lh-body > * { animation: fadeIn .7s ease both; }
+.lh-body > *:nth-child(2) { animation-delay: .1s; } .lh-body > *:nth-child(3) { animation-delay: .2s; } .lh-body > *:nth-child(4) { animation-delay: .3s; }
+.login-intro { padding-top: 22px; }
+@media (min-width: 720px) { .login-hero { min-height: 380px; padding: 30px; } .lh-price span { font-size: 2.6rem; } .login-intro { padding-top: 0; } }
+
 @media (prefers-reduced-motion: reduce) {
   #splash { display: none; }
   .ticker-track { animation: none; flex-wrap: wrap; width: auto; }
@@ -584,31 +607,27 @@ td.total { color: var(--leaf); }
   <!-- 1. Login -->
   <section class="screen" id="s-login">
     <div class="login-hero">
-      <svg class="login-scene" viewBox="0 0 360 200" aria-hidden="true">
-        <rect width="360" height="200" fill="#eef1ec"/>
-        <g class="lp-grid" stroke="#d9dfd7" stroke-width=".6">
-          <path d="M0 40 H360 M0 80 H360 M0 120 H360 M0 160 H360 M60 0 V200 M120 0 V200 M180 0 V200 M240 0 V200 M300 0 V200"/>
+      <svg class="login-contours" viewBox="0 0 400 260" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+        <g fill="none" stroke="rgba(233,222,196,.16)" stroke-width="1">
+          <path d="M-20 210 C 60 170 120 230 200 190 S 340 150 420 180"/>
+          <path d="M-20 180 C 70 140 130 200 210 160 S 340 120 420 150"/>
+          <path d="M-20 150 C 80 110 140 170 220 130 S 340 90 420 120"/>
+          <path d="M-20 120 C 90 80 150 140 230 100 S 340 60 420 90"/>
+          <path d="M-20 90 C 100 50 160 110 240 70 S 340 30 420 60"/>
+          <path d="M-20 60 C 110 20 170 80 250 40 S 340 0 420 30"/>
+          <ellipse cx="318" cy="200" rx="40" ry="18"/><ellipse cx="318" cy="200" rx="24" ry="10"/><ellipse cx="318" cy="200" rx="10" ry="4"/>
         </g>
-        <g class="lp-road" fill="none" stroke="#c9b48f" stroke-width="7" stroke-linecap="round">
-          <path d="M-10 128 C 80 128 120 92 200 92 S 330 70 370 70"/>
-        </g>
-        <g class="lp-road" fill="none" stroke="#fff" stroke-width="1" stroke-dasharray="5 6">
-          <path d="M-10 128 C 80 128 120 92 200 92 S 330 70 370 70"/>
-        </g>
-        <g class="lp-plots" fill="none" stroke="#2f5d4a" stroke-width="1.1">
-          <path d="M24 146 h36 v30 h-36z M62 146 h36 v30 h-36z M100 140 h36 v36 h-36z M138 132 h36 v44 h-36z"/>
-          <path d="M150 34 h34 v40 h-34z M186 34 h34 v38 h-34z M222 30 h34 v38 h-34z M258 26 h34 v34 h-34z M294 22 h34 v32 h-34z"/>
-          <path d="M210 112 h40 v34 h-40z M252 108 h40 v38 h-40z M294 100 h40 v46 h-40z"/>
-        </g>
-        <g class="lp-fill">
-          <rect x="100" y="140" width="36" height="36" fill="#2f5d4a" opacity=".14"/>
-          <rect x="222" y="30" width="34" height="38" fill="#a8774f" opacity=".16"/>
-          <rect x="252" y="108" width="40" height="38" fill="#2f5d4a" opacity=".14"/>
-        </g>
-        <g class="lp-park"><circle cx="70" cy="60" r="26" fill="#dbe6dc" stroke="#9db5a2" stroke-width=".8"/><circle cx="62" cy="56" r="4" fill="#9db5a2"/><circle cx="76" cy="66" r="5" fill="#9db5a2"/><circle cx="80" cy="52" r="3.5" fill="#9db5a2"/></g>
-        <g class="lp-compass" transform="translate(330 176)"><circle r="12" fill="#fff" stroke="#c9b48f" stroke-width=".8"/><path d="M0 -9 L3 0 L0 9 L-3 0Z" fill="#2f5d4a"/><text y="-15" text-anchor="middle" font-size="7" fill="#7a6a52" font-family="Source Sans 3, sans-serif">N</text></g>
       </svg>
-      <img class="login-logo" id="loginLogo" alt="BMI Housing Society logo">
+      <div class="lh-top">
+        <img class="login-logo" id="loginLogo" alt="BMI Housing Society logo">
+        <span class="lh-tag">Featured project</span>
+      </div>
+      <div class="lh-body">
+        <p class="lh-name">BMI Garden City</p>
+        <p class="lh-loc">Off NH 648, Devanahalli · North Bengaluru</p>
+        <p class="lh-price"><span>₹1,399</span> / sq ft</p>
+        <p class="lh-near">Near Kempegowda Airport · ITIR Tech Park · Amity University</p>
+      </div>
     </div>
 
     <div class="login-intro">
