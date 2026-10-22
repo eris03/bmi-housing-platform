@@ -946,8 +946,8 @@ textarea:focus { outline: none; border-color: var(--leaf); box-shadow: 0 0 0 3px
       </div>
       <fieldset><legend>How will you come? *</legend><div class="opts">
         <label class="opt"><input type="radio" name="vMode" value="direct"><span><b>We'll come directly</b><small>Meet us at the site</small></span></label>
-        <label class="opt"><input type="radio" name="vMode" value="employee"><span><b>Send a BMI employee with us</b><small>A team member accompanies you</small></span></label>
-        <label class="opt"><input type="radio" name="vMode" value="cab"><span><b>Need a cab from the office</b><small>We pick you up from the BMI office</small></span></label>
+        <label class="opt"><input type="radio" name="vMode" value="employee"><span><b>Send <span class="devNameA">a BMI</span> employee with us</b><small>A team member accompanies you</small></span></label>
+        <label class="opt"><input type="radio" name="vMode" value="cab"><span><b>Need a cab from the office</b><small>We pick you up from the <span class="devName">BMI</span> office</small></span></label>
       </div></fieldset>
       <label for="vName">Full name *<input id="vName" autocomplete="name"></label>
       <label for="vPhone">Mobile number *<div class="phone"><span>+91</span><input id="vPhone" inputmode="tel" autocomplete="tel-national"></div></label>
@@ -1424,6 +1424,8 @@ function go(name, isBack) {
   const logo = document.getElementById("hdrLogo");
   logo.src = rk ? LOGOS.rk : LOGOS.bmi; logo.alt = rk ? "RK Developers logo" : "BMI logo";
   logo.classList.toggle("rk", rk);
+  document.querySelectorAll(".devName").forEach(e => (e.textContent = rk ? "RK Developers" : "BMI"));
+  document.querySelectorAll(".devNameA").forEach(e => (e.textContent = rk ? "an RK Developers" : "a BMI"));
   document.getElementById("hdrText").innerHTML = rk ? "<b>RK Developers</b><small>Plotted developments in North Bengaluru</small>" : "<b>BMI Housing Society</b><small>Bengaluru Metro City Infrastructure Housing Co-operative Society</small>";
   window.scrollTo({ top: 0 });
 }
@@ -1696,7 +1698,7 @@ $("futureForm").addEventListener("submit", e => {
     [["Name", v("uName")], ["Mobile", mask(mobile)], ["Email", v("uEmail").replace(/^(.).*(@.*)$/, "$1•••$2")], ["Date of birth", nice(v("uDob"))],
      ["Gender", v("uGender")], ["Budget", v("uBudget")], ["Address", v("uAddr")]]);
 });
-const MODES = { direct: "Coming directly to the site", employee: "BMI employee to accompany", cab: "Cab from the BMI office" };
+const MODES = { direct: "Coming directly to the site", employee: "{dev} employee to accompany", cab: "Cab from the {dev} office" };
 document.getElementById("visitForm").addEventListener("submit", e => {
   e.preventDefault();
   const err = document.getElementById("visitErr");
@@ -1712,6 +1714,6 @@ document.getElementById("visitForm").addEventListener("submit", e => {
   err.textContent = "";
   const nice = new Date(date + "T00:00:00").toLocaleDateString("en-IN", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
   showDone("Site visit requested", `Thank you, ${c.name.split(" ")[0]}. Our team will call you to confirm your visit.`,
-    [["Project", current.name], ["Date & day", nice], ["Time", time], ["People", String(people)], ["Travel", MODES[mode.value]], ["Name", c.name], ["Mobile", mask(c.phone)]]);
+    [["Project", current.name], ["Date & day", nice], ["Time", time], ["People", String(people)], ["Travel", MODES[mode.value].replace("{dev}", current.dev === "rk" ? "RK Developers" : "BMI")], ["Name", c.name], ["Mobile", mask(c.phone)]]);
 });
 </script>
