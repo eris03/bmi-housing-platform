@@ -682,6 +682,7 @@ textarea:focus { outline: none; border-color: var(--leaf); box-shadow: 0 0 0 3px
   .pick-card:has(.photo-band) { grid-template-columns: 46% 1fr; align-items: stretch; min-height: 330px; }
   .pick-card:has(.photo-band) .photo-band { height: 100%; width: 100%; border-bottom: 0; border-right: 1px solid var(--line); transform: none; }
   .pick-card:has(.photo-band) .photo-band img:first-child { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 60%; }
+  .pick-card[data-list=rk][data-project="1"] .photo-band img:first-child { object-position: 0% 55%; }  /* keep the RK Avenue gate arch and logo in view */
   .pick-card:has(.photo-band) .photo-band::before, .pick-card:has(.photo-band) .pb-logo { display: none; }
   .pick-card:has(.photo-band) .pick-body { align-content: center; padding: 28px 36px; gap: 4px; }
   .pick-card:has(.photo-band) .pick-logo { display: block; height: 64px; width: auto; max-width: 140px; object-fit: contain; background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 5px; margin-bottom: 12px; }
