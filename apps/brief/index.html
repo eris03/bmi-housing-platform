@@ -519,6 +519,7 @@ input:focus, select:focus { border-color: var(--leaf); box-shadow: 0 0 0 3px rgb
 .badges span.price { background: var(--leaf); color: #fff; border: 0; }
 .facts div, .facts div:nth-child(5n+2), .facts div:nth-child(5n+3), .facts div:nth-child(5n+4), .facts div:nth-child(5n) { background: #f7f6f2; border: 1px solid var(--line); }
 .facts dd { font-family: var(--font-display); font-weight: 600; }
+.facts div.wide { grid-column: 1 / -1; order: 1; }
 thead th { background: #f2f1ec; color: var(--leaf); }
 tbody tr:nth-child(even) { background: #fbfaf7; }
 tbody tr:hover { background: var(--leaf-soft); }
@@ -1130,11 +1131,11 @@ const RK_PROJECTS = [
     location: [["Kempegowda International Airport", "KIA Corridor – short drive away"], ["Upcoming Metro Extensions", "Near planned Metro connectivity"], ["Highway Connectivity", "Easily accessible via key highway connectors"], ["Schools & Hospitals", "Close to top educational & medical institutions"], ["Rising Land Values", "One of North Bengaluru's highest-appreciation zones"], ["Expanding Urban Development", "New residential & commercial hubs nearby"]],
     cta: "Phase 1 plots are limited and selling fast. Book a free site visit to Metro Greens today." },
   { id: "rk-avenue", name: "RK Avenue", dev: "rk", logo: "rk", photos: "rka", hue: ["#dccdbd","#f3efe8"], phone: "+91 9663108999",
-    rate: "₹3,499/sqft", where: "Alkapura Village, Gauribidanur",
+    rate: "₹3,499/sqft", where: "SH-9 Doddaballapura Highway, Alkapura Village, Gauribidanur",
     eyebrow: "Prime Land. Premium Living.",
     line: "An exclusive gated community of just 36 high-value residential plots across 2.5 acres in Alkapura Village — where serene suburban living meets world-class infrastructure.",
     badges: ["Ready for Registration & Construction", "2.5 Acre Layout", "36 Exclusive Plots", "₹3,499/sq.ft"],
-    facts: [["Size", "2.5 Acre Layout"], ["Plots", "36 Exclusive"], ["Price", "₹3,499/sq.ft"], ["Location", "Alkapura, Gauribidanur"], ["Status", "Ready to Register"]],
+    facts: [["Size", "2.5 Acre Layout"], ["Plots", "36 Exclusive"], ["Price", "₹3,499/sq.ft"], ["Location", "SH-9 Doddaballapura Hwy, Alkapura Village, Gauribidanur"], ["Status", "Ready to Register"]],
     aboutTitle: "The Pinnacle of Residential Plot Living",
     about: ["RK Avenue represents \"The High\" in modern residential planning. Spread across 2.5 acres of pristine land, this exclusive gated community offers just 36 premium residential plots — combining a nature-centric layout with the structural integrity of a world-class development.",
       "Every plot is fully serviced, legally clear, and ready for immediate registration and construction — no waiting, no delays."],
@@ -1197,7 +1198,7 @@ function renderRk(p, i) {
       <div class="plogos"><img class="plogo" alt="${p.name} logo" src="${LOGOS[p.logo]}">${p.logo !== "rk" ? `<img class="plogo" alt="RK Developers logo" src="${LOGOS.rk}">` : ""}</div>
       <div><h3>RK Developers · ${esc(p.eyebrow)}</h3><h2 style="font-size:1.7rem">${p.name}</h2><p class="lead">${esc(p.line)}</p></div>
       <div class="badges">${p.badges.map((b, k) => `<span class="${b.includes("₹") ? "price" : ""}">${esc(b)}</span>`).join("")}</div>
-      <dl class="facts">${p.facts.map(([k, v]) => `<div><dt>${k}</dt><dd>${esc(v)}</dd></div>`).join("")}</dl>
+      <dl class="facts">${p.facts.map(([k, v]) => `<div${v.length > 28 ? ' class="wide"' : ""}><dt>${k}</dt><dd>${esc(v)}</dd></div>`).join("")}</dl>
       <div><h3>About ${p.name}</h3><h2>${esc(p.aboutTitle)}</h2>${p.about.map(a => `<p>${esc(a)}</p>`).join("")}</div>
       <dl class="facts">${p.stats.map(([k, v]) => `<div><dd style="font-size:1.4rem">${k}</dd><dt>${v}</dt></div>`).join("")}</dl>
       ${p.crops ? `<div><h3>Our crops · High-value trees & fruit crops</h3><p>${esc(p.crops.intro)}</p>
