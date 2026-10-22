@@ -656,6 +656,12 @@ textarea:focus { outline: none; border-color: var(--leaf); box-shadow: 0 0 0 3px
 .gallery.real span { position: absolute; left: 8px; bottom: 8px; right: 8px; font: 500 .7rem var(--font-body); background: rgba(31,42,36,.6); color: #fff; padding: 3px 8px; border-radius: 6px; width: fit-content; max-width: calc(100% - 16px); }
 .gallery.real::after { display: none; }
 .project .gallery.real ~ .pbody { margin-top: 0; }
+.project:has(.phead) .pbody { margin-top: 0; }
+.phead { border: 1px solid var(--line); border-radius: 16px; background: #fff; overflow: hidden; }
+.phead-top { display: flex; align-items: center; gap: 14px; padding: 14px 16px; border-bottom: 1px solid var(--line); }
+.phead-top .plogo { height: 60px; box-shadow: none; }
+.phead-top h2 { font-size: 1.55rem; margin: 0; }
+.phead .gallery.real.n1 { border-radius: 0; margin: 0; }
 .photo-band { position: relative; height: clamp(220px, 52vw, 380px); overflow: hidden; background: #e9e7e0; border-bottom: 1px solid var(--line); transform: translateZ(30px); }
 .photo-band::before { content: ""; position: absolute; inset: -20px; background: var(--bg) center / cover no-repeat; filter: blur(18px) saturate(1.1); opacity: .55; }
 .photo-band img:first-child { position: relative; width: 100%; height: 100%; object-fit: contain; display: block; transition: transform .6s ease; }
@@ -1156,10 +1162,11 @@ function photo(seed, [a, b], label) {
 function renderProject(p, i) {
   const esc = s => s.replace(/&/g, "&amp;");
   return `<article class="project" id="${p.id}">
-    ${p.photos ? realGallery(PHOTOS[p.photos]) : `<div class="gallery">${photo(7 + i * 11, p.hue, "Photo placeholder")}${photo(3 + i * 5, p.hue, "Layout")}${photo(19 + i, p.hue, "Site")}</div>`}
+    ${p.photos ? "" : `<div class="gallery">${photo(7 + i * 11, p.hue, "Photo placeholder")}${photo(3 + i * 5, p.hue, "Layout")}${photo(19 + i, p.hue, "Site")}</div>`}
     <div class="pbody">
-      <img class="plogo" alt="BMI logo" src="${LOGOS.bmi}">
-      <div><h2 style="font-size:1.7rem">${p.name}</h2><p class="lead">${esc(p.line)}</p></div>
+      ${p.photos ? `<div class="phead"><div class="phead-top"><img class="plogo" alt="BMI logo" src="${LOGOS.bmi}"><h2>${p.name}</h2></div>${realGallery(PHOTOS[p.photos])}</div>
+      <p class="lead">${esc(p.line)}</p>` : `<img class="plogo" alt="BMI logo" src="${LOGOS.bmi}">
+      <div><h2 style="font-size:1.7rem">${p.name}</h2><p class="lead">${esc(p.line)}</p></div>`}
       <div class="badges"><span>BIAAPA Approval</span><span>A Khata</span><span>4-EMI Plan</span><span class="price">${p.rate}</span><span>${p.where}</span></div>
       <div><h3>${p.overviewTitle}</h3><p>${OVERVIEW}</p></div>
       <dl class="facts">
@@ -1205,7 +1212,7 @@ function renderRk(p, i) {
 function renderPicker(list, el) {
   document.getElementById(el).innerHTML = list.map((p, i) => `
   <button class="pick-card" data-list="${p.dev}" data-project="${i}">
-    ${p.photos ? `<div class="photo-band" style="--bg:url(${PHOTOS[p.photos][0][1]})"><img src="${PHOTOS[p.photos][0][1]}" alt="${p.name} site photo"><img class="pb-logo" src="${LOGOS[p.logo]}" alt="${p.name} logo"></div>` : p.logo ? `<div class="logo-band"><img alt="${p.name} logo" src="${LOGOS[p.logo]}"></div>` : `<div class="gallery mini">${photo(7 + i * 11, p.hue, p.name)}</div>`}
+    ${p.photos && p.dev !== "bmi" ? `<div class="photo-band" style="--bg:url(${PHOTOS[p.photos][0][1]})"><img src="${PHOTOS[p.photos][0][1]}" alt="${p.name} site photo"><img class="pb-logo" src="${LOGOS[p.logo]}" alt="${p.name} logo"></div>` : p.logo ? `<div class="logo-band"><img alt="${p.name} logo" src="${LOGOS[p.logo]}"></div>` : `<div class="gallery mini">${photo(7 + i * 11, p.hue, p.name)}</div>`}
     <span class="pick-body"><b>${p.name}${p.dev === "rk" ? ' <span class="tag-ongoing">(Ongoing)</span>' : ""}</b><small>${p.rate} · ${p.where}</small><em>View details →</em></span>
   </button>`).join("");
 }
