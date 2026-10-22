@@ -883,6 +883,28 @@ textarea:focus { outline: none; border-color: var(--leaf); box-shadow: 0 0 0 3px
     </div>
   </section>
 
+  <!-- 4e. RK Developers: short purchase application -->
+  <section class="screen" id="s-rkbook" hidden>
+    <form class="panel app-form" id="rkForm" novalidate>
+      <div class="app-head">
+        <p class="app-kicker">RK Developers</p>
+        <h1>Apply to purchase site</h1>
+        <p class="muted" id="rkProject"></p>
+      </div>
+      <fieldset class="app-sec"><legend>Your details</legend>
+        <label for="rName" class="full">Full name *<input id="rName" autocomplete="name"></label>
+        <label for="rPhone">Mobile number *<div class="phone"><span>+91</span><input id="rPhone" inputmode="tel" autocomplete="tel-national"></div></label>
+        <label for="rEmail">Email *<input id="rEmail" type="email" autocomplete="email" placeholder="you@example.com"></label>
+        <label for="rDob">Date of birth *<input id="rDob" type="date"></label>
+        <label for="rGender">Gender *<select id="rGender"><option value="">Select</option><option>Male</option><option>Female</option><option>Other</option></select></label>
+        <label for="rDate" class="full">Date *<input id="rDate" type="date"></label>
+        <label for="rAddr" class="full">Address *<textarea id="rAddr" rows="3" autocomplete="street-address"></textarea></label>
+      </fieldset>
+      <p class="err" id="rkErr" role="alert"></p>
+      <button type="submit">Submit application</button>
+    </form>
+  </section>
+
   <!-- 4d. Visit the site form -->
   <section class="screen" id="s-visit" hidden>
     <form class="panel" id="visitForm" novalidate>
@@ -1293,7 +1315,7 @@ function addTicker(root, p) {
   badges?.after(t);
 }
 
-const screens = ["login", "otp", "projects", "detail", "intent", "book", "visit", "done", "rk", "bye"];
+const screens = ["login", "otp", "projects", "detail", "intent", "book", "rkbook", "visit", "done", "rk", "bye"];
 const trail = [];
 let here = "login";
 function go(name, isBack) {
@@ -1340,6 +1362,12 @@ const first = () => user.name.split(" ")[0];
 const mask = ph => "+91 •••••" + ph.slice(-5);
 document.querySelectorAll("[data-intent]").forEach(b => b.addEventListener("click", () => {
   const book = b.dataset.intent === "book";
+  if (book && current.dev === "rk") {
+    $("rkProject").textContent = `${current.name} · ${current.rate} · ${current.where}`;
+    $("rName").value = user.name; $("rPhone").value = user.phone; $("rkErr").textContent = "";
+    if (!$("rDate").value) $("rDate").value = new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+    return go("rkbook");
+  }
   const pre = book ? "b" : "v";
   document.getElementById(pre + "Name").value = user.name;
   document.getElementById(pre + "Phone").value = user.phone;
@@ -1437,6 +1465,29 @@ $("sigFile").addEventListener("change", e => {
 $("termsOpen").addEventListener("click", () => { $("termsBox").hidden = false; $("termsClose").focus(); });
 $("termsClose").addEventListener("click", () => ($("termsBox").hidden = true));
 $("termsBox").addEventListener("click", e => { if (e.target === $("termsBox")) $("termsBox").hidden = true; });
+
+document.getElementById("rkForm").addEventListener("submit", e => {
+  e.preventDefault();
+  const err = $("rkErr"), v = id => $(id).value.trim();
+  document.querySelectorAll("#rkForm .bad").forEach(x => x.classList.remove("bad"));
+  const fail = (id, msg) => { err.textContent = msg; $(id).focus(); $(id).closest("label")?.classList.add("bad"); return false; };
+  const mobile = normalise(v("rPhone")), age = ageFrom(v("rDob"));
+  const ok =
+    (v("rName").length >= 2 || fail("rName", "Please enter your full name.")) &&
+    (mobile || fail("rPhone", "Please enter a valid 10-digit mobile number.")) &&
+    (/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v("rEmail")) || fail("rEmail", "Please enter a valid email address.")) &&
+    (v("rDob") || fail("rDob", "Please enter your date of birth.")) &&
+    ((age !== "" && age >= 18) || fail("rDob", "Applicant must be 18 or older.")) &&
+    (v("rGender") || fail("rGender", "Please select gender.")) &&
+    (v("rDate") || fail("rDate", "Please choose a date.")) &&
+    (v("rAddr").length >= 5 || fail("rAddr", "Please enter your address."));
+  if (!ok) return;
+  err.textContent = "";
+  const nice = d => new Date(d + "T00:00:00").toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" });
+  showDone("Application submitted", `Thank you, ${v("rName").split(" ")[0]}. RK Developers will contact you about ${current.name}.`,
+    [["Project", current.name], ["Name", v("rName")], ["Mobile", mask(mobile)], ["Email", v("rEmail").replace(/^(.).*(@.*)$/, "$1•••$2")],
+     ["Date of birth", nice(v("rDob"))], ["Gender", v("rGender")], ["Date", nice(v("rDate"))], ["Address", v("rAddr")]]);
+});
 
 document.getElementById("bookForm").addEventListener("submit", e => {
   e.preventDefault();
