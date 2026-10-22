@@ -655,6 +655,20 @@ textarea:focus { outline: none; border-color: var(--leaf); box-shadow: 0 0 0 3px
 .pick-card:hover .photo-band img:first-child { transform: scale(1.03); }
 .pb-logo { position: absolute; right: 12px; bottom: 12px; width: 64px; height: auto; background: #fff; border-radius: 10px; padding: 4px; box-shadow: 0 6px 16px -8px rgba(0,0,0,.5); }
 
+/* ---------- Terms, payment, future projects ---------- */
+.terms-link { margin: 0; font-size: .95rem; color: var(--muted); }
+.terms-list { margin: 0; padding-left: 1.4rem; display: grid; gap: 10px; line-height: 1.55; }
+.terms-list li::marker { color: var(--leaf); font-weight: 700; }
+#s-terms .terms-list { background: #faf8f3; border: 1px solid var(--line); border-radius: 10px; padding: 16px 16px 16px 2.2rem; }
+#s-terms button#tContinue, #payConfirm, #futureForm button[type=submit] { width: 100%; padding-block: 15px; }
+.pay-amount { display: grid; gap: 4px; background: var(--leaf); color: #fff; border-radius: 14px; padding: 18px 20px; }
+.pay-amount span { font-size: .8rem; letter-spacing: .12em; text-transform: uppercase; opacity: .85; }
+.pay-amount b { font-family: var(--font-display); font-size: 2rem; font-weight: 600; }
+.pay-amount small { opacity: .9; font-size: .9rem; }
+#payModes { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+.pay-soon { opacity: .55; cursor: not-allowed; border-style: dashed !important; }
+.future-links { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px; }
+
 @media (prefers-reduced-motion: reduce) {
   #splash { display: none; }
   .ticker-track { animation: none; flex-wrap: wrap; width: auto; }
@@ -860,24 +874,17 @@ textarea:focus { outline: none; border-color: var(--leaf); box-shadow: 0 0 0 3px
             <button type="button" class="link" id="sigClear">Clear</button></div>
           <div id="sigUpload" hidden><input type="file" id="sigFile" accept="image/png,image/jpeg"><img id="sigPreview" alt="Uploaded signature preview" hidden></div>
         </div>
-        <label class="full rr tick"><input type="checkbox" id="aTerms"> I have read and agree to the <button type="button" class="link inline" id="termsOpen">Terms &amp; Conditions</button> *</label>
       </fieldset>
 
       <p class="err" id="bookErr" role="alert"></p>
+      <p class="terms-link">Please read the <button type="button" class="link inline" id="termsOpen">Terms &amp; Conditions</button>. You'll be asked to accept them after you submit.</p>
       <button type="submit">Submit Application for Purchase of Site</button>
     </form>
 
     <div class="terms-dialog" id="termsBox" hidden role="dialog" aria-modal="true" aria-labelledby="termsTitle">
       <div class="panel">
         <h2 id="termsTitle">Terms &amp; Conditions</h2>
-        <ul class="cols" style="columns:1">
-          <li>Corner sites are charged extra at allotment.</li>
-          <li>Registration charges are borne by members.</li>
-          <li>Allotment is on a first come, first served basis.</li>
-          <li>Payments by Cheque, DD, NEFT, RTGS or IMPS in favour of Bengaluru Metro City Infrastructure Housing Co-operative Society.</li>
-          <li>Required documents: four passport-size photographs, address proof, Government ID proof, and nominee ID proof with one photograph.</li>
-        </ul>
-        <p class="cap">Full terms will be provided by the Society. This summary is based on the project information shared so far.</p>
+        <ol class="terms-list"><li>I agree to abide by the conditions of allotment and sale of site as prescribed by the Bengaluru Metro City Infrastructure Housing Co-operative Society Ltd.</li><li>I declare that all the information I have given is true to the best of my knowledge, and I will provide any other information needed for the allotment of the site.</li><li>If that other information isn’t provided within time, the Society may, at its discretion, reject my application for allotment.</li><li>Withdrawals or transfers of membership or bookings are possible only after the project period is complete. Any withdrawal before the project is completed will be liable for a penalty.</li><li>If the information or declaration I gave is ever found to be false, the Society can cancel my allotment. I understand that I can never make any claim in future.</li><li>My application is subject to three things: the Society approving my membership or associate membership, clearance of the land by MUDA, BDA, BMRDA, BIAAPA or any other competent zonal development authority, and availability of a site.</li><li>Membership of the Society doesn’t guarantee a site. Seniority for allotment is based on the payment or initial deposit, and the instalments paid after it.</li><li>I fully agree to the above conditions, and they are binding on me.</li></ol>
         <button type="button" id="termsClose">Close</button>
       </div>
     </div>
@@ -955,14 +962,65 @@ textarea:focus { outline: none; border-color: var(--leaf); box-shadow: 0 0 0 3px
     <div class="done-grid" id="rkDoneList"></div>
   </section>
 
-  <!-- 6. Not interested in RK either -->
-  <section class="screen" id="s-bye" hidden>
-    <div class="panel done">
-      <h1>Thank you for your time</h1>
-      <p class="muted">If you change your mind, you can look at the projects again anytime.</p>
-      <button class="link" data-go="projects">See BMI projects again</button>
-      <button class="link" data-go="rk">See RK Developers projects again</button>
+  <!-- 6. Terms & Conditions (BMI, after the application) -->
+  <section class="screen" id="s-terms" hidden>
+    <div class="panel app-form">
+      <div class="app-head">
+        <p class="app-kicker">Bengaluru Metro City Infrastructure Housing Co-operative Society Ltd.</p>
+        <h1>Terms &amp; Conditions</h1>
+        <p class="muted">Please read and accept to continue to payment.</p>
+      </div>
+      <ol class="terms-list"><li>I agree to abide by the conditions of allotment and sale of site as prescribed by the Bengaluru Metro City Infrastructure Housing Co-operative Society Ltd.</li><li>I declare that all the information I have given is true to the best of my knowledge, and I will provide any other information needed for the allotment of the site.</li><li>If that other information isn’t provided within time, the Society may, at its discretion, reject my application for allotment.</li><li>Withdrawals or transfers of membership or bookings are possible only after the project period is complete. Any withdrawal before the project is completed will be liable for a penalty.</li><li>If the information or declaration I gave is ever found to be false, the Society can cancel my allotment. I understand that I can never make any claim in future.</li><li>My application is subject to three things: the Society approving my membership or associate membership, clearance of the land by MUDA, BDA, BMRDA, BIAAPA or any other competent zonal development authority, and availability of a site.</li><li>Membership of the Society doesn’t guarantee a site. Seniority for allotment is based on the payment or initial deposit, and the instalments paid after it.</li><li>I fully agree to the above conditions, and they are binding on me.</li></ol>
+      <label class="rr tick"><input type="checkbox" id="tAgree"> I have read and fully agree to the above Terms &amp; Conditions *</label>
+      <p class="err" id="tErr" role="alert"></p>
+      <button type="button" id="tContinue">Agree and continue to payment</button>
     </div>
+  </section>
+
+  <!-- 7. Payment -->
+  <section class="screen" id="s-pay" hidden>
+    <div class="panel app-form">
+      <div class="app-head">
+        <p class="app-kicker" id="payKicker"></p>
+        <h1>Payment</h1>
+        <p class="muted" id="payFor"></p>
+      </div>
+      <div class="pay-amount">
+        <span id="payLabel">Amount due now</span>
+        <b id="payAmount"></b>
+        <small id="payNote"></small>
+      </div>
+      <fieldset><legend>How would you like to pay? *</legend>
+        <div class="opts" id="payModes"></div>
+      </fieldset>
+      <div class="opt pay-soon" aria-disabled="true"><span><b>UPI / card / net banking</b><small>Online payment is coming soon.</small></span></div>
+      <p class="cap" id="payFavour"></p>
+      <p class="err" id="payErr" role="alert"></p>
+      <button type="button" id="payConfirm">Confirm payment method</button>
+    </div>
+  </section>
+
+  <!-- 8. Not interested in RK either: stay in touch for new projects -->
+  <section class="screen" id="s-future" hidden>
+    <form class="panel app-form" id="futureForm" novalidate>
+      <div class="app-head">
+        <p class="app-kicker">New projects</p>
+        <h1>Fill in your details for further conversation</h1>
+        <p class="muted">We'll contact you when a project that suits you is launched.</p>
+      </div>
+      <fieldset class="app-sec"><legend>Your details</legend>
+        <label for="uName" class="full">Full name *<input id="uName" autocomplete="name"></label>
+        <label for="uPhone">Mobile number *<div class="phone"><span>+91</span><input id="uPhone" inputmode="tel" autocomplete="tel-national"></div></label>
+        <label for="uEmail">Email *<input id="uEmail" type="email" autocomplete="email" placeholder="you@example.com"></label>
+        <label for="uDob">Date of birth *<input id="uDob" type="date"></label>
+        <label for="uGender">Gender *<select id="uGender"><option value="">Select</option><option>Male</option><option>Female</option><option>Other</option></select></label>
+        <label for="uBudget" class="full">Budget *<select id="uBudget"><option value="">Select budget</option><option>Under ₹15 lakh</option><option>₹15 – 25 lakh</option><option>₹25 – 50 lakh</option><option>₹50 lakh – ₹1 crore</option><option>Above ₹1 crore</option></select></label>
+        <label for="uAddr" class="full">Address *<textarea id="uAddr" rows="3" autocomplete="street-address"></textarea></label>
+      </fieldset>
+      <p class="err" id="uErr" role="alert"></p>
+      <button type="submit">Submit details</button>
+      <div class="future-links"><button type="button" class="link" data-go="projects">See BMI projects again</button><button type="button" class="link" data-go="rk">See RK Developers projects again</button></div>
+    </form>
   </section>
 
   <p class="foot">Photos and video are placeholders. Prices and details as provided by each developer.</p>
@@ -1315,7 +1373,7 @@ function addTicker(root, p) {
   badges?.after(t);
 }
 
-const screens = ["login", "otp", "projects", "detail", "intent", "book", "rkbook", "visit", "done", "rk", "bye"];
+const screens = ["login", "otp", "projects", "detail", "intent", "book", "rkbook", "visit", "done", "rk", "terms", "pay", "future"];
 const trail = [];
 let here = "login";
 function go(name, isBack) {
@@ -1357,7 +1415,7 @@ document.getElementById("otpForm").addEventListener("submit", e => {
   go("projects");
 });
 document.getElementById("yesBtn").addEventListener("click", () => go("intent"));
-document.getElementById("noBtn").addEventListener("click", () => go(current.dev === "rk" ? "bye" : "rk"));
+document.getElementById("noBtn").addEventListener("click", () => (current.dev === "rk" ? openFuture() : go("rk")));
 const first = () => user.name.split(" ")[0];
 const mask = ph => "+91 •••••" + ph.slice(-5);
 document.querySelectorAll("[data-intent]").forEach(b => b.addEventListener("click", () => {
@@ -1484,9 +1542,15 @@ document.getElementById("rkForm").addEventListener("submit", e => {
   if (!ok) return;
   err.textContent = "";
   const nice = d => new Date(d + "T00:00:00").toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" });
-  showDone("Application submitted", `Thank you, ${v("rName").split(" ")[0]}. RK Developers will contact you about ${current.name}.`,
-    [["Project", current.name], ["Name", v("rName")], ["Mobile", mask(mobile)], ["Email", v("rEmail").replace(/^(.).*(@.*)$/, "$1•••$2")],
-     ["Date of birth", nice(v("rDob"))], ["Gender", v("rGender")], ["Date", nice(v("rDate"))], ["Address", v("rAddr")]]);
+  pending = {
+    title: "Application submitted", first: v("rName").split(" ")[0], dev: "rk",
+    text: `RK Developers will contact you about ${current.name}.`,
+    payFor: `${current.name} · ${current.rate}`, amount: "To be confirmed", amountNote: "RK Developers will confirm the booking amount for your chosen plot.",
+    favour: "Payments in favour of RK Developers. Our team will share the account details.",
+    rows: [["Project", current.name], ["Name", v("rName")], ["Mobile", mask(mobile)], ["Email", v("rEmail").replace(/^(.).*(@.*)$/, "$1•••$2")],
+     ["Date of birth", nice(v("rDob"))], ["Gender", v("rGender")], ["Date", nice(v("rDate"))], ["Address", v("rAddr")]],
+  };
+  openPay();
 });
 
 document.getElementById("bookForm").addEventListener("submit", e => {
@@ -1514,13 +1578,76 @@ document.getElementById("bookForm").addEventListener("submit", e => {
     (v("nName") || fail("nName", "Please enter nominee name.")) &&
     (v("nRel") || fail("nRel", "Please select nominee's relationship with you.")) &&
     ((sigMode === "draw" ? signed : !!sigUpload) || fail(sigMode === "draw" ? "sigPad" : "sigFile", "Please add your signature (draw it or upload an image).")) &&
-    ($("aTerms").checked || fail("aTerms", "Please accept the Terms & Conditions."));
+    true;
   if (!ok) return;
   err.textContent = "";
   const family = [...document.querySelectorAll("#famRows tr")].filter(tr => tr.querySelector("input").value.trim()).length;
-  showDone("Application submitted", `Thank you. Your application for a ${v("aSize")} site in ${v("aLayout")} has been recorded on this device. Our team will contact you to complete the process.`,
-    [["Site", `${v("aSize")} · ${v("aLayout")}`], ["Applicant", v("bName")], ["Mobile", mask(mobile)], ["Email", v("aEmail").replace(/^(.).*(@.*)$/, "$1•••$2")],
-     ["Nominee", `${v("nName")} (${v("nRel")})`], ["Family members", String(family)], ["Signature", sigMode === "draw" ? "Drawn on screen" : "Image uploaded"]]);
+  const row = PROJECTS[0].rows.find(r => r[0].startsWith(v("aSize")));
+  pending = {
+    title: "Application submitted", first: v("bName").split(" ")[0], dev: "bmi",
+    text: `Your application for a ${v("aSize")} site in ${v("aLayout")} is complete. Our team will contact you to complete the process.`,
+    payFor: `${v("aSize")} site · ${v("aLayout")}`,
+    amount: row ? "₹" + row[2] : "To be confirmed", amountNote: row ? `Down payment (30%) of total ₹${row[1]}. Balance in 3 instalments of ₹${row[3]}.` : "",
+    favour: "Payments in favour of BENGALURU METRO CITY INFRASTRUCTURE HOUSING CO-OPERATIVE SOCIETY. Our team will share the account details.",
+    rows: [["Site", `${v("aSize")} · ${v("aLayout")}`], ["Applicant", v("bName")], ["Mobile", mask(mobile)], ["Email", v("aEmail").replace(/^(.).*(@.*)$/, "$1•••$2")],
+     ["Nominee", `${v("nName")} (${v("nRel")})`], ["Family members", String(family)], ["Signature", sigMode === "draw" ? "Drawn on screen" : "Image uploaded"]],
+  };
+  $("tAgree").checked = false; $("tErr").textContent = "";
+  go("terms");
+});
+
+// ----- Terms → payment → done -----
+let pending = null;
+$("tContinue").addEventListener("click", () => {
+  if (!$("tAgree").checked) { $("tErr").textContent = "Please tick the box to accept the Terms & Conditions."; $("tAgree").focus(); return; }
+  $("tErr").textContent = "";
+  pending.rows.push(["Terms & Conditions", "Accepted"]);
+  openPay();
+});
+const PAY_MODES = ["Cheque", "Demand Draft (DD)", "NEFT", "RTGS", "IMPS"];
+function openPay() {
+  $("payKicker").textContent = pending.dev === "rk" ? "RK Developers" : "BMI Housing Society";
+  $("payFor").textContent = pending.payFor;
+  $("payAmount").textContent = pending.amount;
+  $("payNote").textContent = pending.amountNote;
+  $("payFavour").textContent = pending.favour;
+  $("payModes").innerHTML = PAY_MODES.map(m => `<label class="opt"><input type="radio" name="payMode" value="${m}"><span><b>${m}</b></span></label>`).join("");
+  $("payErr").textContent = "";
+  go("pay");
+}
+$("payConfirm").addEventListener("click", () => {
+  const m = document.querySelector('input[name="payMode"]:checked');
+  if (!m) { $("payErr").textContent = "Please choose how you would like to pay."; return; }
+  showDone(pending.title, `Thank you, ${pending.first}. ${pending.text} You chose to pay by ${m.value}; our team will share the payment details.`,
+    [...pending.rows, ["Amount due now", pending.amount], ["Payment method", m.value]]);
+});
+
+// ----- Not interested in RK either: details for new projects -----
+function openFuture() {
+  $("uName").value = user.name; $("uPhone").value = user.phone; $("uErr").textContent = "";
+  go("future");
+}
+$("futureForm").addEventListener("submit", e => {
+  e.preventDefault();
+  const err = $("uErr"), v = id => $(id).value.trim();
+  document.querySelectorAll("#futureForm .bad").forEach(x => x.classList.remove("bad"));
+  const fail = (id, msg) => { err.textContent = msg; $(id).focus(); $(id).closest("label")?.classList.add("bad"); return false; };
+  const mobile = normalise(v("uPhone")), age = ageFrom(v("uDob"));
+  const ok =
+    (v("uName").length >= 2 || fail("uName", "Please enter your full name.")) &&
+    (mobile || fail("uPhone", "Please enter a valid 10-digit mobile number.")) &&
+    (/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v("uEmail")) || fail("uEmail", "Please enter a valid email address.")) &&
+    (v("uDob") || fail("uDob", "Please enter your date of birth.")) &&
+    ((age !== "" && age >= 18) || fail("uDob", "You must be 18 or older.")) &&
+    (v("uGender") || fail("uGender", "Please select gender.")) &&
+    (v("uBudget") || fail("uBudget", "Please choose your budget.")) &&
+    (v("uAddr").length >= 5 || fail("uAddr", "Please enter your address."));
+  if (!ok) return;
+  err.textContent = "";
+  const nice = d => new Date(d + "T00:00:00").toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" });
+  showDone("Thank you", `Thank you, ${v("uName").split(" ")[0]}. We'll contact you when a new project in your budget is launched.`,
+    [["Name", v("uName")], ["Mobile", mask(mobile)], ["Email", v("uEmail").replace(/^(.).*(@.*)$/, "$1•••$2")], ["Date of birth", nice(v("uDob"))],
+     ["Gender", v("uGender")], ["Budget", v("uBudget")], ["Address", v("uAddr")]]);
 });
 const MODES = { direct: "Coming directly to the site", employee: "BMI employee to accompany", cab: "Cab from the BMI office" };
 document.getElementById("visitForm").addEventListener("submit", e => {
