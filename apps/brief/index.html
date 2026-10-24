@@ -350,6 +350,11 @@ button.link { color: var(--leaf); }
 /* completed projects */
 .done-grid { grid-template-columns: repeat(auto-fill, minmax(min(100%, 210px), 1fr)); }
 .done-card .gallery.mini { aspect-ratio: 16 / 7; }
+.send-note { margin: 14px 0 0; font-size: .92rem; color: var(--muted); }
+.send-note:empty { display: none; }
+.send-note.ok { color: var(--leaf); font-weight: 600; }
+.send-note.fail { color: #9a3b2a; }
+.send-note.fail a { color: inherit; font-weight: 600; }
 button.done-card, button.done-card:hover { background: var(--surface) !important; color: var(--ink) !important; border: 1px solid var(--line) !important; border-radius: var(--r) !important; letter-spacing: normal; }
 button.done-card::after { display: none; }
 .done-pop .dp-close { position: absolute !important; overflow: visible; }
@@ -1018,6 +1023,7 @@ textarea:focus { outline: none; border-color: var(--leaf); box-shadow: 0 0 0 3px
       <h1 id="doneTitle">Thank you</h1>
       <p class="muted" id="doneText"></p>
       <dl class="summary" id="doneSummary"></dl>
+      <p class="send-note" id="sendNote" role="status" aria-live="polite"></p>
       <p class="note">Demo: this request is not saved or sent yet.</p>
     </div>
   </section>
@@ -1606,9 +1612,49 @@ document.getElementById("vDate").addEventListener("input", e => {
   const v = e.target.value;
   document.getElementById("vDay").value = v ? new Date(v + "T00:00:00").toLocaleDateString("en-IN", { weekday: "long" }) : "";
 });
+// ----- Send what the customer filled in to the team's inbox -----
+// FormSubmit relays a POST to the address below as an email. The first submission sends the inbox
+// an activation email; nothing is delivered until someone clicks "Activate" in it.
+const LEAD_INBOX = "rktechteam09@gmail.com";
+function formFields(form) {
+  const out = {}, put = (k, v) => { let key = k, n = 2; while (key in out) key = `${k} (${n++})`; out[key] = v; };
+  const labelOf = el => {
+    const l = el.closest("label");
+    if (l) { const c = l.cloneNode(true); c.querySelectorAll("input, select, textarea, small, .sr").forEach(x => x.remove()); const t = c.textContent.replace(/\*/g, "").replace(/\s+/g, " ").trim(); if (t) return t; }
+    return (el.getAttribute("aria-label") || el.name || el.id).replace(/\*/g, "").trim();
+  };
+  for (const el of form.elements) {
+    if (!el.name && !el.id || ["button", "submit", "file", "hidden"].includes(el.type) || el.disabled) continue;
+    if (el.type === "radio") { if (el.checked && el.name !== "vMode") put((el.closest("[role=radiogroup], fieldset")?.getAttribute("aria-label") || el.closest("fieldset")?.querySelector("legend")?.textContent || el.name).replace(/\*/g, "").trim(), el.value); continue; }
+    if (el.type === "checkbox") { if (el.checked) put(labelOf(el), "Yes"); continue; }
+    const v = (el.value || "").trim(); if (!v) continue;
+    const row = el.closest("#famRows tr");
+    put(row ? `Family member ${[...row.parentNode.children].indexOf(row) + 1} – ${labelOf(el).replace("Family member full name", "Name")}` : labelOf(el), v);
+  }
+  return out;
+}
+const sendNote = () => document.getElementById("sendNote");
+async function sendLead(subject, fields) {
+  const body = { _subject: subject, _template: "table", _captcha: "false",
+    "Submitted at": new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }),
+    "Logged in as": `${user.name} · ${user.phone}`, ...fields };
+  const note = sendNote();
+  note.className = "send-note sending"; note.textContent = "Sending your details to our team…";
+  try {
+    const r = await fetch("https://formsubmit.co/ajax/" + LEAD_INBOX, { method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" }, body: JSON.stringify(body) });
+    if (!r.ok) throw new Error(String(r.status));
+    note.className = "send-note ok"; note.textContent = "✓ Your details have reached our team.";
+  } catch {
+    // Fallback: let the customer send the same details from their own mail app.
+    const text = Object.entries(body).filter(([k]) => !k.startsWith("_")).map(([k, v]) => `${k}: ${v}`).join("\n");
+    note.className = "send-note fail";
+    note.innerHTML = `We couldn't send your details automatically. <a href="mailto:${LEAD_INBOX}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(text)}">Tap here to email them to us</a>.`;
+  }
+}
 function showDone(title, text, rows) {
   setTimeout(confetti, 250);
   document.getElementById("doneTitle").textContent = title;
+  sendNote().textContent = ""; sendNote().className = "send-note";
   document.getElementById("doneText").textContent = text;
   document.getElementById("doneSummary").innerHTML = rows.map(([k, v]) => `<div><dt>${k}</dt><dd>${v.replace(/</g, "&lt;")}</dd></div>`).join("");
   go("done");
@@ -1700,6 +1746,7 @@ document.getElementById("rkForm").addEventListener("submit", e => {
   const nice = d => new Date(d + "T00:00:00").toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" });
   pending = {
     title: "Application submitted", first: v("rName").split(" ")[0], dev: "rk",
+    subject: `${current.name} – Booking application – ${v("rName")}`, fields: { Project: current.name, ...formFields($("rkForm")) },
     text: `RK Developers will contact you about ${current.name}.`,
     payFor: `${current.name} · ${current.rate}`, amount: "To be confirmed", amountNote: "RK Developers will confirm the booking amount for your chosen plot.",
     favour: "Payments in favour of RK Developers. Our team will share the account details.",
@@ -1741,6 +1788,8 @@ document.getElementById("bookForm").addEventListener("submit", e => {
   const row = PROJECTS[0].rows.find(r => r[0].startsWith(v("aSize")));
   pending = {
     title: "Application submitted", first: v("bName").split(" ")[0], dev: "bmi",
+    subject: `BMI Garden City – Application for purchase of site – ${v("bName")}`,
+    fields: { Project: "BMI Garden City", ...formFields($("bookForm")), Signature: sigMode === "draw" ? "Drawn on screen (not attached)" : "Image uploaded (not attached)" },
     text: `Your application for a ${v("aSize")} site in ${v("aLayout")} is complete. Our team will contact you to complete the process.`,
     payFor: `${v("aSize")} site · ${v("aLayout")}`,
     amount: row ? "₹" + row[2] : "To be confirmed", amountNote: row ? `Down payment (30%) of total ₹${row[1]}. Balance in 3 instalments of ₹${row[3]}.` : "",
@@ -1758,6 +1807,7 @@ $("tContinue").addEventListener("click", () => {
   if (!$("tAgree").checked) { $("tErr").textContent = "Please tick the box to accept the Terms & Conditions."; $("tAgree").focus(); return; }
   $("tErr").textContent = "";
   pending.rows.push(["Terms & Conditions", "Accepted"]);
+  pending.fields["Terms & Conditions"] = "Accepted";
   openPay();
 });
 const PAY_MODES = ["Cheque", "Demand Draft (DD)", "NEFT", "RTGS", "IMPS"];
@@ -1776,6 +1826,7 @@ $("payConfirm").addEventListener("click", () => {
   if (!m) { $("payErr").textContent = "Please choose how you would like to pay."; return; }
   showDone(pending.title, `Thank you, ${pending.first}. ${pending.text} You chose to pay by ${m.value}; our team will share the payment details.`,
     [...pending.rows, ["Amount due now", pending.amount], ["Payment method", m.value]]);
+  sendLead(pending.subject, { ...pending.fields, "Amount due now": pending.amount, "Payment method": m.value });
 });
 
 // ----- Not interested in RK either: details for new projects -----
@@ -1804,6 +1855,7 @@ $("futureForm").addEventListener("submit", e => {
   showDone("Thank you", `Thank you, ${v("uName").split(" ")[0]}. We'll contact you when a new project in your budget is launched.`,
     [["Name", v("uName")], ["Mobile", mask(mobile)], ["Email", v("uEmail").replace(/^(.).*(@.*)$/, "$1•••$2")], ["Date of birth", nice(v("uDob"))],
      ["Gender", v("uGender")], ["Budget", v("uBudget")], ["Address", v("uAddr")]]);
+  sendLead(`New projects enquiry – ${v("uName")}`, { "Not interested in": "BMI Garden City and RK projects shown", ...formFields($("futureForm")) });
 });
 const MODES = { direct: "Coming directly to the site", employee: "{dev} employee to accompany", cab: "Cab from the {dev} office" };
 document.getElementById("visitForm").addEventListener("submit", e => {
@@ -1822,5 +1874,7 @@ document.getElementById("visitForm").addEventListener("submit", e => {
   const nice = new Date(date + "T00:00:00").toLocaleDateString("en-IN", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
   showDone("Site visit requested", `Thank you, ${c.name.split(" ")[0]}. Our team will call you to confirm your visit.`,
     [["Project", current.name], ["Date & day", nice], ["Time", time], ["People", String(people)], ["Travel", MODES[mode.value].replace("{dev}", current.dev === "rk" ? "RK Developers" : "BMI")], ["Name", c.name], ["Mobile", mask(c.phone)]]);
+  sendLead(`${current.name} – Site visit request – ${c.name}`, { Project: current.name, ...formFields($("visitForm")),
+    Travel: MODES[mode.value].replace("{dev}", current.dev === "rk" ? "RK Developers" : "BMI") });
 });
 </script>
