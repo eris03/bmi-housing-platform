@@ -566,8 +566,12 @@ h3, .app-kicker, .login-kicker, .wb-kicker { letter-spacing: .1em; }
 body:has(#s-login:not([hidden])) { background: #0d2547 !important; }
 .tp { position: relative; display: grid; border-radius: 4px; overflow: hidden; box-shadow: 0 40px 80px -30px rgba(0,0,0,.7); min-height: 520px; background: #0d2547; }
 .tp-art { position: relative; min-height: 300px; }
-.tp-anim { position: absolute; inset: 0; background: url("assets/546e7ee73379.jpg") center / cover; }
-.tp-cap { position: absolute; right: 24px; bottom: 26px; text-align: right; color: #fff; text-shadow: 0 4px 14px rgba(0,0,0,.6); }
+.tp-anim { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; object-position: center 30%; display: block; background: #fff; }
+.tp-cap { position: absolute; right: 24px; bottom: 26px; text-align: right; color: #13305a; }
+.tp-art { background: linear-gradient(160deg, #e6fbfa, #b8eeee); }
+.tp-anim { mix-blend-mode: multiply; background: transparent !important; top: 16px !important; height: calc(100% - 100px) !important; object-fit: contain !important; }
+.tp { background: #fff !important; }
+@media (max-width: 759px) { .tp-art { min-height: 420px; } .tp-cap { left: 0; right: 0; bottom: 10px; text-align: center; } }
 .tp-cap b { display: block; font: 800 clamp(1.6rem, 5vw, 2.6rem)/1 var(--font-body); letter-spacing: .02em; }
 .tp-cap span { font: 700 clamp(.95rem, 2.6vw, 1.3rem) var(--font-body); letter-spacing: .06em; }
 .tp-form { position: relative; z-index: 2; background: #fff; display: grid; gap: 16px; align-content: center; padding: 34px 30px 46px; }
@@ -618,7 +622,7 @@ body:has(#s-login:not([hidden])) { background: #0d2547 !important; }
         <button type="submit" class="tp-btn">CONTINUE</button>
       </form>
       <div class="tp-art" aria-hidden="true">
-        <div class="tp-anim" id="loginArt"></div>
+        <video class="tp-anim" id="loginArt" src="assets/mascot-720.mp4" poster="assets/mascot-poster.jpg" autoplay muted loop playsinline preload="auto"></video>
         <div class="tp-cap"><b>BMI GARDEN CITY</b><span>NORTH BENGALURU</span></div>
       </div>
     </div>
