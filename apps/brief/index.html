@@ -1,7 +1,7 @@
 <title>BMI Plot Enquiry</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&family=Noto+Serif:wght@600;700&display=swap">
 <style>
 /* "Golden-hour atlas": warm paper, forest ink, clay and brass accents. Phone-first; each step is a screen
    that slides in from the side you're heading; a journey rail in the header shows where you are. */
@@ -21,8 +21,8 @@
   --on-moss: #ffffff;
   --shadow: 0 1px 0 rgba(27,39,51,.04), 0 18px 40px -26px rgba(20,50,80,.45);
   --shadow-lg: 0 2px 0 rgba(27,39,51,.04), 0 40px 80px -40px rgba(20,50,80,.55);
-  --font-display: "Outfit", "Segoe UI", system-ui, sans-serif;
-  --font-body: "DM Sans", "Segoe UI", system-ui, sans-serif;
+  --font-display: "Noto Serif", Georgia, serif;
+  --font-body: "Noto Sans", "Segoe UI", Arial, sans-serif;
   --r: 22px;
   --ease: cubic-bezier(.2,.8,.2,1);
   color-scheme: light;
@@ -197,8 +197,6 @@ legend { font: 600 1.05rem var(--font-display); padding: 0; margin-bottom: 8px; 
 
 
 /* ---------- login: frosted-glass card beside a glowing night-view of the layout plan ---------- */
-body:has(#s-login:not([hidden])) { background: linear-gradient(100deg, #b97aae 0%, #e7bfe3 35%, #f6dcf5 52%, #8a7aa3 75%, #141a3c 100%) fixed; }
-body:has(#s-login:not([hidden])) .top { background: rgba(255,255,255,.25); border-bottom-color: rgba(255,255,255,.35); }
 .gl-stage { position: relative; display: grid; gap: 0; padding: 8px 0 20px; }
 .gl-card { position: relative; z-index: 2; display: grid; gap: 18px; padding: 30px 26px 26px; border-radius: 28px; text-align: left;
   background: linear-gradient(145deg, rgba(255,255,255,.55), rgba(255,255,255,.22)); border: 1px solid rgba(255,255,255,.6);
@@ -245,7 +243,7 @@ body:has(#s-login:not([hidden])) .top { background: rgba(255,255,255,.25); borde
 }
 
 /* ---------- login: city-style photo backdrop, logo avatar, white pill fields ---------- */
-body:has(#s-login:not([hidden])) { background: linear-gradient(rgba(36,120,196,.72), rgba(20,80,140,.82)), url("assets/dec4f94bf22c.jpg") center / cover fixed; }
+body:has(#s-login:not([hidden])) { background: linear-gradient(rgba(10,40,80,.25), rgba(5,20,45,.55)), url("assets/546e7ee73379.jpg") center 40% / cover fixed #0b1f3a; }
 body:has(#s-login:not([hidden]))::before { display: none; }
 body:has(#s-login:not([hidden])) .top { background: rgba(255,255,255,.12); border-bottom-color: rgba(255,255,255,.2); color: #fff; }
 body:has(#s-login:not([hidden])) .top small, body:has(#s-login:not([hidden])) .rail-labels b { color: rgba(255,255,255,.8); }
@@ -545,6 +543,24 @@ button.done-card:hover { background: var(--card); transform: translateY(-5px) ro
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
   .reveal { opacity: 1; transform: none; }
 }
+
+/* ---------- official tone: square-ish corners, restrained motion, formal type ---------- */
+h1, h2, .pick-body b, .dp-cap b, .facts dd, .top b { letter-spacing: 0 !important; font-weight: 700; }
+.panel, .project, .pick-card, .done-card, .app-sec, .facts div, .amen div, .tablebox, .opt, .decide, .phead, .pay-amount, .app-letter, .terms-list li, .summary, .lh-price, .tick, .fam-wrap, .gallery.real.n1, .phead .gallery.real.n1 { border-radius: 8px !important; }
+button, input, select, textarea, .phone span, .phone input, .back-top, .badges span, .pm-price, .tag-ongoing, .tag-done, .login-chips li, .wb-field input, .wb-btn { border-radius: 6px !important; }
+.phone input { border-radius: 0 6px 6px 0 !important; } .phone span { border-radius: 6px 0 0 6px !important; }
+.screen.enter-fwd, .screen.enter-back { animation: fadeIn .35s ease both; }
+@keyframes fadeIn { from { opacity: 0; } }
+.w > i { animation: none !important; }
+.reveal { filter: none; transform: translateY(12px); transition: opacity .5s ease, transform .5s ease; }
+#yesBtn { animation: none; }
+.pick-card:hover, button.done-card:hover, #s-intent .choice:hover, .facts div:hover { transform: translateY(-2px) !important; }
+.pick-card:hover .logo-band img { transform: none; }
+.logo-band::before { animation: none; }
+.tag-ongoing::before { animation: none; }
+h3, .app-kicker, .login-kicker, .wb-kicker { letter-spacing: .1em; }
+.top { border-top: 4px solid #1d5d95; }
+.wb-title { font-family: var(--font-display); }
 </style>
 
 <div id="splash" aria-hidden="true"><i></i><i></i><i></i><img id="splashLogo" alt=""><p>BMI Housing Society</p></div>
