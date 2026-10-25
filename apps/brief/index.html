@@ -1,7 +1,7 @@
 <title>BMI Plot Enquiry</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,400..700,0..100;1,9..144,400..700,0..100&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap">
 <style>
 /* "Golden-hour atlas": warm paper, forest ink, clay and brass accents. Phone-first; each step is a screen
    that slides in from the side you're heading; a journey rail in the header shows where you are. */
@@ -21,8 +21,8 @@
   --on-moss: #fffdf8;
   --shadow: 0 1px 0 rgba(29,42,34,.04), 0 18px 40px -26px rgba(45,58,40,.45);
   --shadow-lg: 0 2px 0 rgba(29,42,34,.04), 0 40px 80px -40px rgba(45,58,40,.55);
-  --font-display: "Fraunces", Georgia, "Times New Roman", serif;
-  --font-body: "Plus Jakarta Sans", "Segoe UI", system-ui, sans-serif;
+  --font-display: "Outfit", "Segoe UI", system-ui, sans-serif;
+  --font-body: "DM Sans", "Segoe UI", system-ui, sans-serif;
   --r: 22px;
   --ease: cubic-bezier(.2,.8,.2,1);
   color-scheme: light;
@@ -44,7 +44,7 @@ body::before { /* paper grain + faint contour map, fixed behind everything */
 }
 .wrap { position: relative; z-index: 1; max-width: 860px; margin: 0 auto; padding: 0 max(16px, env(safe-area-inset-left, 0px)) 120px; }
 h1, h2, h3 { margin: 0; text-wrap: balance; }
-h1 { font: 600 clamp(2rem, 7vw, 3.1rem)/1.04 var(--font-display); letter-spacing: -.02em; font-variation-settings: "opsz" 96, "SOFT" 50; }
+h1 { font: 600 clamp(2rem, 7vw, 3.1rem)/1.04 var(--font-display); letter-spacing: -.02em; letter-spacing: -.035em; }
 h2 { font: 600 clamp(1.35rem, 4vw, 1.75rem)/1.12 var(--font-display); letter-spacing: -.01em; }
 h3 { font: 700 .72rem/1.3 var(--font-body); letter-spacing: .16em; text-transform: uppercase; color: var(--clay); }
 p { margin: 0; }
@@ -79,13 +79,18 @@ button.link, button.link:hover { background-color: transparent; }
 /* ---------- screens: slide in from the direction of travel ---------- */
 .screen { display: grid; gap: 20px; }
 .screen > *, .panel > *, .app-sec > *, .app-letter > * { min-width: 0; }
-.screen.enter-fwd { animation: inFwd .6s var(--ease) both; }
-.screen.enter-back { animation: inBack .6s var(--ease) both; }
+.screen.enter-fwd { animation: wipeUp .75s var(--ease) both; }
+.screen.enter-back { animation: wipeDown .75s var(--ease) both; }
+@keyframes wipeUp { from { clip-path: inset(18% 0 0 0 round 28px); opacity: 0; transform: translateY(40px) scale(.97); } }
+@keyframes wipeDown { from { clip-path: inset(0 0 18% 0 round 28px); opacity: 0; transform: translateY(-30px) scale(.97); } }
+.w { display: inline-block; overflow: hidden; vertical-align: bottom; padding-bottom: .08em; margin-bottom: -.08em; }
+.w > i { display: inline-block; font-style: inherit; animation: wordUp .8s var(--ease) both; }
+@keyframes wordUp { from { transform: translateY(105%) rotate(4deg); opacity: 0; } }
 @keyframes inFwd { from { opacity: 0; transform: translateX(42px); } }
 @keyframes inBack { from { opacity: 0; transform: translateX(-42px); } }
 @keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } }
-.reveal { opacity: 0; transform: translateY(26px); transition: opacity .8s var(--ease), transform .8s var(--ease); }
-.reveal.in { opacity: 1; transform: none; }
+.reveal { opacity: 0; transform: translateY(30px) scale(.97); filter: blur(8px); transition: opacity .9s var(--ease), transform .9s var(--ease), filter .9s var(--ease); }
+.reveal.in { opacity: 1; transform: none; filter: none; }
 
 /* ---------- buttons ---------- */
 button { font: 600 1rem var(--font-body); cursor: pointer; border-radius: 14px; padding: 15px 22px; border: 0; background: var(--moss); color: var(--on-moss);
@@ -181,7 +186,7 @@ legend { font: 600 1.05rem var(--font-display); padding: 0; margin-bottom: 8px; 
 .login-intro { display: grid; gap: 12px; padding: 6px 4px 0; }
 .login-kicker { font: 700 .72rem var(--font-body); letter-spacing: .16em; text-transform: uppercase; color: var(--clay); }
 .login-title { font-size: clamp(2.1rem, 8vw, 3.4rem); }
-.login-title span { font-style: italic; color: var(--moss); background: linear-gradient(transparent 70%, rgba(196,154,82,.35) 70%); }
+.login-title span { font-weight: 300; color: var(--moss); background: linear-gradient(transparent 70%, rgba(196,154,82,.35) 70%); }
 .login-chips { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
 .login-chips li { font-size: .82rem; font-weight: 600; padding: 7px 13px; border-radius: 999px; background: var(--card); border: 1px solid var(--line); animation: fadeUp .6s var(--ease) both; }
 .login-chips li:nth-child(2) { animation-delay: .08s; } .login-chips li:nth-child(3) { animation-delay: .16s; }
@@ -291,7 +296,7 @@ ul.cols li::before { content: ""; position: absolute; left: 2px; top: 14px; widt
 .ticker { overflow: hidden; border-block: 1px solid var(--line); padding: 10px 0; margin-inline: calc(-1 * clamp(18px, 4.5vw, 32px)); mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
 .ticker-track { display: flex; width: max-content; animation: tick 50s linear infinite; }
 .ticker:hover .ticker-track { animation-play-state: paused; }
-.ticker span { font: 500 1.05rem var(--font-display); font-style: italic; padding: 0 18px; white-space: nowrap; color: #3a473f; }
+.ticker span { font: 400 1.05rem var(--font-display); padding: 0 18px; white-space: nowrap; color: #3a473f; }
 .ticker span::after { content: "✦"; color: var(--brass); font-style: normal; font-size: .7rem; margin-left: 36px; }
 @keyframes tick { to { transform: translateX(-50%); } }
 
@@ -1023,7 +1028,7 @@ const RK_COMPLETED = [
 // A string is one photo; an array is a set the pop-up pages through.
 const DONE_PHOTOS = [
   ["assets/f068fcf615c5.jpg", "assets/e4b9d6535bc6.jpg", "assets/46510b59319f.jpg"],
-  "assets/8c6e59751de8.jpg",
+  ["assets/dec4f94bf22c.jpg", "assets/2758c607c5ab.jpg", "assets/99f0d072ee03.jpg"],
   "assets/8b84ef2c2baf.jpg",
   "assets/bee687626e38.jpg",
   "assets/c116b9d8954d.jpg",
@@ -1198,6 +1203,20 @@ const RAIL = { login: 0, otp: 0, projects: 1, rk: 1, detail: 2, intent: 3, book:
 const revealObs = "IntersectionObserver" in window && !reduceMotion
   ? new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add("in"); revealObs.unobserve(e.target); } }), { rootMargin: "0px 0px -8% 0px" })
   : null;
+// Headlines rise word by word from behind a mask each time their screen opens.
+function splitWords(h) {
+  if (!h.querySelector(".w")) {
+    const wrap = node => [...node.childNodes].forEach(c => {
+      if (c.nodeType === 3) {
+        const f = document.createDocumentFragment();
+        c.textContent.split(/(\s+)/).forEach(t => { if (!t) return; if (/^\s+$/.test(t)) return f.append(t); const w = document.createElement("span"); w.className = "w"; w.innerHTML = "<i></i>"; w.firstChild.textContent = t; f.append(w); });
+        c.replaceWith(f);
+      } else if (c.nodeType === 1 && !c.classList.contains("w")) wrap(c);
+    });
+    wrap(h); h.dataset.split = "1"; h.dataset.text = h.textContent;
+  }
+  h.querySelectorAll(".w > i").forEach((i, k) => { i.style.animation = "none"; void i.offsetWidth; i.style.animation = ""; i.style.animationDelay = `${120 + k * 60}ms`; });
+}
 function revealIn(root) {
   root.querySelectorAll(".pbody > *:not(.phead), .pick-card, .done-card, .app-sec, #s-intent .choice").forEach((n, k) => {
     if (n.classList.contains("in")) return;
@@ -1230,6 +1249,7 @@ function go(name, isBack) {
   document.querySelectorAll(".rail span").forEach((r, k) => r.classList.toggle("on", k <= step));
   document.querySelectorAll(".rail-labels b").forEach((r, k) => r.classList.toggle("on", k === step));
   revealIn(el);
+  if (!reduceMotion) el.querySelectorAll("h1").forEach(splitWords);
   if (name === "book") formProgress();
   // RK Developers screens are not Society pages, so they carry RK branding instead.
   const rk = ["rk", "future"].includes(name) || (["detail", "intent", "rkbook", "visit", "pay", "done"].includes(name) && current?.dev === "rk");
