@@ -226,10 +226,10 @@ body:has(#s-login:not([hidden])) .top { background: rgba(255,255,255,.25); borde
 @keyframes artIn { from { opacity: 0; transform: translateY(-30px); } }
 .gl-plan { position: absolute; left: 50%; top: 40%; width: min(56%, 240px); aspect-ratio: 1; transform: translate(-50%, -50%); border-radius: 50%;
   background: #fff url("assets/1f0488e2d634.png") center / 92% no-repeat; box-shadow: 0 0 0 10px rgba(255,255,255,.08), 0 0 0 22px rgba(246,198,255,.06), 0 0 80px 10px rgba(246,198,255,.45);
-  animation: planFloat 6s ease-in-out infinite; }
-.gl-plan::after { content: ""; position: absolute; inset: -34px; border-radius: 50%; border: 1px dashed rgba(246,198,255,.35); animation: spin 30s linear infinite; }
+  animation: planFloat 18s linear infinite; }
+.gl-plan::after { content: ""; position: absolute; inset: -34px; border-radius: 50%; border: 1px dashed rgba(246,198,255,.35); }
 @keyframes spin { to { transform: rotate(360deg); } }
-@keyframes planFloat { 50% { transform: translate(-50%, calc(-50% - 10px)); } }
+@keyframes planFloat { from { transform: translate(-50%, -50%) rotate(0deg); } to { transform: translate(-50%, -50%) rotate(360deg); } }
 .gl-glow { position: absolute; left: 50%; bottom: 18%; width: 70%; height: 30%; transform: translateX(-50%); background: radial-gradient(closest-side, rgba(246,198,255,.55), transparent); filter: blur(10px); animation: glow 4s ease-in-out infinite alternate; }
 @keyframes glow { to { opacity: .45; transform: translateX(-50%) scale(1.15); } }
 .sp { position: absolute; width: 4px; height: 4px; border-radius: 50%; background: #bfe6ff; box-shadow: 0 0 10px 2px rgba(191,230,255,.8); animation: twinkle 3.2s ease-in-out infinite; }
