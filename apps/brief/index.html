@@ -371,6 +371,15 @@ button.done-card { display: block; width: 100%; padding: 0; font: inherit; color
 .done-pop.show { background: rgba(24,32,27,.72); backdrop-filter: blur(4px); }
 .dp-frame { position: relative; width: min(760px, 100%); max-height: calc(100vh - 32px); overflow: auto; background: #fbfaf6; padding: 12px 12px 18px; border-radius: 6px; box-shadow: 0 30px 80px -20px rgba(0,0,0,.6); }
 .dp-photo { position: relative; overflow: hidden; border-radius: 3px; background: #ddd; }
+.dp-nav, .dp-dots { display: none; }
+.dp-photo.multi .dp-nav { display: grid; place-items: center; position: absolute !important; top: 50%; transform: translateY(-50%); width: 40px; height: 40px; padding: 0; border: 0; border-radius: 50%; background: rgba(255,255,255,.88) !important; color: #1f2a24 !important; font-size: 1.6rem; line-height: 1; box-shadow: 0 6px 16px -6px rgba(0,0,0,.6); cursor: pointer; }
+.dp-photo.multi .dp-nav::after { display: none; }
+.dp-nav.prev { left: 10px; } .dp-nav.next { right: 10px; }
+.dp-photo.multi .dp-dots { display: flex; gap: 7px; position: absolute; left: 50%; bottom: 10px; transform: translateX(-50%); }
+.dp-dots button { width: 9px; height: 9px; padding: 0; border: 0; border-radius: 50%; background: rgba(255,255,255,.55) !important; box-shadow: 0 0 0 1px rgba(0,0,0,.25); cursor: pointer; transition: transform .2s, background .2s; }
+.dp-dots button::after { display: none; }
+.dp-dots button[aria-current="true"] { background: #fff !important; transform: scale(1.35); }
+.dp-photo { touch-action: pan-y; }
 .dp-photo img { display: block; width: 100%; max-height: 68vh; object-fit: contain; background: #111; }
 .done-pop.show .dp-photo img { animation: develop 1.1s ease-out both; }
 @keyframes develop { from { filter: sepia(1) brightness(1.6) contrast(.6) blur(3px); } to { filter: none; } }
@@ -383,8 +392,7 @@ button.done-card { display: block; width: 100%; padding: 0; font: inherit; color
 .dp-cap span { color: var(--leaf); font-size: .82rem; font-weight: 600; margin-top: 4px; }
 .done-pop.show .dp-cap > * { animation: capIn .5s both; } .done-pop.show .dp-cap small { animation-delay: .08s; } .done-pop.show .dp-cap span { animation-delay: .16s; }
 @keyframes capIn { from { opacity: 0; transform: translateY(8px); } }
-.dp-close { position: absolute; top: -12px; right: -12px; z-index: 2; width: 36px; height: 36px; border-radius: 50%; border: 0; background: #fff !important; color: #1f2a24 !important; font-size: 1rem; box-shadow: 0 6px 16px -6px rgba(0,0,0,.5); cursor: pointer; padding: 0; }
-@media (max-width: 520px) { .dp-close { top: 6px; right: 6px; } }
+.dp-close { position: absolute; top: 18px; right: 18px; z-index: 2; width: 36px; height: 36px; border-radius: 50%; border: 0; background: #fff !important; color: #1f2a24 !important; font-size: 1rem; box-shadow: 0 6px 16px -6px rgba(0,0,0,.5); cursor: pointer; padding: 0; }
 @media (prefers-reduced-motion: reduce) { .done-pop.show .dp-photo img, .done-pop.show .dp-stamp, .done-pop.show .dp-cap > * { animation: none; opacity: 1; } }
 .tag-done { color: #6a5bb0; background: var(--lavender); border-color: transparent; }
 
@@ -1297,8 +1305,9 @@ const RK_COMPLETED = [
   ["25 Acres Township Project", "Boodihala Village, Devanahalli"],
 ];
 // One site photo per completed project, in list order; projects without one show a placeholder.
+// A string is one photo; an array is a set the pop-up pages through.
 const DONE_PHOTOS = [
-  "assets/f0c23eb027ff.jpg",
+  ["assets/f068fcf615c5.jpg", "assets/e4b9d6535bc6.jpg", "assets/46510b59319f.jpg"],
   "assets/8c6e59751de8.jpg",
   "assets/8b84ef2c2baf.jpg",
   "assets/bee687626e38.jpg",
@@ -1309,8 +1318,9 @@ const DONE_PHOTOS = [
   "assets/d51761daa557.jpg",
 ];
 const DONE_HUES = [["#cfd8dc","#f2f3f1"],["#dccdbd","#f5f1ea"],["#c9d6cc","#f1f4f0"],["#d6d3c8","#f5f4ef"],["#d3d9cf","#f4f5f1"]];
+const donePics = i => [].concat(DONE_PHOTOS[i] || []);
 document.getElementById("rkDoneList").innerHTML = RK_COMPLETED.map(([n, l], i) => DONE_PHOTOS[i] ? `
-  <button type="button" class="done-card has-photo" data-done="${i}" aria-label="View photo of ${n}"><div class="done-thumb"><img src="${DONE_PHOTOS[i]}" alt="" loading="lazy"><span class="done-view">⤢ View</span></div>
+  <button type="button" class="done-card has-photo" data-done="${i}" aria-label="View photos of ${n}"><div class="done-thumb"><img src="${donePics(i)[0]}" alt="" loading="lazy"><span class="done-view">⤢ ${donePics(i).length > 1 ? `View ${donePics(i).length} photos` : "View"}</span></div>
   <div class="pick-body"><b style="font-size:1.05rem">${n}</b><small>⌖ ${l}</small><span class="tag-done">Completed</span></div></button>` : `
   <div class="done-card"><div class="gallery mini">${photo(31 + i * 7, DONE_HUES[i % DONE_HUES.length], n)}</div>
   <div class="pick-body"><b style="font-size:1.05rem">${n}</b><small>⌖ ${l}</small><span class="tag-done">Completed</span><span class="done-soon">Photo coming soon</span></div></div>`).join("");
@@ -1321,15 +1331,28 @@ const donePop = document.createElement("div");
 donePop.className = "done-pop"; donePop.hidden = true;
 donePop.innerHTML = `<div class="dp-frame" role="dialog" aria-modal="true" aria-labelledby="dpTitle">
   <button type="button" class="dp-close" aria-label="Close">✕</button>
-  <div class="dp-photo"><img alt=""><span class="dp-stamp">Completed</span></div>
+  <div class="dp-photo"><img alt=""><span class="dp-stamp">Completed</span>
+    <button type="button" class="dp-nav prev" aria-label="Previous photo">‹</button><button type="button" class="dp-nav next" aria-label="Next photo">›</button>
+    <div class="dp-dots"></div></div>
   <div class="dp-cap"><b id="dpTitle"></b><small></small><span>Delivered by RK Developers</span></div></div>`;
 document.body.append(donePop);
 const dpFrame = donePop.querySelector(".dp-frame");
 let dpFrom = null;
+let dpPics = [], dpAt = 0;
+function dpShow(k) {
+  dpAt = (k + dpPics.length) % dpPics.length;
+  const img = donePop.querySelector(".dp-photo img");
+  img.src = dpPics[dpAt];
+  img.alt = `${RK_COMPLETED[dpFrom.dataset.done][0]}, photo ${dpAt + 1} of ${dpPics.length}`;
+  img.style.animation = "none"; void img.offsetWidth; img.style.animation = "";  // replay the "develop" fade per photo
+  donePop.querySelectorAll(".dp-dots button").forEach((d, j) => d.setAttribute("aria-current", j === dpAt));
+}
 function openDone(card) {
   const i = +card.dataset.done, [n, l] = RK_COMPLETED[i];
-  donePop.querySelector(".dp-photo img").src = DONE_PHOTOS[i];
-  donePop.querySelector(".dp-photo img").alt = `${n}, ${l}`;
+  dpFrom = card; dpPics = donePics(i);
+  donePop.querySelector(".dp-photo").classList.toggle("multi", dpPics.length > 1);
+  donePop.querySelector(".dp-dots").innerHTML = dpPics.length > 1 ? dpPics.map((_, j) => `<button type="button" aria-label="Photo ${j + 1}"></button>`).join("") : "";
+  dpShow(0);
   donePop.querySelector("#dpTitle").textContent = n;
   donePop.querySelector(".dp-cap small").textContent = "⌖ " + l;
   dpFrom = card;
@@ -1350,7 +1373,16 @@ function closeDone() {
 }
 document.getElementById("rkDoneList").addEventListener("click", e => { const c = e.target.closest("[data-done]"); if (c) openDone(c); });
 donePop.addEventListener("click", e => { if (e.target === donePop || e.target.closest(".dp-close")) closeDone(); });
-document.addEventListener("keydown", e => { if (e.key === "Escape") closeDone(); });
+donePop.querySelector(".prev").addEventListener("click", () => dpShow(dpAt - 1));
+donePop.querySelector(".next").addEventListener("click", () => dpShow(dpAt + 1));
+donePop.querySelector(".dp-dots").addEventListener("click", e => { const b = e.target.closest("button"); if (b) dpShow([...b.parentNode.children].indexOf(b)); });
+let dpX = null;
+donePop.querySelector(".dp-photo").addEventListener("pointerdown", e => (dpX = e.clientX));
+donePop.querySelector(".dp-photo").addEventListener("pointerup", e => { if (dpX !== null && dpPics.length > 1 && Math.abs(e.clientX - dpX) > 40) dpShow(dpAt + (e.clientX < dpX ? 1 : -1)); dpX = null; });
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape") closeDone();
+  if (!donePop.hidden && dpPics.length > 1 && (e.key === "ArrowRight" || e.key === "ArrowLeft")) dpShow(dpAt + (e.key === "ArrowRight" ? 1 : -1));
+});
 let current = null;
 function showProject(p) {
   current = p;
