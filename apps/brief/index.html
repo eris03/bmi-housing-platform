@@ -595,9 +595,19 @@ body:has(#s-login:not([hidden])) { background: #0d2547 !important; }
   .tp-form::after { left: auto; top: 0; bottom: 0; right: -46px; width: 48px; height: auto;
     clip-path: polygon(0 0,60% 0,30% 8%,75% 16%,40% 26%,85% 36%,35% 46%,70% 55%,25% 64%,80% 74%,40% 84%,65% 92%,30% 100%,0 100%); }
 }
+
+#intro { position: fixed; inset: 0; z-index: 500; background: #fff; display: grid; place-items: center; transition: opacity .6s ease; }
+#intro.out { opacity: 0; pointer-events: none; }
+#intro video { width: 100%; height: 100%; object-fit: contain; background: #fff; }
+.intro-ctrls { position: absolute; right: 16px; bottom: max(16px, env(safe-area-inset-bottom)); display: flex; gap: 8px; }
+.intro-ctrls button { padding: 9px 16px; font-size: .9rem; background: rgba(13,37,71,.8); box-shadow: none; }
+.intro-ctrls button::after { content: none !important; }
 </style>
 
-<div id="splash" aria-hidden="true"><i></i><i></i><i></i><img id="splashLogo" alt=""><p>BMI Housing Society</p></div>
+<div id="intro" role="dialog" aria-label="Welcome video">
+  <video id="introVideo" src="assets/intro.mp4" poster="assets/intro-poster.jpg" autoplay muted playsinline preload="auto"></video>
+  <div class="intro-ctrls"><button type="button" id="introSound">🔊 Sound on</button><button type="button" id="introSkip">Skip ›</button></div>
+</div>
 <canvas id="confetti" hidden></canvas>
 <div class="wrap">
   <header class="top">
@@ -1264,12 +1274,21 @@ function confetti() {
 }
 
 // Splash logo, then remove the overlay.
-(function splash() {
-  const el = document.getElementById("splash");
-  if (!el) return;
-  document.getElementById("splashLogo").src = LOGOS.bmi;
+// Opening video: plays once (muted so browsers allow autoplay), then fades into the login screen.
+(function intro() {
   document.getElementById("loginLogo").src = LOGOS.bmi;
-  setTimeout(() => el.remove(), reduceMotion ? 0 : 2500);
+  const el = document.getElementById("intro"), v = document.getElementById("introVideo");
+  if (!el) return;
+  if (navigator.webdriver) { el.remove(); return; }  // automated test runs skip the intro
+  let gone = false;
+  const close = () => { if (gone) return; gone = true; el.classList.add("out"); v.pause(); setTimeout(() => el.remove(), 600); };
+  v.addEventListener("ended", close);
+  v.addEventListener("error", close);
+  document.getElementById("introSkip").addEventListener("click", close);
+  document.getElementById("introSound").addEventListener("click", e => { v.muted = !v.muted; e.currentTarget.textContent = v.muted ? "🔊 Sound on" : "🔇 Mute"; if (v.paused) v.play(); });
+  v.play()?.catch(() => {});  // if autoplay is blocked the poster shows; Skip or tapping still works
+  el.addEventListener("click", e => { if (e.target === v && v.paused) v.play(); });
+  setTimeout(close, 15000);   // safety net if the video never ends
 })();
 
 // Scrolling ticker of nearby landmarks on the project page.
