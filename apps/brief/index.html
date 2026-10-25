@@ -1527,7 +1527,16 @@ function addTicker(root, p) {
 const screens = ["login", "otp", "projects", "detail", "intent", "book", "rkbook", "visit", "done", "rk", "terms", "pay", "future"];
 const trail = [];
 let here = "login";
+// What the customer chose along the way, sent with every email (e.g. "Not interested in BMI Garden City").
+const journey = [];
+const STEP = {
+  projects: () => "Opened project list", detail: () => `Viewed ${current.name}`, intent: () => `Interested in ${current.name}`,
+  book: () => "Chose: apply to purchase site", rkbook: () => "Chose: book a plot", visit: () => "Chose: visit the site",
+  rk: () => `Not interested in ${current.name} → shown RK Developers projects`, future: () => `Not interested in ${current.name} → new-projects form`,
+  terms: () => "Application submitted → Terms & Conditions", pay: () => "Payment step",
+};
 function go(name, isBack) {
+  if (!isBack && name !== here && STEP[name]) journey.push(STEP[name]());
   if (!isBack && name !== here) trail.push([here, current]);
   here = name;
   document.getElementById("backTop").hidden = name === "login" || trail.length === 0;
@@ -1574,6 +1583,7 @@ document.getElementById("otpForm").addEventListener("submit", e => {
   if (document.getElementById("otp").value.trim() !== "123456") return (err.textContent = "That code doesn't match. Use 123456 in this demo.");
   err.textContent = "";
   document.getElementById("hello").textContent = `Hi ${user.name.split(" ")[0]}, here are our projects`;
+  sendLead(`New visitor logged in – ${user.name}`, { Name: user.name, Mobile: user.phone }, { quiet: true });
   go("projects");
 });
 document.getElementById("yesBtn").addEventListener("click", () => go("intent"));
@@ -1634,21 +1644,34 @@ function formFields(form) {
   return out;
 }
 const sendNote = () => document.getElementById("sendNote");
-async function sendLead(subject, fields) {
+// quiet: send in the background without touching the thank-you note (login, mid-flow steps).
+// attachment: a Blob (the signature). FormSubmit's AJAX endpoint can't take files, so those go as a
+// plain multipart form post, whose response the browser keeps opaque.
+async function sendLead(subject, fields, { quiet = false, attachment = null } = {}) {
   const body = { _subject: subject, _template: "table", _captcha: "false",
     "Submitted at": new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }),
-    "Logged in as": `${user.name} · ${user.phone}`, ...fields };
+    "Logged in as": `${user.name} · ${user.phone}`, ...fields, "Customer journey": journey.join(" → ") || "—" };
   const note = sendNote();
-  note.className = "send-note sending"; note.textContent = "Sending your details to our team…";
+  if (!quiet) { note.className = "send-note sending"; note.textContent = "Sending your details to our team…"; }
   try {
-    const r = await fetch("https://formsubmit.co/ajax/" + LEAD_INBOX, { method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" }, body: JSON.stringify(body) });
-    if (!r.ok) throw new Error(String(r.status));
-    note.className = "send-note ok"; note.textContent = "✓ Your details have reached our team.";
+    if (attachment) {
+      const fd = new FormData();
+      Object.entries(body).forEach(([k, v]) => fd.append(k, v));
+      fd.append("attachment", attachment, "signature." + (attachment.type === "image/jpeg" ? "jpg" : "png"));
+      await fetch("https://formsubmit.co/" + LEAD_INBOX, { method: "POST", mode: "no-cors", body: fd });
+    } else {
+      const r = await fetch("https://formsubmit.co/ajax/" + LEAD_INBOX, { method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" }, body: JSON.stringify(body) });
+      if (!r.ok) throw new Error(String(r.status));
+    }
+    if (!quiet) { note.className = "send-note ok"; note.textContent = "✓ Your details have reached our team."; }
+    return true;
   } catch {
+    if (quiet) return false;
     // Fallback: let the customer send the same details from their own mail app.
     const text = Object.entries(body).filter(([k]) => !k.startsWith("_")).map(([k, v]) => `${k}: ${v}`).join("\n");
     note.className = "send-note fail";
     note.innerHTML = `We couldn't send your details automatically. <a href="mailto:${LEAD_INBOX}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(text)}">Tap here to email them to us</a>.`;
+    return false;
   }
 }
 function showDone(title, text, rows) {
@@ -1752,7 +1775,10 @@ document.getElementById("rkForm").addEventListener("submit", e => {
     favour: "Payments in favour of RK Developers. Our team will share the account details.",
     rows: [["Project", current.name], ["Name", v("rName")], ["Mobile", mask(mobile)], ["Email", v("rEmail").replace(/^(.).*(@.*)$/, "$1•••$2")],
      ["Date of birth", nice(v("rDob"))], ["Gender", v("rGender")], ["Date", nice(v("rDate"))], ["Address", v("rAddr")]],
+    short: { Project: current.name, Name: v("rName"), Mobile: mobile, Email: v("rEmail") },
   };
+  const app = pending;
+  sendLead(app.subject, { ...app.fields, "Next step": "Payment method (separate email)" }, { quiet: true }).then(ok => (app.sentEarly = ok));
   openPay();
 });
 
@@ -1789,7 +1815,7 @@ document.getElementById("bookForm").addEventListener("submit", e => {
   pending = {
     title: "Application submitted", first: v("bName").split(" ")[0], dev: "bmi",
     subject: `BMI Garden City – Application for purchase of site – ${v("bName")}`,
-    fields: { Project: "BMI Garden City", ...formFields($("bookForm")), Signature: sigMode === "draw" ? "Drawn on screen (not attached)" : "Image uploaded (not attached)" },
+    fields: { Project: "BMI Garden City", ...formFields($("bookForm")), Signature: sigMode === "draw" ? "Drawn on screen (attached)" : "Image uploaded (attached)" },
     text: `Your application for a ${v("aSize")} site in ${v("aLayout")} is complete. Our team will contact you to complete the process.`,
     payFor: `${v("aSize")} site · ${v("aLayout")}`,
     amount: row ? "₹" + row[2] : "To be confirmed", amountNote: row ? `Down payment (30%) of total ₹${row[1]}. Balance in 3 instalments of ₹${row[3]}.` : "",
@@ -1797,6 +1823,11 @@ document.getElementById("bookForm").addEventListener("submit", e => {
     rows: [["Site", `${v("aSize")} · ${v("aLayout")}`], ["Applicant", v("bName")], ["Mobile", mask(mobile)], ["Email", v("aEmail").replace(/^(.).*(@.*)$/, "$1•••$2")],
      ["Nominee", `${v("nName")} (${v("nRel")})`], ["Family members", String(family)], ["Signature", sigMode === "draw" ? "Drawn on screen" : "Image uploaded"]],
   };
+  pending.short = { Project: "BMI Garden City", Site: `${v("aSize")} · ${v("aLayout")}`, Applicant: v("bName"), Mobile: mobile, Email: v("aEmail") };
+  const sigBlob = sigMode === "draw" ? new Promise(r => pad.toBlob(r, "image/png")) : fetch(sigUpload).then(r => r.blob());
+  const app = pending;
+  sigBlob.then(blob => sendLead(app.subject, { ...app.fields, "Next step": "Terms & Conditions, then payment method (separate email)" }, { quiet: true, attachment: blob }))
+    .then(ok => (app.sentEarly = ok));
   $("tAgree").checked = false; $("tErr").textContent = "";
   go("terms");
 });
@@ -1826,7 +1857,11 @@ $("payConfirm").addEventListener("click", () => {
   if (!m) { $("payErr").textContent = "Please choose how you would like to pay."; return; }
   showDone(pending.title, `Thank you, ${pending.first}. ${pending.text} You chose to pay by ${m.value}; our team will share the payment details.`,
     [...pending.rows, ["Amount due now", pending.amount], ["Payment method", m.value]]);
-  sendLead(pending.subject, { ...pending.fields, "Amount due now": pending.amount, "Payment method": m.value });
+  const pay = { "Amount due now": pending.amount, "Payment method": m.value };
+  // The full application went out when it was submitted; this email completes it. If that one failed, resend everything.
+  pending.sentEarly
+    ? sendLead(pending.subject.replace(/ – ([^–]+)$/, " – Payment method chosen – $1"), { ...pending.short, ...(pending.dev === "bmi" ? { "Terms & Conditions": "Accepted" } : {}), ...pay })
+    : sendLead(pending.subject, { ...pending.fields, ...pay });
 });
 
 // ----- Not interested in RK either: details for new projects -----
