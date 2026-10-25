@@ -200,6 +200,40 @@ legend { font: 600 1.05rem var(--font-display); padding: 0; margin-bottom: 8px; 
   .login-intro { padding-top: 10px; }
 }
 
+
+/* ---------- login: a lens gliding over the real layout plan, ticket-style sign-in ---------- */
+.login-title .rot { display: inline-grid; vertical-align: bottom; color: var(--clay); background: none; }
+.login-title .rot b { grid-area: 1 / 1; font-weight: 600; opacity: 0; animation: rot 10s infinite; }
+.login-title .rot b:nth-child(2) { animation-delay: 2.5s; } .login-title .rot b:nth-child(3) { animation-delay: 5s; } .login-title .rot b:nth-child(4) { animation-delay: 7.5s; }
+@keyframes rot { 0% { opacity: 0; transform: translateY(60%); filter: blur(4px); } 4%, 22% { opacity: 1; transform: none; filter: none; } 26%, 100% { opacity: 0; transform: translateY(-60%); filter: blur(4px); } }
+.lens-hero { position: relative; height: clamp(300px, 86vw, 420px); display: grid; place-items: center; }
+.lens { position: relative; width: min(74vw, 300px); aspect-ratio: 1; border-radius: 50%; overflow: hidden; background: #fff url("assets/ee108603224b.jpg") 30% 30% / 230% auto no-repeat;
+  box-shadow: 0 0 0 10px #fff, 0 0 0 11px var(--line), 0 40px 70px -30px rgba(20,36,58,.6); animation: pan 22s ease-in-out infinite alternate, lensIn 1.2s var(--ease) both; }
+@keyframes pan { 0% { background-position: 25% 15%; } 33% { background-position: 80% 40%; } 66% { background-position: 35% 70%; } 100% { background-position: 70% 95%; } }
+@keyframes lensIn { from { transform: scale(.6) rotate(-20deg); opacity: 0; } }
+.lens-shine { position: absolute; inset: 0; border-radius: 50%; background: radial-gradient(circle at 30% 25%, rgba(255,255,255,.55), transparent 40%), radial-gradient(circle at 50% 50%, transparent 62%, rgba(20,36,58,.25)); }
+.pin { position: absolute; left: 50%; top: 46%; width: 26px; height: 26px; margin: -26px 0 0 -13px; border-radius: 50% 50% 50% 0; background: var(--clay); transform: rotate(-45deg); box-shadow: 0 6px 12px -4px rgba(0,0,0,.5); animation: pinDrop 1s 1s cubic-bezier(.3,1.6,.5,1) both; z-index: 1; }
+.pin::after { content: ""; position: absolute; inset: 8px; border-radius: 50%; background: #fff; }
+.pin::before { content: ""; position: absolute; left: 6px; top: 22px; width: 24px; height: 24px; border-radius: 50%; border: 2px solid var(--clay); transform: rotate(45deg) scale(.4); opacity: 0; animation: pulse 2s 2s infinite; }
+@keyframes pinDrop { from { transform: translateY(-120px) rotate(-45deg); opacity: 0; } }
+@keyframes pulse { 0% { transform: rotate(45deg) scale(.4); opacity: .9; } 100% { transform: rotate(45deg) scale(2.2); opacity: 0; } }
+.orbit { position: absolute; font: 600 .78rem var(--font-body); padding: 7px 13px; border-radius: 999px; background: var(--card); border: 1px solid var(--line); box-shadow: var(--shadow); white-space: nowrap; animation: float 6s ease-in-out infinite, fadeUp .8s var(--ease) both; }
+.orbit::before { content: "● "; color: var(--brass); font-size: .6rem; vertical-align: 2px; }
+.o1 { top: 6%; left: 2%; animation-delay: 0s, 1.4s; } .o2 { top: 18%; right: 0; animation-delay: -1.5s, 1.6s; }
+.o3 { bottom: 16%; left: 0; animation-delay: -3s, 1.8s; } .o4 { bottom: 4%; right: 4%; animation-delay: -4.5s, 2s; }
+@keyframes float { 50% { transform: translateY(-10px); } }
+.login-card { position: relative; overflow: hidden; padding-top: 0; }
+.ticket-head { display: flex; align-items: center; gap: 14px; margin: 0 calc(-1 * clamp(20px, 5vw, 32px)); padding: 18px clamp(20px, 5vw, 32px); background: var(--moss); color: #fff; position: relative; }
+.ticket-head::after { content: ""; position: absolute; left: 0; right: 0; bottom: -7px; height: 14px; background: radial-gradient(circle 7px at 7px 7px, var(--card) 98%, transparent) 0 0 / 20px 14px repeat-x; }
+.ticket-head span { font: 700 .66rem var(--font-body); letter-spacing: .2em; text-transform: uppercase; color: var(--brass); }
+.ticket-head h2 { color: #fff; }
+.login-card .login-logo { width: 54px; height: 54px; border-radius: 50%; background: #fff; padding: 3px; }
+@media (min-width: 820px) {
+  #s-login { grid-template-columns: 1fr 1fr; align-items: center; column-gap: 36px; }
+  #s-login .login-intro { grid-column: 1 / -1; text-align: center; justify-items: center; }
+  .lens-hero { height: 460px; } .lens { width: 340px; }
+}
+
 /* ---------- OTP ---------- */
 #otpForm { max-width: 480px; justify-self: center; width: 100%; }
 #otp { font: 600 1.6rem ui-monospace, Menlo, monospace; letter-spacing: .6em; text-align: center; padding-left: .6em; }
@@ -494,42 +528,23 @@ button.done-card:hover { background: var(--card); transform: translateY(-5px) ro
 
   <!-- 1. Login -->
   <section class="screen" id="s-login">
-    <div class="login-hero">
-      <svg class="login-contours" viewBox="0 0 400 260" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-        <g fill="none" stroke="rgba(233,222,196,.16)" stroke-width="1">
-          <path d="M-20 210 C 60 170 120 230 200 190 S 340 150 420 180"/>
-          <path d="M-20 180 C 70 140 130 200 210 160 S 340 120 420 150"/>
-          <path d="M-20 150 C 80 110 140 170 220 130 S 340 90 420 120"/>
-          <path d="M-20 120 C 90 80 150 140 230 100 S 340 60 420 90"/>
-          <path d="M-20 90 C 100 50 160 110 240 70 S 340 30 420 60"/>
-          <path d="M-20 60 C 110 20 170 80 250 40 S 340 0 420 30"/>
-          <ellipse cx="318" cy="200" rx="40" ry="18"/><ellipse cx="318" cy="200" rx="24" ry="10"/><ellipse cx="318" cy="200" rx="10" ry="4"/>
-        </g>
-      </svg>
-      <div class="plots" aria-hidden="true"><i style="animation-delay:0.00s"></i><i style="animation-delay:0.37s"></i><i style="animation-delay:0.74s"></i><i style="animation-delay:1.11s"></i><i style="animation-delay:1.48s"></i><i style="animation-delay:1.85s"></i><i style="animation-delay:2.22s"></i><i style="animation-delay:2.59s"></i><i style="animation-delay:2.96s"></i><i style="animation-delay:3.33s"></i><i style="animation-delay:3.70s"></i><i style="animation-delay:4.07s"></i><i style="animation-delay:4.44s"></i><i style="animation-delay:0.01s"></i><i style="animation-delay:0.38s"></i><i style="animation-delay:0.75s"></i><i style="animation-delay:1.12s"></i><i style="animation-delay:1.49s"></i><i style="animation-delay:1.86s"></i><i style="animation-delay:2.23s"></i><i style="animation-delay:2.60s"></i><i style="animation-delay:2.97s"></i><i style="animation-delay:3.34s"></i><i style="animation-delay:3.71s"></i></div>
-      <div class="lh-top">
-        <img class="login-logo" id="loginLogo" alt="BMI Housing Society logo">
-        <span class="lh-tag">Featured project</span>
-      </div>
-      <div class="lh-body">
-        <p class="lh-name">BMI Garden City</p>
-        <p class="lh-loc">Off NH 648, Devanahalli · North Bengaluru</p>
-        <p class="lh-price"><span>₹1,399</span> / sq ft</p>
-        <p class="lh-near">Near Kempegowda Airport · ITIR Tech Park · Amity University</p>
-      </div>
-    </div>
-
     <div class="login-intro">
       <p class="login-kicker" id="qrNote">Welcome — you scanned a BMI QR code</p>
-      <h1 class="login-title">Invest in land in <span>North Bengaluru</span></h1>
-      <ul class="login-chips">
-        <li>BIAAPA approved</li><li>A Khata plots</li><li>4-instalment payment plan</li>
-      </ul>
+      <h1 class="login-title">Your plot in North Bengaluru is <span class="rot" aria-live="off"><b>waiting.</b><b>ready.</b><b>₹1,399 / sq ft.</b><b>near the airport.</b></span></h1>
+    </div>
+
+    <div class="lens-hero" aria-hidden="true">
+      <div class="lens"><span class="pin"></span><span class="lens-shine"></span></div>
+      <span class="orbit o1">BMI Garden City</span>
+      <span class="orbit o2">Off NH 648 · Devanahalli</span>
+      <span class="orbit o3">BIAAPA · A Khata</span>
+      <span class="orbit o4">4-instalment plan</span>
     </div>
 
     <form class="panel login-card" id="loginForm" novalidate>
+      <div class="ticket-head"><img class="login-logo" id="loginLogo" alt="BMI Housing Society logo"><div><span>Site pass</span>
+        <h2>Sign in</h2></div></div>
       <div>
-        <h2>Sign in</h2>
         <p class="muted">We'll send a one-time code to your mobile.</p>
       </div>
       <label for="name">Full name<input id="name" autocomplete="name" placeholder="e.g. Asha Verma"></label>
