@@ -660,6 +660,25 @@ body:has(#s-login:not([hidden])) .foot { display: none; }
 .ca-right { grid-template-rows: auto 1fr; }
 .ca-body { align-self: center; padding-top: 0; margin-top: -40px; }
 .ca-art { -webkit-mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 70%, transparent 100%); mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 70%, transparent 100%); }
+
+/* ---------- project dashboard ---------- */
+.dash { --acc: var(--moss); display: grid; gap: 12px; }
+.dash-hero { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 10px 20px; padding: 20px 22px; border-radius: 10px; color: #fff;
+  background: linear-gradient(135deg, var(--acc), color-mix(in srgb, var(--acc) 55%, #0d2547)); }
+.dash-hero div { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+.dash-hero .dash-k { width: 100%; font: 700 .7rem var(--font-body); letter-spacing: .14em; text-transform: uppercase; opacity: .8; }
+.dash-hero .dash-v { font: 700 clamp(2.2rem, 7vw, 3rem)/1 var(--font-display); }
+.dash-hero small { opacity: .85; }
+.dash-hero p { color: #fff !important; font-weight: 600; background: rgba(255,255,255,.16); padding: 6px 12px; border-radius: 6px; }
+.dash-tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+.dash-tile { display: grid; gap: 2px; align-content: start; padding: 16px; border-radius: 10px; background: #fff; border: 1px solid var(--line); border-top: 3px solid var(--acc); transition: transform .3s, box-shadow .3s; }
+.dash-tile:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
+.dash-tile svg { width: 26px; height: 26px; fill: none; stroke: var(--acc); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; margin-bottom: 6px; }
+.dash-tile .dash-v { font: 700 1.5rem/1.1 var(--font-display); color: var(--ink); }
+.dash-tile .dash-k { font: 700 .72rem var(--font-body); letter-spacing: .08em; text-transform: uppercase; color: var(--acc); }
+.dash-tile small { color: var(--muted); font-size: .84rem; line-height: 1.35; }
+.pbody > .plogos { display: flex; }
+.pbody > .badges { display: flex; }
 </style>
 
 <div id="intro" role="dialog" aria-label="Welcome video">
@@ -1096,6 +1115,34 @@ const RK_PROJECTS = [
 RK_PROJECTS[0].sizes = RK_PROJECTS[0].plots.map(p => ({ label: `${p[0].replace(" ⭐", "")} — ${p[1]}`, note: p[3], extra: [["Price", p[3]]] }));
 RK_PROJECTS[1].sizes = [{ label: "Residential plot (any available size)", note: "₹3,499/sq.ft · only 36 plots", extra: [["Price", "₹3,499/sq.ft"]] }];
 
+// Project dashboard: one hero number, then icon tiles. Each project has its own accent and tiles.
+const ICONS = {
+  price: '<path d="M7 4h10M7 9h10M13 20 7 13h3a4 4 0 0 0 0-8"/>',
+  area: '<path d="M3 21V3h18v18z"/><path d="M3 9h18M9 21V9"/>',
+  plots: '<rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>',
+  check: '<circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/>',
+  pin: '<path d="M12 21s-7-6.5-7-12a7 7 0 0 1 14 0c0 5.5-7 12-7 12z"/><circle cx="12" cy="9" r="2.5"/>',
+  doc: '<path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 13h7M9 17h7"/>',
+  cal: '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
+  tree: '<path d="M12 22v-6M7 16h10l-5-13z"/>',
+  star: '<path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>',
+};
+const DASH = {
+  "garden-city": { acc: "#1f8a5b", hero: ["₹1,499", "per sq ft", "Residential plots · BIAAPA approved"],
+    tiles: [["plots", "4", "Plot sizes", "30×40 to 50×80"], ["check", "BIAAPA", "Approval", "A Khata plots"], ["cal", "30% + 3", "Payment plan", "Down payment, then 3 instalments"], ["pin", "NH 648", "Location", "Devanahalli, near the airport"]] },
+  "metro-greens": { acc: "#3d7b2e", hero: ["₹999", "per sq ft", "Premium farm plots · Ready to register"],
+    tiles: [["area", "200", "Acres in total", "Ecological project"], ["plots", "11.5", "Acres in Phase 1", "Now open"], ["tree", "8", "Crop varieties", "Trees and fruit crops"], ["star", "30+", "Amenities", "Clubhouse, pool, trails"]] },
+  "rk-avenue": { acc: "#b5603a", hero: ["₹3,499", "per sq ft", "Gated residential layout"],
+    tiles: [["area", "2.5", "Acre layout", "Gated community"], ["plots", "36", "Plots only", "Exclusive"], ["check", "100%", "Ready", "Register and build now"], ["pin", "SH-9", "Location", "Alkapura, Gauribidanur"]] },
+};
+function dash(p) {
+  const d = DASH[p.id]; if (!d) return "";
+  const ic = k => `<svg viewBox="0 0 24 24" aria-hidden="true">${ICONS[k]}</svg>`;
+  return `<section class="dash" style="--acc:${d.acc}" aria-label="${p.name} at a glance">
+    <div class="dash-hero"><div><span class="dash-k">Starting price</span><b class="dash-v">${d.hero[0]}</b><small>${d.hero[1]}</small></div><p>${d.hero[2]}</p></div>
+    <div class="dash-tiles">${d.tiles.map(([i, v, k, n]) => `<div class="dash-tile">${ic(i)}<b class="dash-v">${v}</b><span class="dash-k">${k}</span><small>${n}</small></div>`).join("")}</div>
+  </section>`;
+}
 // Placeholder "photos": drawn plot layouts in each project's colours.
 function photo(seed, [a, b], label) {
   let s = seed, rnd = () => (s = (s * 9301 + 49297) % 233280) / 233280;
@@ -1117,12 +1164,8 @@ function renderProject(p, i) {
       ${p.photos ? `<div class="phead"><div class="phead-top"><img class="plogo" alt="BMI logo" src="${LOGOS.bmi}"><h2>${p.name}</h2></div>${realGallery(PHOTOS[p.photos])}</div>
       <p class="lead">${esc(p.line)}</p>` : `<img class="plogo" alt="BMI logo" src="${LOGOS.bmi}">
       <div><h2 style="font-size:1.7rem">${p.name}</h2><p class="lead">${esc(p.line)}</p></div>`}
-      <div class="badges"><span>BIAAPA Approval</span><span>A Khata</span><span>4-EMI Plan</span><span class="price">${p.rate}</span><span>${p.where}</span></div>
+      ${dash(p)}
       <div><h3>${p.overviewTitle}</h3><p>${OVERVIEW}</p></div>
-      <dl class="facts">
-        <div><dt>Price</dt><dd>${p.rate}</dd></div><div><dt>Location</dt><dd>${p.whereShort}</dd></div>
-        <div><dt>Payment</dt><dd>4-EMI Plan</dd></div><div><dt>Approval</dt><dd>BIAAPA</dd></div><div><dt>Plot type</dt><dd>A Khata</dd></div>
-      </dl>
       <div><h3>Pricing</h3><p class="cap">${p.priceCap}</p>
         <div class="tablebox"><table><thead><tr><th>Size</th><th>Total (₹)</th><th>Down payment (₹)</th><th>Each of 3 instalments (₹)</th></tr></thead>
         <tbody>${p.rows.map(r => `<tr><td>${r[0]}</td><td class="total">${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td></tr>`).join("")}</tbody></table></div></div>
@@ -1143,10 +1186,8 @@ function renderRk(p, i) {
     <div class="pbody">
       <div class="plogos"><img class="plogo" alt="${p.name} logo" src="${LOGOS[p.logo]}">${p.logo !== "rk" ? `<img class="plogo" alt="RK Developers logo" src="${LOGOS.rk}">` : ""}</div>
       <div><h3>RK Developers · ${esc(p.eyebrow)}</h3><h2 style="font-size:1.7rem">${p.name}</h2><p class="lead">${esc(p.line)}</p></div>
-      <div class="badges">${p.badges.map((b, k) => `<span class="${b.includes("₹") ? "price" : ""}">${esc(b)}</span>`).join("")}</div>
-      <dl class="facts">${p.facts.map(([k, v]) => `<div${v.length > 28 ? ' class="wide"' : ""}><dt>${k}</dt><dd>${esc(v)}</dd></div>`).join("")}</dl>
+      ${dash(p)}
       <div><h3>About ${p.name}</h3><h2>${esc(p.aboutTitle)}</h2>${p.about.map(a => `<p>${esc(a)}</p>`).join("")}</div>
-      <dl class="facts">${p.stats.map(([k, v]) => `<div><dd style="font-size:1.4rem">${k}</dd><dt>${v}</dt></div>`).join("")}</dl>
       ${p.crops ? `<div class="crops"><h3>Our crops</h3><h2>High-value trees &amp; fruit crops</h2><p>${esc(p.crops.intro)}</p>
         ${p.crops.video ? `<video class="crops-video" src="${p.crops.video}" autoplay muted loop playsinline preload="metadata" aria-label="High-value trees and fruit crops at Metro Greens"></video>` : ""}
         <ol class="crop-list">${p.crops.list.map((c, k) => `<li style="--k:${k}"><span>${String(k + 1).padStart(2, "0")}</span><b>${c}</b><small>${k < 4 ? "High-value tree" : "Fruit crop"}</small></li>`).join("")}</ol>
@@ -1296,7 +1337,7 @@ document.addEventListener("pointerdown", e => {
 // Count numbers up (₹1,499 · 200 · 11.5 · 36 · 100%) when a project opens.
 function countUp(root) {
   if (reduceMotion) return;
-  root.querySelectorAll(".facts dd").forEach(el => {
+  root.querySelectorAll(".facts dd, .dash-v").forEach(el => {
     const m = el.textContent.match(/^(\D*)([\d,]+(?:\.\d+)?)(.*)$/);
     if (!m) return;
     const [, pre, num, post] = m, target = parseFloat(num.replace(/,/g, "")), dec = (num.split(".")[1] || "").length;
@@ -1359,8 +1400,7 @@ function addTicker(root, p) {
   const t = document.createElement("div");
   t.className = "ticker"; t.setAttribute("aria-label", "Nearby: " + items.join(", "));
   t.innerHTML = `<div class="ticker-track" aria-hidden="true">${row}${row}</div>`;
-  const badges = root.querySelector(".badges");
-  badges?.after(t);
+  root.querySelector(".dash")?.after(t);
 }
 
 // Journey rail in the header: Sign in · Explore · Decide · Apply · Done.
