@@ -1091,8 +1091,9 @@ const RK_PROJECTS = [
       list: ["Teakwood", "Sandalwood", "Agarwood (Oud)", "Rosewood", "Passion Fruit", "Guava", "Grapes", "Pomegranate"],
       // The plantation video shows one crop every 5 seconds, in this order.
       video: "assets/fruits.mp4", poster: "assets/fruits-poster.jpg", step: 5,
-      seq: [["Grapes", "Fruit crop"], ["Pomegranate", "Fruit crop"], ["Guava", "Fruit crop"], ["Mango", "Fruit crop"], ["Passion Fruit", "Fruit crop"],
-        ["Agarwood (Oud)", "High-value tree"], ["Rosewood", "High-value tree"], ["Teakwood", "High-value tree"], ["Dragon Fruit", "Fruit crop"]],
+      // Optional third item: a crop's own clip, played instead of its 5-second slice of the combined video.
+      seq: [["Grapes", "Fruit crop", "assets/crop-grapes.mp4"], ["Pomegranate", "Fruit crop", "assets/crop-pomegranate.mp4"], ["Guava", "Fruit crop", "assets/crop-guava.mp4"], ["Mango", "Fruit crop", "assets/crop-mango.mp4"], ["Passion Fruit", "Fruit crop", "assets/crop-passion.mp4"],
+        ["Agarwood (Oud)", "High-value tree", "assets/crop-agarwood.mp4"], ["Rosewood", "High-value tree", "assets/crop-rosewood.mp4"], ["Teakwood", "High-value tree", "assets/crop-teak.mp4"], ["Dragon Fruit", "Fruit crop", "assets/crop-dragon.mp4"]],
       feature: [["Sandalwood (Santalum album)", "₹1,000/kg · 10–12 years"], ["Market value", "Mature trees yield 100–150 kg each — demand and long-term value consistently high."], ["Climate fit", "22°C–34°C supports steady trunk growth and healthy heartwood density."], ["Benefits", "Long life cycle, strong resale, low maintenance, natural pest resistance, domestic & international buyers."], ["Future", "Legal supply limited — prices continue to appreciate year after year."]] },
     amenTitle: "30+ Amenities · Urban Comfort in a Rural Setting",
     amenities: ["Grand Clubhouse", "Swimming Pool", "Spa & Wellness", "Jogging Track", "Yoga Decks", "Multi-sport Courts", "Children's Play Area", "Open Activity Zones", "24/7 Security", "Drip Irrigation", "Organic Gardens", "Scenic Trails", "Solar Lighting", "High-Speed Wi-Fi", "Maintenance Team", "Ample Parking", "Resort & Clubhouse"],
@@ -1153,16 +1154,22 @@ function dash(p) {
     <div class="dash-tiles">${d.tiles.map(([i, v, k, n]) => `<div class="dash-tile">${ic(i)}<b class="dash-v">${v}</b><span class="dash-k">${k}</span><small>${n}</small></div>`).join("")}</div>
   </section>`;
 }
-// Plantation video: highlight the crop on screen, and let a tap on a label jump the video to it.
-document.addEventListener("timeupdate", e => {
-  const v = e.target; if (v.id !== "cropVideo") return;
-  const k = Math.floor(v.currentTime / +v.dataset.step);
-  v.closest(".crops").querySelectorAll(".crop-list li").forEach((li, j) => li.classList.toggle("on", j === k));
-}, true);
-document.addEventListener("click", e => {
-  const li = e.target.closest(".crop-list li[data-seek]"); if (!li) return;
-  const v = document.getElementById("cropVideo"); v.currentTime = +li.dataset.seek + .05; v.play()?.catch(() => {});
-});
+// Plantation player: steps through the crops in order. A crop with its own clip plays that clip;
+// the rest play their 5-second slice of the combined video. Tapping a label jumps to that crop.
+const crop = { k: 0, end: Infinity };
+function cropPlay(k) {
+  const v = document.getElementById("cropVideo"); if (!v) return;
+  const c = RK_PROJECTS[0].crops, seq = c.seq, n = (k + seq.length) % seq.length, own = seq[n][2];
+  crop.k = n;
+  const src = own || c.video, start = own ? 0 : n * c.step;
+  crop.end = own ? Infinity : start + c.step;
+  const go = () => { v.currentTime = start; v.play()?.catch(() => {}); };
+  if (!v.src.endsWith(src)) { v.src = src; v.addEventListener("loadedmetadata", go, { once: true }); } else go();
+  v.closest(".crops").querySelectorAll(".crop-list li").forEach((li, j) => li.classList.toggle("on", j === n));
+}
+document.addEventListener("timeupdate", e => { if (e.target.id === "cropVideo" && e.target.currentTime >= crop.end) cropPlay(crop.k + 1); }, true);
+document.addEventListener("ended", e => { if (e.target.id === "cropVideo") cropPlay(crop.k + 1); }, true);
+document.addEventListener("click", e => { const li = e.target.closest(".crop-list li[data-seek]"); if (li) cropPlay(+li.dataset.seek); });
 document.addEventListener("keydown", e => { if ((e.key === "Enter" || e.key === " ") && e.target.matches?.(".crop-list li[data-seek]")) { e.preventDefault(); e.target.click(); } });
 // Placeholder "photos": drawn plot layouts in each project's colours.
 function photo(seed, [a, b], label) {
@@ -1210,8 +1217,8 @@ function renderRk(p, i) {
       ${dash(p)}
       <div><h3>About ${p.name}</h3><h2>${esc(p.aboutTitle)}</h2>${p.about.map(a => `<p>${esc(a)}</p>`).join("")}</div>
       ${p.crops ? `<div class="crops"><h3>Our crops</h3><h2>High-value trees &amp; fruit crops</h2><p>${esc(p.crops.intro)}</p>
-        ${p.crops.video ? `<video class="crops-video" id="cropVideo" src="${p.crops.video}" poster="${p.crops.poster}" data-step="${p.crops.step}" autoplay muted loop playsinline preload="metadata" aria-label="High-value trees and fruit crops at Metro Greens"></video>` : ""}
-        <ol class="crop-list">${(p.crops.seq || p.crops.list.map((c, k) => [c, k < 4 ? "High-value tree" : "Fruit crop"])).map(([c, t], k) => `<li class="${t === "Fruit crop" ? "fruit" : "tree"}" style="--k:${k}"${p.crops.seq ? ` data-seek="${k * p.crops.step}" tabindex="0" role="button" aria-label="Show ${c} in the video"` : ""}><span>${String(k + 1).padStart(2, "0")}</span><b>${c}</b><small>${t}</small></li>`).join("")}</ol>
+        ${p.crops.video ? `<video class="crops-video" id="cropVideo" src="${(p.crops.seq?.[0]?.[2]) || p.crops.video}" poster="${p.crops.poster}" data-step="${p.crops.step}" autoplay muted playsinline preload="metadata" aria-label="High-value trees and fruit crops at Metro Greens"></video>` : ""}
+        <ol class="crop-list">${(p.crops.seq || p.crops.list.map((c, k) => [c, k < 4 ? "High-value tree" : "Fruit crop"])).map(([c, t, clip], k) => `<li class="${t === "Fruit crop" ? "fruit" : "tree"}" style="--k:${k}"${p.crops.seq ? ` data-seek="${k}" tabindex="0" role="button" aria-label="Show ${c} in the video"` : ""}><span>${String(k + 1).padStart(2, "0")}</span><b>${c}</b><small>${t}</small></li>`).join("")}</ol>
         <div class="amen">${p.crops.feature.map(([k, v]) => `<div><b>${k}</b>${esc(v)}</div>`).join("")}</div></div>` : ""}
       ${p.plots ? `<div><h3>${p.plotsTitle}</h3><div class="amen">${p.plots.map(([n, sz, d, pr]) => `<div><b>${n}</b><strong>${sz}</strong><br><span class="muted">${d}</span><br><small>${pr}</small></div>`).join("")}</div></div>` : ""}
       <div><h3>${esc(p.amenTitle)}</h3>
@@ -1345,6 +1352,7 @@ function showProject(p) {
   countUp(document.getElementById("projectDetail"));
   addTicker(document.getElementById("projectDetail"), current);
   revealIn(document.getElementById("projectDetail"));
+  if (p.crops?.seq) cropPlay(0);
 }
 document.querySelectorAll("[data-project]").forEach(b => b.addEventListener("click", () => {
   showProject((b.dataset.list === "rk" ? RK_PROJECTS : PROJECTS)[+b.dataset.project]);
