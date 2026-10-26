@@ -1656,7 +1656,9 @@ async function sendLead(subject, fields, { quiet = false, attachment = null } = 
       await fetch("https://formsubmit.co/" + LEAD_INBOX, { method: "POST", mode: "no-cors", body: fd });
     } else {
       const r = await fetch("https://formsubmit.co/ajax/" + LEAD_INBOX, { method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" }, body: JSON.stringify(body) });
-      if (!r.ok) throw new Error(String(r.status));
+      const j = await r.json().catch(() => ({}));
+      // FormSubmit answers 200 even when it did not deliver (e.g. inbox not activated yet), so check its own flag.
+      if (!r.ok || String(j.success) !== "true") throw new Error(j.message || String(r.status));
     }
     if (!quiet) { note.className = "send-note ok"; note.textContent = "✓ Your details have reached our team."; }
     return true;
