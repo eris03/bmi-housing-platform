@@ -602,6 +602,33 @@ body:has(#s-login:not([hidden])) { background: #0d2547 !important; }
 .intro-ctrls { position: absolute; right: 16px; bottom: max(16px, env(safe-area-inset-bottom)); display: flex; gap: 8px; }
 .intro-ctrls button { padding: 9px 16px; font-size: .9rem; background: rgba(13,37,71,.8); box-shadow: none; }
 .intro-ctrls button::after { content: none !important; }
+
+/* ---------- login: teal split card (reference "Create Account") ---------- */
+body:has(#s-login:not([hidden])) { background: #93b3b3 !important; }
+body:has(#s-login:not([hidden]))::before { display: none; }
+.ca { display: grid; background: #b1dbdc; box-shadow: 0 30px 60px -30px rgba(30,60,60,.55); overflow: hidden; border-radius: 4px; }
+.ca-left { position: relative; background: #b1dbdc; padding: 22px 24px 0; min-height: 360px; display: grid; align-content: start; }
+.ca-mark { width: 40px; height: 40px; border-radius: 50%; background: #fff; }
+.ca-tag { color: #fff; font: 500 1.05rem/1.6 var(--font-display); letter-spacing: .04em; margin-top: 26px; max-width: 280px; }
+.ca-art { width: 100%; height: 300px; object-fit: contain; mix-blend-mode: multiply; margin-top: 8px; }
+.ca-right { position: relative; background: #fff; display: grid; padding: 18px 26px 40px; }
+.ca-lang { justify-self: end; font-size: .78rem; color: #8a9a9a; }
+.ca-lang::after { content: " ▾"; }
+.ca-body { width: min(100%, 300px); justify-self: center; display: grid; gap: 22px; padding-top: 20px; }
+.ca-title { font: 700 1.25rem var(--font-display) !important; letter-spacing: .06em !important; color: #111; }
+.ca-field input { border: 0; border-bottom: 1px solid #9aa; border-radius: 0 !important; background: transparent; padding: 8px 0; font-size: .92rem; box-shadow: none; }
+.ca-field input:hover, .ca-field input:focus { background: transparent; box-shadow: none; }
+.ca-field input:focus { border-bottom-color: #4aa9ae; }
+.ca-field input::placeholder { color: #7d8b8b; }
+.ca-btn { background: #93d0d3; border-radius: 4px !important; padding: 12px; font-size: .9rem; box-shadow: none; }
+.ca-btn:hover { background-color: #7cc3c7; }
+.ca-btn::after { content: none !important; }
+.ca-alt { font-size: .82rem; color: #6d7b7b; }
+@media (min-width: 760px) {
+  .ca { grid-template-columns: 38% 1fr; min-height: 470px; }
+  .ca-right { margin-left: -40px; border-radius: 26px 0 0 26px; }
+  .ca-art { position: absolute; left: 0; right: -110px; bottom: 0; width: auto; height: 68%; z-index: 2; }
+}
 </style>
 
 <div id="intro" role="dialog" aria-label="Welcome video">
@@ -620,21 +647,25 @@ body:has(#s-login:not([hidden])) { background: #0d2547 !important; }
 
   <!-- 1. Login -->
   <section class="screen" id="s-login">
-    <div class="tp">
-      <form class="tp-form" id="loginForm" novalidate>
-        <img class="tp-logo" id="loginLogo" alt="BMI Housing Society logo">
-        <p class="tp-kicker" id="qrNote">Welcome — you scanned a BMI QR code</p>
-        <h1 class="tp-title">SIGN IN</h1>
-        <label for="name" class="tp-field"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg><span class="sr">Full name</span><input id="name" autocomplete="name" placeholder="full name"></label>
-        <label for="mobile" class="tp-field"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="2.5"/></svg><span class="sr">Mobile number</span><input id="mobile" inputmode="tel" autocomplete="tel-national" placeholder="mobile number"></label>
-        <p class="tp-agree">We'll send a one-time code to your mobile.</p>
-        <p class="err" id="loginErr" role="alert"></p>
-        <button type="submit" class="tp-btn">CONTINUE</button>
-      </form>
-      <div class="tp-art" aria-hidden="true">
-        <video class="tp-anim" id="loginArt" src="assets/mascot-720.mp4" poster="assets/mascot-poster.jpg" autoplay muted loop playsinline preload="auto"></video>
-        <div class="tp-cap"><b>BMI GARDEN CITY</b><span>NORTH BENGALURU</span></div>
+    <div class="ca">
+      <div class="ca-left" aria-hidden="true">
+        <img class="ca-mark" src="assets/1f0488e2d634.png" alt="">
+        <p class="ca-tag">Find premium plots in BMI Garden City, North Bengaluru, here</p>
+        <video class="ca-art" id="loginArt" src="assets/mascot-720.mp4" poster="assets/mascot-poster.jpg" autoplay muted loop playsinline preload="auto"></video>
       </div>
+      <form class="ca-right" id="loginForm" novalidate>
+        <p class="ca-lang">English (IN)</p>
+        <div class="ca-body">
+          <img id="loginLogo" alt="" hidden>
+          <p class="sr" id="qrNote">Welcome — you scanned a BMI QR code</p>
+          <h1 class="ca-title">Sign In</h1>
+          <label for="name" class="ca-field"><span class="sr">Full name</span><input id="name" autocomplete="name" placeholder="Full Name"></label>
+          <label for="mobile" class="ca-field"><span class="sr">Mobile number</span><input id="mobile" inputmode="tel" autocomplete="tel-national" placeholder="Mobile Number"></label>
+          <p class="err" id="loginErr" role="alert"></p>
+          <button type="submit" class="ca-btn">Continue</button>
+          <p class="ca-alt">We'll send a one-time code to your mobile.</p>
+        </div>
+      </form>
     </div>
   </section>
 
