@@ -639,6 +639,27 @@ body:has(#s-login:not([hidden]))::before { display: none; }
 .crop-list small { color: var(--muted); font-size: .78rem; }
 .crops.in .crop-list li, .crops:not(.reveal) .crop-list li { animation: cropIn .5s ease both; animation-delay: calc(var(--k) * 140ms + .2s); }
 @keyframes cropIn { from { opacity: 0; transform: translateY(10px); } }
+
+/* login fills the whole screen */
+body:has(#s-login:not([hidden])) .wrap { max-width: none; padding: 0; }
+body:has(#s-login:not([hidden])) .top { margin: 0; padding-inline: max(16px, 3vw); }
+body:has(#s-login:not([hidden])) .foot { display: none; }
+#s-login { gap: 0; }
+.ca { border-radius: 0 !important; box-shadow: none; min-height: calc(100vh - 104px); min-height: calc(100dvh - 104px); }
+.ca-left { padding: clamp(22px, 4vw, 56px); }
+.ca-tag { font-size: clamp(1.05rem, 1.8vw, 1.6rem); max-width: 440px; }
+.ca-body { width: min(100%, 420px); align-self: center; }
+.ca-title { font-size: clamp(1.25rem, 2vw, 1.8rem) !important; }
+@media (min-width: 760px) {
+  .ca { grid-template-columns: 42% 1fr; }
+  .ca-right { margin-left: -48px; border-radius: 40px 0 0 40px; padding: 28px 40px; }
+  .ca-art { left: 50% !important; right: auto !important; transform: translateX(-50%); width: auto !important; height: 64% !important; max-width: 90%; object-fit: contain; }
+}
+
+.ca { min-height: calc(100vh - 90px); min-height: calc(100dvh - 90px); }
+.ca-right { grid-template-rows: auto 1fr; }
+.ca-body { align-self: center; padding-top: 0; margin-top: -40px; }
+.ca-art { -webkit-mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 70%, transparent 100%); mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 70%, transparent 100%); }
 </style>
 
 <div id="intro" role="dialog" aria-label="Welcome video">
