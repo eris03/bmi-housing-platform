@@ -988,7 +988,6 @@ body:has(#s-login:not([hidden])) .foot { display: none; }
     </form>
   </section>
 
-  <p class="foot">Prices and details as provided by each developer.</p>
 </div>
 
 <script>
@@ -1010,10 +1009,10 @@ const NOTES = ["Corner sites are charged extra at allotment.","Registration char
 const PROJECTS = [
   { id: "garden-city", name: "BMI Garden City", photos: "gc", hue: ["#c9d6cc","#eef1ec"],
     line: "Premium residential plots in North Bengaluru’s fastest-growing zone — near Kempegowda Airport, ITIR Tech Park & top universities.",
-    rate: "₹1,399/sqft", where: "Off NH 648, Devanahalli", whereShort: "Off NH 648",
+    rate: "₹1,499/sqft", where: "Off NH 648, Devanahalli", whereShort: "Off NH 648",
     overviewTitle: "Overview", amenTitle: "Amenities",
-    priceCap: "₹1,399/sqft · attached to STRR Highway, Airlines Dhaba Gate, Devanahalli",
-    rows: [["30×40 (1200 sqft)","16,78,800","5,03,640","3,91,720"],["30×50 (1500 sqft)","20,98,500","6,29,550","4,89,650"],["40×60 (2400 sqft)","33,57,600","10,07,280","7,83,440"],["50×80 (4000 sqft)","55,96,000","16,78,800","13,05,734"]],
+    priceCap: "₹1,499/sqft · attached to STRR Highway, Airlines Dhaba Gate, Devanahalli",
+    rows: [["30×40 (1200 sqft)", "17,98,800", "5,39,640", "4,19,720"], ["30×50 (1500 sqft)", "22,48,500", "6,74,550", "5,24,650"], ["40×60 (2400 sqft)", "35,97,600", "10,79,280", "8,39,440"], ["50×80 (4000 sqft)", "59,96,000", "17,98,800", "13,99,067"]],
     nearby: NEARBY_GC, video: false, logo: "bmi", dev: "bmi", phone: "080 66469061" },
 ];
 PROJECTS.forEach(p => (p.sizes = p.rows.map(r => ({ label: r[0], note: `Total ₹${r[1]} · Down payment ₹${r[2]}`, extra: [["Total", "₹" + r[1]], ["Down payment", "₹" + r[2]]] }))));
@@ -1297,7 +1296,7 @@ document.addEventListener("pointerdown", e => {
   setTimeout(() => s.remove(), 650);
 });
 
-// Count numbers up (₹1,399 · 200 · 11.5 · 36 · 100%) when a project opens.
+// Count numbers up (₹1,499 · 200 · 11.5 · 36 · 100%) when a project opens.
 function countUp(root) {
   if (reduceMotion) return;
   root.querySelectorAll(".facts dd").forEach(el => {
