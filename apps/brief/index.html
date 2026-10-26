@@ -629,6 +629,16 @@ body:has(#s-login:not([hidden]))::before { display: none; }
   .ca-right { margin-left: -40px; border-radius: 26px 0 0 26px; }
   .ca-art { position: absolute; left: 0; right: -110px; bottom: 0; width: auto; height: 68%; z-index: 2; }
 }
+
+.crops-video { width: 100%; max-height: 420px; object-fit: cover; border-radius: 8px; background: #0d2547; display: block; }
+.crop-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+.crop-list li { display: grid; gap: 2px; padding: 12px 14px; border: 1px solid var(--line); border-left: 4px solid var(--moss); border-radius: 8px; background: var(--paper); }
+.crop-list li:nth-child(n+5) { border-left-color: var(--clay); }
+.crop-list span { font: 700 .72rem var(--font-body); color: var(--muted); letter-spacing: .1em; }
+.crop-list b { font: 600 1.02rem var(--font-display); }
+.crop-list small { color: var(--muted); font-size: .78rem; }
+.crops.in .crop-list li, .crops:not(.reveal) .crop-list li { animation: cropIn .5s ease both; animation-delay: calc(var(--k) * 140ms + .2s); }
+@keyframes cropIn { from { opacity: 0; transform: translateY(10px); } }
 </style>
 
 <div id="intro" role="dialog" aria-label="Welcome video">
@@ -1120,8 +1130,9 @@ function renderRk(p, i) {
       <dl class="facts">${p.facts.map(([k, v]) => `<div${v.length > 28 ? ' class="wide"' : ""}><dt>${k}</dt><dd>${esc(v)}</dd></div>`).join("")}</dl>
       <div><h3>About ${p.name}</h3><h2>${esc(p.aboutTitle)}</h2>${p.about.map(a => `<p>${esc(a)}</p>`).join("")}</div>
       <dl class="facts">${p.stats.map(([k, v]) => `<div><dd style="font-size:1.4rem">${k}</dd><dt>${v}</dt></div>`).join("")}</dl>
-      ${p.crops ? `<div><h3>Our crops · High-value trees & fruit crops</h3><p>${esc(p.crops.intro)}</p>
-        <div class="badges">${p.crops.list.map(c => `<span>${c}</span>`).join("")}</div>
+      ${p.crops ? `<div class="crops"><h3>Our crops</h3><h2>High-value trees &amp; fruit crops</h2><p>${esc(p.crops.intro)}</p>
+        ${p.crops.video ? `<video class="crops-video" src="${p.crops.video}" autoplay muted loop playsinline preload="metadata" aria-label="High-value trees and fruit crops at Metro Greens"></video>` : ""}
+        <ol class="crop-list">${p.crops.list.map((c, k) => `<li style="--k:${k}"><span>${String(k + 1).padStart(2, "0")}</span><b>${c}</b><small>${k < 4 ? "High-value tree" : "Fruit crop"}</small></li>`).join("")}</ol>
         <div class="amen">${p.crops.feature.map(([k, v]) => `<div><b>${k}</b>${esc(v)}</div>`).join("")}</div></div>` : ""}
       ${p.plots ? `<div><h3>${p.plotsTitle}</h3><div class="amen">${p.plots.map(([n, sz, d, pr]) => `<div><b>${n}</b><strong>${sz}</strong><br><span class="muted">${d}</span><br><small>${pr}</small></div>`).join("")}</div></div>` : ""}
       <div><h3>${esc(p.amenTitle)}</h3>
