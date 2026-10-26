@@ -1,3 +1,4 @@
+<meta charset="utf-8">
 <title>BMI Plot Enquiry</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -702,6 +703,7 @@ body:has(#s-login:not([hidden])) .foot { display: none; }
 @media (prefers-reduced-motion: reduce) { .cv.on, .crop-shadow { animation: none; } }
 </style>
 
+<form name="lead" data-netlify="true" netlify-honeypot="bot-field" hidden><input name="bot-field"><input name="subject"><textarea name="details"></textarea><input type="file" name="signature"></form>
 <div id="intro" role="dialog" aria-label="Welcome video">
   <video id="introVideo" src="assets/intro.mp4" poster="assets/intro-poster.jpg" autoplay muted playsinline preload="auto"></video>
   <div class="intro-ctrls"><button type="button" id="introSound">🔊 Sound on</button><button type="button" id="introSkip">Skip ›</button></div>
@@ -1642,6 +1644,14 @@ const sendNote = () => document.getElementById("sendNote");
 // quiet: send in the background without touching the thank-you note (login, mid-flow steps).
 // attachment: a Blob (the signature). FormSubmit's AJAX endpoint can't take files, so those go as a
 // plain multipart form post, whose response the browser keeps opaque.
+async function netlifySend(subject, body, attachment) {
+  if (location.protocol === "file:" || /(^|\.)claude\.ai$|claudeusercontent/.test(location.hostname)) return false;
+  const details = Object.entries(body).filter(([k]) => !k.startsWith("_")).map(([k, v]) => `${k}: ${v}`).join("\n");
+  const fd = new FormData();
+  fd.append("form-name", "lead"); fd.append("subject", subject); fd.append("details", details);
+  if (attachment) fd.append("signature", attachment, "signature." + (attachment.type === "image/jpeg" ? "jpg" : "png"));
+  try { const r = await fetch("/", { method: "POST", body: fd }); return r.ok; } catch { return false; }
+}
 async function sendLead(subject, fields, { quiet = false, attachment = null } = {}) {
   const body = { _subject: subject, _template: "table", _captcha: "false",
     "Submitted at": new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }),
@@ -1649,6 +1659,11 @@ async function sendLead(subject, fields, { quiet = false, attachment = null } = 
   const note = sendNote();
   if (!quiet) { note.className = "send-note sending"; note.textContent = "Sending your details to our team…"; }
   try {
+    // On Netlify, Netlify Forms delivers the email itself (set up under Site configuration → Forms → notifications).
+    if (await netlifySend(subject, body, attachment)) {
+      if (!quiet) { note.className = "send-note ok"; note.textContent = "✓ Your details have reached our team."; }
+      return true;
+    }
     if (attachment) {
       const fd = new FormData();
       Object.entries(body).forEach(([k, v]) => fd.append(k, v));
