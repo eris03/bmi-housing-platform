@@ -633,7 +633,7 @@ body:has(#s-login:not([hidden]))::before { display: none; }
 .crops-video { width: 100%; max-height: 420px; object-fit: cover; border-radius: 8px; background: #0d2547; display: block; }
 .crop-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
 .crop-list li { display: grid; gap: 2px; padding: 12px 14px; border: 1px solid var(--line); border-left: 4px solid var(--moss); border-radius: 8px; background: var(--paper); }
-.crop-list li:nth-child(n+5) { border-left-color: var(--clay); }
+.crop-list li.fruit { border-left-color: var(--clay); }
 .crop-list span { font: 700 .72rem var(--font-body); color: var(--muted); letter-spacing: .1em; }
 .crop-list b { font: 600 1.02rem var(--font-display); }
 .crop-list small { color: var(--muted); font-size: .78rem; }
@@ -679,6 +679,12 @@ body:has(#s-login:not([hidden])) .foot { display: none; }
 .dash-tile small { color: var(--muted); font-size: .84rem; line-height: 1.35; }
 .pbody > .plogos { display: flex; }
 .pbody > .badges { display: flex; }
+
+.crops-video { object-fit: contain; background: #f2f2f0; aspect-ratio: 854 / 480; max-height: none; }
+.crop-list li[data-seek] { cursor: pointer; transition: background .3s, transform .3s, box-shadow .3s; }
+.crop-list li[data-seek]:hover { transform: translateY(-2px); }
+.crop-list li.on { background: var(--moss); border-color: var(--moss); box-shadow: 0 10px 22px -14px rgba(0,0,0,.6); transform: translateY(-2px); }
+.crop-list li.on b, .crop-list li.on span, .crop-list li.on small { color: #fff; }
 </style>
 
 <div id="intro" role="dialog" aria-label="Welcome video">
@@ -1083,6 +1089,10 @@ const RK_PROJECTS = [
     stats: [["200", "Acre total project"], ["11.5", "Acres – Phase 1"], ["₹999", "Per sq.ft"], ["30+", "Amenities"]],
     crops: { intro: "Every plot is planted with scientifically selected, high-demand species — your land works for you while you live in it.",
       list: ["Teakwood", "Sandalwood", "Agarwood (Oud)", "Rosewood", "Passion Fruit", "Guava", "Grapes", "Pomegranate"],
+      // The plantation video shows one crop every 5 seconds, in this order.
+      video: "assets/fruits.mp4", poster: "assets/fruits-poster.jpg", step: 5,
+      seq: [["Grapes", "Fruit crop"], ["Pomegranate", "Fruit crop"], ["Guava", "Fruit crop"], ["Mango", "Fruit crop"], ["Passion Fruit", "Fruit crop"],
+        ["Agarwood (Oud)", "High-value tree"], ["Rosewood", "High-value tree"], ["Teakwood", "High-value tree"], ["Dragon Fruit", "Fruit crop"]],
       feature: [["Sandalwood (Santalum album)", "₹1,000/kg · 10–12 years"], ["Market value", "Mature trees yield 100–150 kg each — demand and long-term value consistently high."], ["Climate fit", "22°C–34°C supports steady trunk growth and healthy heartwood density."], ["Benefits", "Long life cycle, strong resale, low maintenance, natural pest resistance, domestic & international buyers."], ["Future", "Legal supply limited — prices continue to appreciate year after year."]] },
     amenTitle: "30+ Amenities · Urban Comfort in a Rural Setting",
     amenities: ["Grand Clubhouse", "Swimming Pool", "Spa & Wellness", "Jogging Track", "Yoga Decks", "Multi-sport Courts", "Children's Play Area", "Open Activity Zones", "24/7 Security", "Drip Irrigation", "Organic Gardens", "Scenic Trails", "Solar Lighting", "High-Speed Wi-Fi", "Maintenance Team", "Ample Parking", "Resort & Clubhouse"],
@@ -1131,7 +1141,7 @@ const DASH = {
   "garden-city": { acc: "#1f8a5b", hero: ["₹1,499", "per sq ft", "Residential plots · BIAAPA approved"],
     tiles: [["plots", "4", "Plot sizes", "30×40 to 50×80"], ["check", "BIAAPA", "Approval", "A Khata plots"], ["cal", "30% + 3", "Payment plan", "Down payment, then 3 instalments"], ["pin", "NH 648", "Location", "Devanahalli, near the airport"]] },
   "metro-greens": { acc: "#3d7b2e", hero: ["₹999", "per sq ft", "Premium farm plots · Ready to register"],
-    tiles: [["area", "200", "Acres in total", "Ecological project"], ["plots", "11.5", "Acres in Phase 1", "Now open"], ["tree", "8", "Crop varieties", "Trees and fruit crops"], ["star", "30+", "Amenities", "Clubhouse, pool, trails"]] },
+    tiles: [["area", "200", "Acres in total", "Ecological project"], ["plots", "11.5", "Acres in Phase 1", "Now open"], ["tree", "9", "Crop varieties", "Trees and fruit crops"], ["star", "30+", "Amenities", "Clubhouse, pool, trails"]] },
   "rk-avenue": { acc: "#b5603a", hero: ["₹3,499", "per sq ft", "Gated residential layout"],
     tiles: [["area", "2.5", "Acre layout", "Gated community"], ["plots", "36", "Plots only", "Exclusive"], ["check", "100%", "Ready", "Register and build now"], ["pin", "SH-9", "Location", "Alkapura, Gauribidanur"]] },
 };
@@ -1143,6 +1153,17 @@ function dash(p) {
     <div class="dash-tiles">${d.tiles.map(([i, v, k, n]) => `<div class="dash-tile">${ic(i)}<b class="dash-v">${v}</b><span class="dash-k">${k}</span><small>${n}</small></div>`).join("")}</div>
   </section>`;
 }
+// Plantation video: highlight the crop on screen, and let a tap on a label jump the video to it.
+document.addEventListener("timeupdate", e => {
+  const v = e.target; if (v.id !== "cropVideo") return;
+  const k = Math.floor(v.currentTime / +v.dataset.step);
+  v.closest(".crops").querySelectorAll(".crop-list li").forEach((li, j) => li.classList.toggle("on", j === k));
+}, true);
+document.addEventListener("click", e => {
+  const li = e.target.closest(".crop-list li[data-seek]"); if (!li) return;
+  const v = document.getElementById("cropVideo"); v.currentTime = +li.dataset.seek + .05; v.play()?.catch(() => {});
+});
+document.addEventListener("keydown", e => { if ((e.key === "Enter" || e.key === " ") && e.target.matches?.(".crop-list li[data-seek]")) { e.preventDefault(); e.target.click(); } });
 // Placeholder "photos": drawn plot layouts in each project's colours.
 function photo(seed, [a, b], label) {
   let s = seed, rnd = () => (s = (s * 9301 + 49297) % 233280) / 233280;
@@ -1189,8 +1210,8 @@ function renderRk(p, i) {
       ${dash(p)}
       <div><h3>About ${p.name}</h3><h2>${esc(p.aboutTitle)}</h2>${p.about.map(a => `<p>${esc(a)}</p>`).join("")}</div>
       ${p.crops ? `<div class="crops"><h3>Our crops</h3><h2>High-value trees &amp; fruit crops</h2><p>${esc(p.crops.intro)}</p>
-        ${p.crops.video ? `<video class="crops-video" src="${p.crops.video}" autoplay muted loop playsinline preload="metadata" aria-label="High-value trees and fruit crops at Metro Greens"></video>` : ""}
-        <ol class="crop-list">${p.crops.list.map((c, k) => `<li style="--k:${k}"><span>${String(k + 1).padStart(2, "0")}</span><b>${c}</b><small>${k < 4 ? "High-value tree" : "Fruit crop"}</small></li>`).join("")}</ol>
+        ${p.crops.video ? `<video class="crops-video" id="cropVideo" src="${p.crops.video}" poster="${p.crops.poster}" data-step="${p.crops.step}" autoplay muted loop playsinline preload="metadata" aria-label="High-value trees and fruit crops at Metro Greens"></video>` : ""}
+        <ol class="crop-list">${(p.crops.seq || p.crops.list.map((c, k) => [c, k < 4 ? "High-value tree" : "Fruit crop"])).map(([c, t], k) => `<li class="${t === "Fruit crop" ? "fruit" : "tree"}" style="--k:${k}"${p.crops.seq ? ` data-seek="${k * p.crops.step}" tabindex="0" role="button" aria-label="Show ${c} in the video"` : ""}><span>${String(k + 1).padStart(2, "0")}</span><b>${c}</b><small>${t}</small></li>`).join("")}</ol>
         <div class="amen">${p.crops.feature.map(([k, v]) => `<div><b>${k}</b>${esc(v)}</div>`).join("")}</div></div>` : ""}
       ${p.plots ? `<div><h3>${p.plotsTitle}</h3><div class="amen">${p.plots.map(([n, sz, d, pr]) => `<div><b>${n}</b><strong>${sz}</strong><br><span class="muted">${d}</span><br><small>${pr}</small></div>`).join("")}</div></div>` : ""}
       <div><h3>${esc(p.amenTitle)}</h3>
