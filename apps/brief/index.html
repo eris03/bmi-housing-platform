@@ -517,7 +517,7 @@ button.done-card:hover { background: var(--card); transform: translateY(-5px) ro
 .dp-photo { position: relative; overflow: hidden; border-radius: 6px; background: #111; touch-action: pan-y; }
 .dp-photo img { display: block; width: 100%; max-height: 68vh; object-fit: contain; }
 .done-pop.show .dp-photo img { animation: develop 1.1s ease-out both; }
-@keyframes develop { from { filter: sepia(1) brightness(1.6) contrast(.6) blur(3px); } to { filter: none; } }
+@keyframes develop { from { opacity: 0; } to { opacity: 1; } }
 .dp-stamp { position: absolute; top: 14px; left: 14px; font: 800 .82rem var(--font-body); letter-spacing: .18em; text-transform: uppercase; color: #fff; background: rgba(31,181,181,.9); border: 2px solid rgba(255,255,255,.85); padding: 6px 12px; border-radius: 6px; transform: rotate(-8deg); opacity: 0; }
 .done-pop.show .dp-stamp { animation: stamp .45s .65s cubic-bezier(.3,1.6,.5,1) both; }
 @keyframes stamp { from { transform: rotate(-8deg) scale(2.4); opacity: 0; } to { transform: rotate(-8deg) scale(1); opacity: 1; } }
@@ -1227,7 +1227,7 @@ const RK_COMPLETED = [
 const DONE_PHOTOS = [
   ["assets/f068fcf615c5.jpg", "assets/e4b9d6535bc6.jpg", "assets/46510b59319f.jpg"],
   ["assets/dec4f94bf22c.jpg", "assets/2758c607c5ab.jpg", "assets/99f0d072ee03.jpg"],
-  "assets/8b84ef2c2baf.jpg",
+  ["assets/a819d57484f8.jpg", "assets/6bc026264c10.jpg", "assets/fee3759322b9.jpg"],
   "assets/bee687626e38.jpg",
   ["assets/18848f42670a.jpg", "assets/abc8279c3b95.jpg", "assets/cc71e8b93cd3.jpg"],
   "assets/fa6db582f05f.jpg",
@@ -1260,14 +1260,26 @@ let dpPics = [], dpAt = 0;
 function dpShow(k) {
   dpAt = (k + dpPics.length) % dpPics.length;
   const img = donePop.querySelector(".dp-photo img");
-  img.src = dpPics[dpAt];
-  img.alt = `${RK_COMPLETED[dpFrom.dataset.done][0]}, photo ${dpAt + 1} of ${dpPics.length}`;
-  img.style.animation = "none"; void img.offsetWidth; img.style.animation = "";  // replay the "develop" fade per photo
+  const alt = `${RK_COMPLETED[dpFrom.dataset.done][0]}, photo ${dpAt + 1} of ${dpPics.length}`;
+  if (!img.getAttribute("src") || donePop.hidden) { img.src = dpPics[dpAt]; img.alt = alt; return dpDots(); }
+  // Switching photos: load the next one first, then cross-fade (no sepia "develop" flash, no blank frame).
+  const want = dpAt, next = new Image();
+  next.onload = next.onerror = () => {
+    if (want !== dpAt) return;
+    img.style.animation = "none";
+    img.animate([{ opacity: .35 }, { opacity: 1 }], { duration: 260, easing: "ease-out" });
+    img.src = next.src; img.alt = alt;
+  };
+  next.src = dpPics[dpAt];
+  dpDots();
+}
+function dpDots() {
   donePop.querySelectorAll(".dp-dots button").forEach((d, j) => d.setAttribute("aria-current", j === dpAt));
 }
 function openDone(card) {
   const i = +card.dataset.done, [n, l] = RK_COMPLETED[i];
   dpFrom = card; dpPics = donePics(i);
+  donePop.querySelector(".dp-photo img").removeAttribute("src"); donePop.querySelector(".dp-photo img").style.animation = "";
   donePop.querySelector(".dp-photo").classList.toggle("multi", dpPics.length > 1);
   donePop.querySelector(".dp-dots").innerHTML = dpPics.length > 1 ? dpPics.map((_, j) => `<button type="button" aria-label="Photo ${j + 1}"></button>`).join("") : "";
   dpShow(0);
