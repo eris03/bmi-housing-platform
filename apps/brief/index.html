@@ -977,8 +977,7 @@ body:has(#s-login:not([hidden])) .foot { display: none; }
         <label for="uName" class="full">Full name *<input id="uName" autocomplete="name"></label>
         <label for="uPhone">Mobile number *<div class="phone"><span>+91</span><input id="uPhone" inputmode="tel" autocomplete="tel-national"></div></label>
         <label for="uEmail">Email *<input id="uEmail" type="email" autocomplete="email" placeholder="you@example.com"></label>
-        <label for="uDob">Date of birth *<input id="uDob" type="date"></label>
-        <label for="uGender">Gender *<select id="uGender"><option value="">Select</option><option>Male</option><option>Female</option><option>Other</option></select></label>
+        <label for="uGender" class="full">Gender *<select id="uGender"><option value="">Select</option><option>Male</option><option>Female</option><option>Other</option></select></label>
         <label for="uBudget" class="full">Budget *<select id="uBudget"><option value="">Select budget</option><option>Under ₹15 lakh</option><option>₹15 – 25 lakh</option><option>₹25 – 50 lakh</option><option>₹50 lakh – ₹1 crore</option><option>Above ₹1 crore</option></select></label>
         <label for="uAddr" class="full">Address *<textarea id="uAddr" rows="3" autocomplete="street-address"></textarea></label>
       </fieldset>
@@ -1761,13 +1760,11 @@ $("futureForm").addEventListener("submit", e => {
   const err = $("uErr"), v = id => $(id).value.trim();
   document.querySelectorAll("#futureForm .bad").forEach(x => x.classList.remove("bad"));
   const fail = (id, msg) => { err.textContent = msg; $(id).focus(); $(id).closest("label")?.classList.add("bad"); return false; };
-  const mobile = normalise(v("uPhone")), age = ageFrom(v("uDob"));
+  const mobile = normalise(v("uPhone"));
   const ok =
     (v("uName").length >= 2 || fail("uName", "Please enter your full name.")) &&
     (mobile || fail("uPhone", "Please enter a valid 10-digit mobile number.")) &&
     (/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v("uEmail")) || fail("uEmail", "Please enter a valid email address.")) &&
-    (v("uDob") || fail("uDob", "Please enter your date of birth.")) &&
-    ((age !== "" && age >= 18) || fail("uDob", "You must be 18 or older.")) &&
     (v("uGender") || fail("uGender", "Please select gender.")) &&
     (v("uBudget") || fail("uBudget", "Please choose your budget.")) &&
     (v("uAddr").length >= 5 || fail("uAddr", "Please enter your address."));
@@ -1775,7 +1772,7 @@ $("futureForm").addEventListener("submit", e => {
   err.textContent = "";
   const nice = d => new Date(d + "T00:00:00").toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" });
   showDone("Thank you", `Thank you, ${v("uName").split(" ")[0]}. We'll contact you when a new project in your budget is launched.`,
-    [["Name", v("uName")], ["Mobile", mask(mobile)], ["Email", v("uEmail").replace(/^(.).*(@.*)$/, "$1•••$2")], ["Date of birth", nice(v("uDob"))],
+    [["Name", v("uName")], ["Mobile", mask(mobile)], ["Email", v("uEmail").replace(/^(.).*(@.*)$/, "$1•••$2")],
      ["Gender", v("uGender")], ["Budget", v("uBudget")], ["Address", v("uAddr")]]);
   sendLead(`New projects enquiry – ${v("uName")}`, { "Not interested in": "BMI Garden City and RK projects shown", ...formFields($("futureForm")) });
 });
