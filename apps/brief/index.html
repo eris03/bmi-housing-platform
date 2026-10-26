@@ -685,6 +685,21 @@ body:has(#s-login:not([hidden])) .foot { display: none; }
 .crop-list li[data-seek]:hover { transform: translateY(-2px); }
 .crop-list li.on { background: var(--moss); border-color: var(--moss); box-shadow: 0 10px 22px -14px rgba(0,0,0,.6); transform: translateY(-2px); }
 .crop-list li.on b, .crop-list li.on span, .crop-list li.on small { color: #fff; }
+
+/* ---------- plantation stage: floating 3D card that cross-fades between crops ---------- */
+.crop-stage { --tx: 0deg; --ty: 0deg; position: relative; perspective: 1100px; padding: 18px 10px 34px; border-radius: 12px;
+  background: radial-gradient(70% 80% at 50% 40%, #fbfbfa, #e9eceb); overflow: hidden; }
+.crop-float { position: relative; aspect-ratio: 16 / 9; transform-style: preserve-3d; transform: rotateX(var(--tx)) rotateY(var(--ty)); transition: transform .4s ease-out; }
+.crop-float::before { content: ""; position: absolute; inset: 0; animation: cfloat 7s ease-in-out infinite; }
+.cv { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; background: transparent; opacity: 0; border-radius: 10px;
+  transform: translateZ(-60px) scale(.94); transition: opacity .75s ease, transform .9s cubic-bezier(.2,.8,.2,1);
+  -webkit-mask-image: radial-gradient(70% 72% at 50% 50%, #000 55%, transparent 100%); mask-image: radial-gradient(70% 72% at 50% 50%, #000 55%, transparent 100%); }
+.cv.on { opacity: 1; transform: translateZ(0) scale(1); animation: cfloat 7s ease-in-out infinite; }
+@keyframes cfloat { 0%, 100% { translate: 0 0; rotate: x 3deg; } 50% { translate: 0 -12px; rotate: x -3deg; } }
+.crop-shadow { position: absolute; left: 50%; bottom: 14px; width: 46%; height: 16px; translate: -50% 0; border-radius: 50%; background: radial-gradient(closest-side, rgba(20,40,40,.28), transparent); animation: cshadow 7s ease-in-out infinite; }
+@keyframes cshadow { 0%, 100% { scale: 1; opacity: .9; } 50% { scale: .82; opacity: .55; } }
+.crop-name { position: absolute; left: 16px; top: 14px; padding: 6px 12px; border-radius: 999px; background: rgba(255,255,255,.85); font: 700 .85rem var(--font-body); color: var(--ink); box-shadow: 0 6px 14px -8px rgba(0,0,0,.35); }
+@media (prefers-reduced-motion: reduce) { .cv.on, .crop-shadow { animation: none; } }
 </style>
 
 <div id="intro" role="dialog" aria-label="Welcome video">
@@ -1154,22 +1169,42 @@ function dash(p) {
     <div class="dash-tiles">${d.tiles.map(([i, v, k, n]) => `<div class="dash-tile">${ic(i)}<b class="dash-v">${v}</b><span class="dash-k">${k}</span><small>${n}</small></div>`).join("")}</div>
   </section>`;
 }
-// Plantation player: steps through the crops in order. A crop with its own clip plays that clip;
-// the rest play their 5-second slice of the combined video. Tapping a label jumps to that crop.
-const crop = { k: 0, end: Infinity };
+// Plantation player: two stacked videos cross-fade, so switching crops never flashes a placeholder frame.
+// A crop with its own clip plays it whole; any without plays its 5-second slice of the combined video.
+const crop = { k: 0, end: Infinity, token: 0 };
+const cropPoster = src => src.replace(/\.mp4$/, ".jpg");
 function cropPlay(k) {
-  const v = document.getElementById("cropVideo"); if (!v) return;
+  const stage = document.getElementById("cropStage"); if (!stage) return;
   const c = RK_PROJECTS[0].crops, seq = c.seq, n = (k + seq.length) % seq.length, own = seq[n][2];
-  crop.k = n;
-  const src = own || c.video, start = own ? 0 : n * c.step;
-  crop.end = own ? Infinity : start + c.step;
-  const go = () => { v.currentTime = start; v.play()?.catch(() => {}); };
-  if (!v.src.endsWith(src)) { v.src = src; v.addEventListener("loadedmetadata", go, { once: true }); } else go();
-  v.closest(".crops").querySelectorAll(".crop-list li").forEach((li, j) => li.classList.toggle("on", j === n));
+  const src = own || c.video, start = own ? 0 : n * c.step, token = ++crop.token;
+  crop.k = n; crop.end = own ? Infinity : start + c.step;
+  const front = stage.querySelector(".cv.on") || stage.querySelector(".cv"), back = [...stage.querySelectorAll(".cv")].find(v => v !== front);
+  const first = !front.getAttribute("src");
+  const target = first ? front : back;
+  if (own) target.poster = cropPoster(own);
+  const show = () => {
+    if (token !== crop.token) return;
+    try { target.currentTime = start; } catch {}
+    target.play()?.catch(() => {});
+    if (!first) { back.classList.add("on", "enter"); front.classList.remove("on"); setTimeout(() => { front.pause(); back.classList.remove("enter"); }, 800); }
+    else front.classList.add("on");
+  };
+  if (!target.src.endsWith(src)) { target.src = src; target.addEventListener("loadeddata", show, { once: true }); target.addEventListener("error", show, { once: true }); }
+  else show();
+  document.getElementById("cropName").textContent = seq[n][0];
+  stage.closest(".crops").querySelectorAll(".crop-list li").forEach((li, j) => li.classList.toggle("on", j === n));
 }
-document.addEventListener("timeupdate", e => { if (e.target.id === "cropVideo" && e.target.currentTime >= crop.end) cropPlay(crop.k + 1); }, true);
-document.addEventListener("ended", e => { if (e.target.id === "cropVideo") cropPlay(crop.k + 1); }, true);
+document.addEventListener("timeupdate", e => { if (e.target.matches?.("#cropStage .cv.on") && e.target.currentTime >= crop.end) cropPlay(crop.k + 1); }, true);
+document.addEventListener("ended", e => { if (e.target.matches?.("#cropStage .cv.on")) cropPlay(crop.k + 1); }, true);
 document.addEventListener("click", e => { const li = e.target.closest(".crop-list li[data-seek]"); if (li) cropPlay(+li.dataset.seek); });
+// Gentle 3D tilt toward the pointer on the plantation stage.
+document.addEventListener("pointermove", e => {
+  const st = e.target.closest?.("#cropStage"); if (!st || e.pointerType === "touch") return;
+  const r = st.getBoundingClientRect();
+  st.style.setProperty("--ty", `${((e.clientX - r.left) / r.width - .5) * 10}deg`);
+  st.style.setProperty("--tx", `${(.5 - (e.clientY - r.top) / r.height) * 8}deg`);
+});
+document.addEventListener("pointerout", e => { const st = e.target.closest?.("#cropStage"); if (st && !st.contains(e.relatedTarget)) { st.style.setProperty("--tx", "0deg"); st.style.setProperty("--ty", "0deg"); } });
 document.addEventListener("keydown", e => { if ((e.key === "Enter" || e.key === " ") && e.target.matches?.(".crop-list li[data-seek]")) { e.preventDefault(); e.target.click(); } });
 // Placeholder "photos": drawn plot layouts in each project's colours.
 function photo(seed, [a, b], label) {
@@ -1217,7 +1252,10 @@ function renderRk(p, i) {
       ${dash(p)}
       <div><h3>About ${p.name}</h3><h2>${esc(p.aboutTitle)}</h2>${p.about.map(a => `<p>${esc(a)}</p>`).join("")}</div>
       ${p.crops ? `<div class="crops"><h3>Our crops</h3><h2>High-value trees &amp; fruit crops</h2><p>${esc(p.crops.intro)}</p>
-        ${p.crops.video ? `<video class="crops-video" id="cropVideo" src="${(p.crops.seq?.[0]?.[2]) || p.crops.video}" poster="${p.crops.poster}" data-step="${p.crops.step}" autoplay muted playsinline preload="metadata" aria-label="High-value trees and fruit crops at Metro Greens"></video>` : ""}
+        ${p.crops.video ? `<div class="crop-stage" id="cropStage" aria-label="High-value trees and fruit crops at Metro Greens">
+          <div class="crop-float"><video class="cv on" muted playsinline preload="auto"></video><video class="cv" muted playsinline preload="auto"></video></div>
+          <span class="crop-shadow" aria-hidden="true"></span><span class="crop-name" id="cropName" aria-live="polite"></span>
+        </div>` : ""}
         <ol class="crop-list">${(p.crops.seq || p.crops.list.map((c, k) => [c, k < 4 ? "High-value tree" : "Fruit crop"])).map(([c, t, clip], k) => `<li class="${t === "Fruit crop" ? "fruit" : "tree"}" style="--k:${k}"${p.crops.seq ? ` data-seek="${k}" tabindex="0" role="button" aria-label="Show ${c} in the video"` : ""}><span>${String(k + 1).padStart(2, "0")}</span><b>${c}</b><small>${t}</small></li>`).join("")}</ol>
         <div class="amen">${p.crops.feature.map(([k, v]) => `<div><b>${k}</b>${esc(v)}</div>`).join("")}</div></div>` : ""}
       ${p.plots ? `<div><h3>${p.plotsTitle}</h3><div class="amen">${p.plots.map(([n, sz, d, pr]) => `<div><b>${n}</b><strong>${sz}</strong><br><span class="muted">${d}</span><br><small>${pr}</small></div>`).join("")}</div></div>` : ""}
